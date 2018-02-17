@@ -44,7 +44,6 @@ public class Messages {
     public void onUserJoinEvent(UserJoinEvent event){
         event.getGuild().getChannelsByName("general").get(0)
                 .sendMessage(new EmbedBuilder()
-                        .withAuthorIcon(event.getUser().getAvatarURL())
                         .appendField("Welcome!", event.getUser().mention() + " has joined the server.", true)
                         .withColor(Color.decode("#FAB462")).build());
     }
