@@ -62,7 +62,7 @@ public class Commands {
 
         Response response = handler.handleMessage(text);
         if(response.type == ResponseType.unknownCommand){
-            messages.err("Unknown command. Type /help for a list of commands.");
+            messages.err("Unknown command. Type !help for a list of commands.");
         }else if(response.type == ResponseType.invalidArguments){
             messages.err("Invalid arguments.", "Usage: {0}{1} *{2}*", prefix, response.command.text, response.command.params);
         }
