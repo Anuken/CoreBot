@@ -4,11 +4,8 @@ import io.anuke.ucore.util.CommandHandler;
 import io.anuke.ucore.util.CommandHandler.Command;
 import io.anuke.ucore.util.CommandHandler.Response;
 import io.anuke.ucore.util.CommandHandler.ResponseType;
-import io.anuke.ucore.util.Strings;
 import sx.blah.discord.handle.obj.IMessage;
-import sx.blah.discord.util.EmbedBuilder;
 
-import java.awt.*;
 import java.util.Arrays;
 
 import static io.anuke.corebot.CoreBot.*;

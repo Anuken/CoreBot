@@ -1,9 +1,6 @@
 package io.anuke.corebot;
 
 import io.anuke.ucore.util.Log;
-import org.java_websocket.WebSocket;
-import org.java_websocket.WebSocketImpl;
-import org.java_websocket.WebSocketListener;
 import org.java_websocket.client.WebSocketClient;
 import org.java_websocket.handshake.ServerHandshake;
 
@@ -15,8 +12,8 @@ import java.util.TimerTask;
 import java.util.function.Consumer;
 
 public class Net {
+    private static final int timeout = 1200;
     private WebSocketClient socket;
-    private int timeout = 1100;
 
     public void pingServer(String ip, Consumer<PingResult> listener){
         boolean[] sent = {false};
