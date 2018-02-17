@@ -31,7 +31,9 @@ public class Net {
                     if(sent[0]) return;
                     if(message.startsWith("---")){
                         String[] split = message.substring(3).split("\\|");
-                        listener.accept(new PingResult(split[0], split[1]));
+                        listener.accept(split.length == 4 ?
+                                new PingResult(split[0], split[1], split[2], split[3]) :
+                                new PingResult(split[0], split[1], "Unknown", "Unknown"));
                         sent[0] = true;
                         socket.close();
                     }
@@ -89,16 +91,20 @@ public class Net {
         String players;
         String host;
         String error;
+        String wave;
+        String map;
 
         public PingResult(String error) {
             this.valid = false;
             this.error = error;
         }
 
-        public PingResult(String players, String host) {
+        public PingResult(String players, String host, String map, String wave) {
             this.valid = true;
             this.players = players;
             this.host = host;
+            this.map = map;
+            this.wave = wave;
         }
     }
 }
