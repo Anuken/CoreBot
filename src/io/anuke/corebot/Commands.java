@@ -64,7 +64,11 @@ public class Commands {
         if(response.type == ResponseType.unknownCommand){
             messages.err("Unknown command. Type !help for a list of commands.");
         }else if(response.type == ResponseType.invalidArguments){
-            messages.err("Invalid arguments.", "Usage: {0}{1} *{2}*", prefix, response.command.text, response.command.params);
+            if(response.command.paramLength == 0){
+                messages.err("Invalid arguments.", "Usage: {0}{1}", prefix, response.command.text);
+            }else {
+                messages.err("Invalid arguments.", "Usage: {0}{1} *{2}*", prefix, response.command.text, response.command.params);
+            }
         }
     }
 
