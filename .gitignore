@@ -1,0 +1,11 @@
+*.class
+/bin/
+/modules/
+/.settings/
+/.gradle/
+/build/
+.classpath
+.project
+/.idea/
+/out/
+CoreBot.iml

@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+./gradlew dist
+java -Dtoken=${CORE_BOT_TOKEN} -jar build/libs/CoreBot-1.0.jar
