@@ -43,9 +43,12 @@ public class Messages {
     @EventSubscriber
     public void onUserJoinEvent(UserJoinEvent event){
         event.getGuild().getChannelsByName("general").get(0)
+                .sendMessage("*Welcome* " + event.getUser().mention() + " *to the Mindustry Discord!*", true);
+        /*
+        event.getGuild().getChannelsByName("general").get(0)
                 .sendMessage(new EmbedBuilder()
                         .appendField("Welcome!", event.getUser().mention() + " has joined the server.", true)
-                        .withColor(Color.decode("#FAB462")).build());
+                        .withColor(Color.decode("#FAB462")).build());*/
     }
 
     public void text(String text, Object... args){
