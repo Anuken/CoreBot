@@ -117,7 +117,7 @@ public class Commands {
             if(response.command.params.length == 0){
                 messages.err("Invalid arguments.", "Usage: {0}{1}", prefix, response.command.text);
             }else {
-                messages.err("Invalid arguments.", "Usage: {0}{1} *{2}*", prefix, response.command.text, response.command.params);
+                messages.err("Invalid arguments.", "Usage: {0}{1} *{2}*", prefix, response.command.text, response.command.paramText);
             }
         }
     }
