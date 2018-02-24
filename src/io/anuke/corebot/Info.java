@@ -8,8 +8,7 @@ public enum Info {
             "[4.0 Info](https://github.com/Anuken/Mindustry/issues/87)\n" +
             "[Downloads, Web Version](https://anuke.itch.io/mindustry)\n" +
             "[Google Play Listing](https://play.google.com/store/apps/details?id=io.anuke.mindustry)\n" +
-            "[Wiki](http://mindustry.wikia.com/wiki/Mindustry_Wiki)\n"
-    ),
+            "[Wiki](http://mindustry.wikia.com/wiki/Mindustry_Wiki)\n"),
     beta("Android Beta",
             "To join the Android Beta in Google Play Store, just scroll to the bottom of the page and tap 'join beta'.\n" +
             "Betas can take some time to become available after release. Be patient.\n" +

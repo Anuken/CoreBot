@@ -10,6 +10,7 @@ import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedE
 import sx.blah.discord.handle.impl.events.guild.member.UserJoinEvent;
 import sx.blah.discord.handle.obj.IChannel;
 import sx.blah.discord.handle.obj.IMessage;
+import sx.blah.discord.handle.obj.IUser;
 import sx.blah.discord.util.EmbedBuilder;
 
 import java.awt.*;
@@ -17,6 +18,9 @@ import java.awt.*;
 public class Messages {
     IDiscordClient client;
     IChannel channel;
+    IUser lastUser;
+    Color normalColor = Color.decode("#FAB462");
+    Color errorColor = Color.decode("#ff3838");
 
     public Messages(){
         String token = System.getProperty("token");
@@ -36,7 +40,6 @@ public class Messages {
     @EventSubscriber
     public void onMessageReceivedEvent(MessageReceivedEvent event){
         IMessage m = event.getMessage();
-        channel = m.getChannel();
         CoreBot.commands.handle(m);
     }
 
@@ -44,11 +47,6 @@ public class Messages {
     public void onUserJoinEvent(UserJoinEvent event){
         event.getGuild().getChannelsByName("general").get(0)
                 .sendMessage("*Welcome* " + event.getUser().mention() + " *to the Mindustry Discord!*", true);
-        /*
-        event.getGuild().getChannelsByName("general").get(0)
-                .sendMessage(new EmbedBuilder()
-                        .appendField("Welcome!", event.getUser().mention() + " has joined the server.", true)
-                        .withColor(Color.decode("#FAB462")).build());*/
     }
 
     public void text(String text, Object... args){
@@ -57,7 +55,7 @@ public class Messages {
 
     public void info(String title, String text, Object... args){
         EmbedObject object = new EmbedBuilder()
-                .appendField(title, format(text, args), true).withColor(Color.decode("#FAB462")).build();
+                .appendField(title, format(text, args), true).withColor(normalColor).build();
         channel.sendMessage(object);
     }
 
@@ -67,7 +65,7 @@ public class Messages {
 
     public void err(String title, String text, Object... args){
         EmbedObject object = new EmbedBuilder()
-                .appendField(title, format(text, args), true).withColor(Color.decode("#ff3838")).build();
+                .appendField(title, format(text, args), true).withColor(errorColor).build();
         channel.sendMessage(object);
     }
 

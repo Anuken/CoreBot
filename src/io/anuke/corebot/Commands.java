@@ -4,7 +4,10 @@ import io.anuke.ucore.util.CommandHandler;
 import io.anuke.ucore.util.CommandHandler.Command;
 import io.anuke.ucore.util.CommandHandler.Response;
 import io.anuke.ucore.util.CommandHandler.ResponseType;
+import io.anuke.ucore.util.Log;
 import sx.blah.discord.handle.obj.IMessage;
+import sx.blah.discord.handle.obj.IUser;
+import sx.blah.discord.util.EmbedBuilder;
 
 import java.util.Arrays;
 
@@ -22,7 +25,7 @@ public class Commands {
                 builder.append("**");
                 builder.append(command.text);
                 builder.append("**");
-                if(command.paramLength > 0) {
+                if(command.params.length > 0) {
                     builder.append(" *");
                     builder.append(command.params);
                     builder.append("*");
@@ -54,6 +57,47 @@ public class Commands {
                 messages.err("Error", "Invalid topic '{0}'.\nValid topics: *{1}*", args[0], Arrays.toString(Info.values()));
             }
         });
+
+        handler.register("postmap", "<mapURL> <@author> <mapname> [description...]", "Post a map to the #maps channel. Mapper only command.", args -> {
+            if(!messages.lastUser.hasRole(messages.channel.getGuild().getRolesByName("Mapper").get(0)) &&
+                    !messages.lastUser.hasRole(messages.channel.getGuild().getRolesByName("Developer").get(0))){
+                messages.err("You are unauthorized.");
+            }
+
+            String url = args[0];
+            String author = args[1];
+            String name = args[2];
+            String desc = args.length < 4 ? "" : args[3];
+
+            if(author.length() < 4){
+                messages.err("Invalid author format. You must mention the author.");
+                return;
+            }
+
+            String id = author.substring(2, author.length() - 1);
+            try{
+                long result = Long.parseLong(id);
+                IUser user = messages.channel.getGuild().getUserByID(result);
+
+                if(user == null){
+                    messages.err("No such user.");
+                    return;
+                }
+
+                EmbedBuilder builder = new EmbedBuilder().withColor(messages.normalColor).withColor(messages.normalColor)
+                        .withImage(url).withAuthorName(user.getName()).withTitle(name)
+                        .withAuthorIcon(user.getAvatarURL());
+
+                if(!desc.isEmpty()) builder.withFooterText(desc);
+
+                messages.channel.getGuild().getChannelsByName("maps").get(0)
+                        .sendMessage(builder.build());
+
+                messages.text("*Map posted successfully.*");
+            }catch (Exception e){
+                messages.err("Invalid username format.");
+            }
+        });
     }
 
     void handle(IMessage message){
@@ -61,11 +105,17 @@ public class Commands {
 
         String text = message.getContent();
 
+        if(message.getContent() != null && message.getContent().startsWith(prefix)){
+            messages.channel = message.getChannel();
+            messages.lastUser = message.getAuthor();
+        }
+
         Response response = handler.handleMessage(text);
+
         if(response.type == ResponseType.unknownCommand){
             messages.err("Unknown command. Type !help for a list of commands.");
-        }else if(response.type == ResponseType.invalidArguments){
-            if(response.command.paramLength == 0){
+        }else if(response.type == ResponseType.manyArguments || response.type == ResponseType.fewArguments){
+            if(response.command.params.length == 0){
                 messages.err("Invalid arguments.", "Usage: {0}{1}", prefix, response.command.text);
             }else {
                 messages.err("Invalid arguments.", "Usage: {0}{1} *{2}*", prefix, response.command.text, response.command.params);
