@@ -32,7 +32,7 @@ public class Net {
                     synchronized (sent) {
                         if (message.startsWith("---")) {
                             Log.info("Got ping packet");
-                            if (!sent.get()) return;
+                            if (sent.get()) return;
                             sent.set(true);
                             String[] split = message.substring(3).split("\\|");
                             listener.accept(split.length == 4 ?
@@ -51,7 +51,7 @@ public class Net {
                                 @Override
                                 public void run() {
                                     synchronized (sent) {
-                                        if (!sent.get()) return;
+                                        if (sent.get()) return;
                                         sent.set(true);
                                         Log.info("Got close.");
                                         listener.accept(new PingResult("Closed: " + reason));
@@ -65,7 +65,7 @@ public class Net {
                 @Override
                 public void onError(Exception ex) {
                     synchronized (sent) {
-                        if (!sent.get()) return;
+                        if (sent.get()) return;
                         sent.set(true);
                         Log.info("Got error:");
                         if (ex instanceof IllegalArgumentException || ex instanceof UnknownHostException) {
@@ -90,7 +90,7 @@ public class Net {
                     public void run() {
                         synchronized (sent) {
                             Log.info("Got timeout.");
-                            if (!sent.get()) {
+                            if (sent.get()) {
                                 sent.set(true);
                                 listener.accept(new PingResult("Timed out."));
                                 Log.info("Finish get timeout.");
@@ -103,7 +103,7 @@ public class Net {
 
         }catch (Exception e){
             synchronized (sent) {
-                if (!sent.get()) return;
+                if (sent.get()) return;
                 sent.set(true);
                 Log.info("Got send error:");
                 listener.accept(new PingResult("Timed out."));
