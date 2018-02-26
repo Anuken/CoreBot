@@ -13,7 +13,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Consumer;
 
 public class Net {
-    private static final int timeout = 1000;
+    private static final int timeout = 2000;
     private WebSocketClient socket;
 
     public void pingServer(String ip, Consumer<PingResult> listener){
@@ -80,8 +80,8 @@ public class Net {
                     }
                 }
             };
-            socket.setConnectionLostTimeout(timeout);
 
+            socket.setConnectionLostTimeout(timeout);
             socket.connect();
 
             new Timer().schedule(
