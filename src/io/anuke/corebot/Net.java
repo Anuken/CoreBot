@@ -30,8 +30,9 @@ public class Net {
                 @Override
                 public void onMessage(String message) {
                     synchronized (sent) {
-                        if (!sent.getAndSet(true)) return;
                         if (message.startsWith("---")) {
+                            if (!sent.get()) return;
+                            sent.set(true);
                             String[] split = message.substring(3).split("\\|");
                             listener.accept(split.length == 4 ?
                                     new PingResult(split[0], split[1], split[2], split[3]) :
@@ -44,7 +45,8 @@ public class Net {
                 @Override
                 public void onClose(int code, String reason, boolean remote) {
                     synchronized (sent) {
-                        if (!sent.getAndSet(true)) return;
+                        if (!sent.get()) return;
+                        sent.set(true);
                         Log.info("{0} {1} {2}", code, reason, remote);
                         listener.accept(new PingResult("Closed: " + reason));
                     }
@@ -53,7 +55,8 @@ public class Net {
                 @Override
                 public void onError(Exception ex) {
                     synchronized (sent) {
-                        if (!sent.getAndSet(true)) return;
+                        if (!sent.get()) return;
+                        sent.set(true);
                         if (ex instanceof IllegalArgumentException || ex instanceof UnknownHostException) {
                             listener.accept(new PingResult("Invalid IP."));
                         } else if (ex instanceof ConnectException) {
@@ -75,7 +78,8 @@ public class Net {
                     @Override
                     public void run() {
                         synchronized (sent) {
-                            if (!sent.getAndSet(true)) {
+                            if (!sent.get()) {
+                                sent.set(true);
                                 listener.accept(new PingResult("Timed out."));
                             }
                         }
@@ -86,7 +90,8 @@ public class Net {
 
         }catch (Exception e){
             synchronized (sent) {
-                if (!sent.getAndSet(true)) return;
+                if (!sent.get()) return;
+                sent.set(true);
                 listener.accept(new PingResult("Timed out."));
                 e.printStackTrace();
             }
