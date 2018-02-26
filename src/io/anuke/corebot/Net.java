@@ -44,12 +44,20 @@ public class Net {
 
                 @Override
                 public void onClose(int code, String reason, boolean remote) {
-                    synchronized (sent) {
-                        if (!sent.get()) return;
-                        sent.set(true);
-                        Log.info("{0} {1} {2}", code, reason, remote);
-                        listener.accept(new PingResult("Closed: " + reason));
-                    }
+                    new Timer().schedule(
+                            new TimerTask() {
+                                @Override
+                                public void run() {
+                                    synchronized (sent) {
+                                        if (!sent.get()) return;
+                                        sent.set(true);
+                                        Log.info("{0} {1} {2}", code, reason, remote);
+                                        listener.accept(new PingResult("Closed: " + reason));
+                                    }
+                                }
+                            },
+                            100
+                    );
                 }
 
                 @Override
