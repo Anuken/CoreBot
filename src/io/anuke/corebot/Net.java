@@ -31,6 +31,7 @@ public class Net {
                 public void onMessage(String message) {
                     synchronized (sent) {
                         if (message.startsWith("---")) {
+                            Log.info("Got ping packet");
                             if (!sent.get()) return;
                             sent.set(true);
                             String[] split = message.substring(3).split("\\|");
@@ -51,7 +52,7 @@ public class Net {
                                     synchronized (sent) {
                                         if (!sent.get()) return;
                                         sent.set(true);
-                                        Log.info("{0} {1} {2}", code, reason, remote);
+                                        Log.info("Got close.");
                                         listener.accept(new PingResult("Closed: " + reason));
                                     }
                                 }
@@ -65,6 +66,7 @@ public class Net {
                     synchronized (sent) {
                         if (!sent.get()) return;
                         sent.set(true);
+                        Log.info("Got error:");
                         if (ex instanceof IllegalArgumentException || ex instanceof UnknownHostException) {
                             listener.accept(new PingResult("Invalid IP."));
                         } else if (ex instanceof ConnectException) {
@@ -88,6 +90,7 @@ public class Net {
                         synchronized (sent) {
                             if (!sent.get()) {
                                 sent.set(true);
+                                Log.info("Got timeout.");
                                 listener.accept(new PingResult("Timed out."));
                             }
                         }
@@ -100,6 +103,7 @@ public class Net {
             synchronized (sent) {
                 if (!sent.get()) return;
                 sent.set(true);
+                Log.info("Got send error:");
                 listener.accept(new PingResult("Timed out."));
                 e.printStackTrace();
             }
