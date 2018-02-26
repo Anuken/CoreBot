@@ -39,6 +39,7 @@ public class Net {
                                     new PingResult(split[0], split[1], split[2], split[3]) :
                                     new PingResult(split[0], split[1], "Unknown", "Unknown"));
                             socket.close();
+                            Log.info("Finish get ping packet");
                         }
                     }
                 }
@@ -92,6 +93,7 @@ public class Net {
                                 sent.set(true);
                                 Log.info("Got timeout.");
                                 listener.accept(new PingResult("Timed out."));
+                                Log.info("Finish get timeout.");
                             }
                         }
                     }
