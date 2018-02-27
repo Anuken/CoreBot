@@ -28,10 +28,10 @@ public enum Info {
             "To host a server, press *'host'* in the menu while playing.\n" + 
             "To join a server, enter their IP in the 'add server' box and click the server.\n" + 
             "Both over-the-internet and LAN play is supported. For someone outside your network to connect to your games, **port forwarding is required.**\n" +
-            "Multiplayer is cross-platform, although *the web version does not support hosting.*\n\n" + 
+            "Multiplayer is cross-platform, although **the web version does not support hosting.**\n\n" + 
             "*For more info on how to port forward, check the pinned messages in #servers.*\n"),
     server("Dedicated Server",
-            "To run the dedicated server .JAR file, you need to run it through the command prompt or terminal. Java is required.\n" + 
+            "To run the dedicated server .JAR file, you need to use the command prompt or terminal. **Java is required**.\n\n" + 
             "Navigate to the file location and type `java -jar <server-file-name>.jar`, which should start the server.\n" + 
             "Note that the server does not automatically start hosting. Type `host <map> <gamemode>` to open the server.\n" + 
             "Type `help` for a list of all commands.\n");
