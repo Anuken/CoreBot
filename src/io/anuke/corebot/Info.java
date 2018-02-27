@@ -22,7 +22,19 @@ public enum Info {
             "**6.** Please do not post invite links to this server in public places.\n" +
             "**7.** Do not beg for roles.\n" +
             "**8.** Do not impersonate other members or intentionally edit your messages to mislead others.\n" +
-            "*If I don't like your behavior, you're out. Obey the spirit, not the word.*");
+            "*If I don't like your behavior, you're out. Obey the spirit, not the word.*"),
+    multiplayer("Multiplayer",
+            "Multiplayer in Mindustry works just as it does in many other sandbox games.\n" + 
+            "To host a server, press *'host'* in the menu while playing.\n" + 
+            "To join a server, enter their IP in the 'add server' box and click the server.\n" + 
+            "Both over-the-internet and LAN play is supported. For someone outside your network to connect to your games, **port forwarding is required.**\n" +
+            "Multiplayer is cross-platform, although *the web version does not support hosting.*\n\n" + 
+            "*For more info on how to port forward, check the pinned messages in #servers.*\n"),
+    server("Dedicated Server",
+            "To run the dedicated server .JAR file, you need to run it through the command prompt or terminal. Java is required.\n" + 
+            "Navigate to the file location and type `java -jar <server-file-name>.jar`, which should start the server.\n" + 
+            "Note that the server does not automatically start hosting. Type `host <map> <gamemode>` to open the server.\n" + 
+            "Type `help` for a list of all commands.\n");
 
     public final String text;
     public final String title;
