@@ -60,10 +60,12 @@ public class Commands {
         });
 
         handler.register("postmap", "<mapURL> <@author> <mapname> [description...]", "Post a map to the #maps channel. Mapper only command.", args -> {
+            /*
             if(!messages.lastUser.hasRole(messages.channel.getGuild().getRolesByName("Mapper").get(0)) &&
                     !messages.lastUser.hasRole(messages.channel.getGuild().getRolesByName("Developer").get(0))){
                 messages.err("You are unauthorized.");
-            }
+                return;
+            }*/
 
             String url = args[0];
             String author = args[1];
