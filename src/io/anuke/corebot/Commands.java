@@ -8,6 +8,8 @@ import sx.blah.discord.handle.obj.IMessage;
 import sx.blah.discord.handle.obj.IUser;
 import sx.blah.discord.util.EmbedBuilder;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.Arrays;
 
 import static io.anuke.corebot.CoreBot.*;
@@ -95,6 +97,14 @@ public class Commands {
                 messages.text("*Map posted successfully.*");
             }catch (Exception e){
                 messages.err("Invalid username format.");
+            }
+        });
+
+        handler.register("google", "<phrase...>", "Let me google that for you.", args -> {
+            try {
+                messages.text("http://lmgtfy.com/?q={0}", URLEncoder.encode(args[0], "UTF-8"));
+            }catch (UnsupportedEncodingException e){
+                e.printStackTrace();
             }
         });
     }
