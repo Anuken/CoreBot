@@ -95,8 +95,8 @@ public class Commands {
 
             Attachment a = message.getAttachments().get(0);
 
-            String name = args[2];
-            String desc = args.length < 4 ? "" : args[3];
+            String name = args[0];
+            String desc = args.length < 2 ? "" : args[1];
 
             try{
                 EmbedBuilder builder = new EmbedBuilder().withColor(messages.normalColor).withColor(messages.normalColor)
