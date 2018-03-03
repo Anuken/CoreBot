@@ -13,17 +13,19 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Consumer;
 
 public class Net {
-    public static final int timeout = 2000;
+    public static final int timeout = 1500;
 
     public void pingServer(String ip, Consumer<PingResult> listener){
         AtomicBoolean sent = new AtomicBoolean();
-        long start = System.currentTimeMillis();
+
+        long[] start = {0};
 
         try{
             WebSocketClient[] clients = new WebSocketClient[1];
             clients[0] = new WebSocketClient(new URI("ws://" + ip + ":" + 6568)) {
                 @Override
                 public void onOpen(ServerHandshake handshakedata) {
+                    start[0] = System.currentTimeMillis();
                     clients[0].send("_ping_");
                     Log.info("Pinging!");
                 }
@@ -37,8 +39,8 @@ public class Net {
                             sent.set(true);
                             String[] split = message.substring(3).split("\\|");
                             listener.accept(split.length == 4 ?
-                                    new PingResult(ip, start - System.currentTimeMillis(), split[0], split[1], split[2], split[3]) :
-                                    new PingResult(ip, start - System.currentTimeMillis(), split[0], split[1], "Unknown", "Unknown"));
+                                    new PingResult(ip, System.currentTimeMillis() - start[0], split[0], split[1], split[2], split[3]) :
+                                    new PingResult(ip, System.currentTimeMillis() - start[0], split[0], split[1], "Unknown", "Unknown"));
                             clients[0].close();
                             Log.info("Finish get ping packet");
                         }

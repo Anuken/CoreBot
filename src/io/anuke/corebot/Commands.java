@@ -11,7 +11,6 @@ import sx.blah.discord.util.EmbedBuilder;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -76,9 +75,9 @@ public class Commands {
                 if(results.isEmpty()){
                     messages.err("No servers found.", "All known servers are offline.");
                 }else{
-                    String s = "**Online Servers:**\n\n";
+                    String s = "*Online Servers:*\n\n";
                     for(PingResult r : results){
-                        s += "*" + r.ip + "* **/** " + r.players + " players `[" + r.ping + "ms]`\n";
+                        s += "**" + r.ip + "** **/** " + r.players + " players `[" + r.ping + "ms]`\n";
                     }
                     messages.info("Servers", s);
                 }
