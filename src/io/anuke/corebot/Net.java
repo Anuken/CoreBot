@@ -13,7 +13,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Consumer;
 
 public class Net {
-    public static final int timeout = 1500;
+    public static final int timeout = 2000;
 
     public void pingServer(String ip, Consumer<PingResult> listener){
         AtomicBoolean sent = new AtomicBoolean();
