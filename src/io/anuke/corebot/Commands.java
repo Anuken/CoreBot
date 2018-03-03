@@ -75,11 +75,11 @@ public class Commands {
                 if(results.isEmpty()){
                     messages.err("No servers found.", "All known servers are offline.");
                 }else{
-                    String s = "*Online Servers:*\n\n";
+                    String s = "";
                     for(PingResult r : results){
                         s += "**" + r.ip + "** **/** " + r.players + " players `[" + r.ping + "ms]`\n";
                     }
-                    messages.info("Servers", s);
+                    messages.info("Online Servers", s);
                 }
             });
         });
