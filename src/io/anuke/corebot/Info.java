@@ -7,6 +7,7 @@ public enum Info {
             "[Plans, Suggestions](https://github.com/Anuken/Mindustry/blob/master/TODO.md)\n" +
             "[4.0 Info](https://github.com/Anuken/Mindustry/issues/87)\n" +
             "[Downloads, Web Version](https://anuke.itch.io/mindustry)\n" +
+            "[Itch.io App / Updater](https://itch.io/app)\n" +
             "[Google Play Listing](https://play.google.com/store/apps/details?id=io.anuke.mindustry)\n" +
             "[Wiki](http://mindustry.wikia.com/wiki/Mindustry_Wiki)\n"),
     beta("Android Beta",

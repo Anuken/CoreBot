@@ -1,5 +1,6 @@
 package io.anuke.corebot;
 
+import io.anuke.corebot.Net.PingResult;
 import io.anuke.ucore.util.CommandHandler;
 import io.anuke.ucore.util.CommandHandler.Command;
 import io.anuke.ucore.util.CommandHandler.Response;
@@ -10,7 +11,10 @@ import sx.blah.discord.util.EmbedBuilder;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import static io.anuke.corebot.CoreBot.*;
 
@@ -42,8 +46,8 @@ public class Commands {
         handler.register("ping", "<ip>", "Pings a server.", args -> {
             net.pingServer(args[0], result -> {
                 if(result.valid){
-                    messages.info("Server Online", "Host: {0}\nPlayers: {1}\nMap: {2}\nWave: {3}",
-                            result.host, result.players, result.map, result.wave);
+                    messages.info("Server Online", "Host: {0}\nPlayers: {1}\nMap: {2}\nWave: {3}\nPing: {4}ms",
+                            result.host, result.players, result.map, result.wave, result.ping);
                 }else{
                     messages.err("Server Offline", "Reason: {0}", result.error);
                 }
@@ -59,7 +63,29 @@ public class Commands {
             }
         });
 
-        handler.register("postmap", "<mapURL> <@author> <mapname> [description...]", "Post a map to the #maps channel. Mapper only command.", args -> {
+        handler.register("servers", "Displays all known online servers.", args -> {
+            List<PingResult> results = new CopyOnWriteArrayList<>();
+
+            for(String server : allServers){
+                net.pingServer(server, result -> {
+                    if(result.valid) results.add(result);
+                });
+            }
+
+            net.run(Net.timeout, () -> {
+                if(results.isEmpty()){
+                    messages.err("No servers found.", "All known servers are offline.");
+                }else{
+                    String s = "**Online Servers:**\n\n";
+                    for(PingResult r : results){
+                        s += "*" + r.ip + "* **/** " + r.players + " players `[" + r.ping + "ms]`\n";
+                    }
+                    messages.info("Servers", s);
+                }
+            });
+        });
+
+        handler.register("postmap", "<mapURL> <@author> <mapname> [description...]", "Post a map to the #maps channel.", args -> {
             /*
             if(!messages.lastUser.hasRole(messages.channel.getGuild().getRolesByName("Mapper").get(0)) &&
                     !messages.lastUser.hasRole(messages.channel.getGuild().getRolesByName("Developer").get(0))){

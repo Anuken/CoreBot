@@ -13,17 +13,18 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Consumer;
 
 public class Net {
-    private static final int timeout = 2000;
-    private WebSocketClient socket;
+    public static final int timeout = 2000;
 
     public void pingServer(String ip, Consumer<PingResult> listener){
         AtomicBoolean sent = new AtomicBoolean();
+        long start = System.currentTimeMillis();
 
         try{
-            socket = new WebSocketClient(new URI("ws://" + ip + ":" + 6568)) {
+            WebSocketClient[] clients = new WebSocketClient[1];
+            clients[0] = new WebSocketClient(new URI("ws://" + ip + ":" + 6568)) {
                 @Override
                 public void onOpen(ServerHandshake handshakedata) {
-                    socket.send("_ping_");
+                    clients[0].send("_ping_");
                     Log.info("Pinging!");
                 }
 
@@ -36,9 +37,9 @@ public class Net {
                             sent.set(true);
                             String[] split = message.substring(3).split("\\|");
                             listener.accept(split.length == 4 ?
-                                    new PingResult(split[0], split[1], split[2], split[3]) :
-                                    new PingResult(split[0], split[1], "Unknown", "Unknown"));
-                            socket.close();
+                                    new PingResult(ip, start - System.currentTimeMillis(), split[0], split[1], split[2], split[3]) :
+                                    new PingResult(ip, start - System.currentTimeMillis(), split[0], split[1], "Unknown", "Unknown"));
+                            clients[0].close();
                             Log.info("Finish get ping packet");
                         }
                     }
@@ -46,20 +47,14 @@ public class Net {
 
                 @Override
                 public void onClose(int code, String reason, boolean remote) {
-                    new Timer().schedule(
-                            new TimerTask() {
-                                @Override
-                                public void run() {
-                                    synchronized (sent) {
-                                        if (sent.get()) return;
-                                        sent.set(true);
-                                        Log.info("Got close.");
-                                        listener.accept(new PingResult("Closed: " + reason));
-                                    }
-                                }
-                            },
-                            100
-                    );
+                    Net.this.run(100, () -> {
+                        synchronized (sent) {
+                            if (sent.get()) return;
+                            sent.set(true);
+                            Log.info("Got close.");
+                            listener.accept(new PingResult("Closed: " + reason));
+                        }
+                    });
                 }
 
                 @Override
@@ -81,25 +76,19 @@ public class Net {
                 }
             };
 
-            socket.setConnectionLostTimeout(timeout);
-            socket.connect();
+            clients[0].setConnectionLostTimeout(timeout);
+            clients[0].connect();
 
-            new Timer().schedule(
-                new TimerTask() {
-                    @Override
-                    public void run() {
-                        synchronized (sent) {
-                            Log.info("Got timeout.");
+            run(timeout, () -> {
+                synchronized (sent) {
+                    Log.info("Got timeout.");
 
-                            if (sent.get()) return;
-                            sent.set(true);
-                            listener.accept(new PingResult("Timed out."));
-                            Log.info("Finish get timeout.");
-                        }
-                    }
-                },
-                timeout
-            );
+                    if (sent.get()) return;
+                    sent.set(true);
+                    listener.accept(new PingResult("Timed out."));
+                    Log.info("Finish get timeout.");
+                }
+            });
 
         }catch (Exception e){
             synchronized (sent) {
@@ -112,6 +101,18 @@ public class Net {
         }
     }
 
+    public void run(long delay, Runnable r){
+        new Timer().schedule(
+                new TimerTask() {
+                    @Override
+                    public void run() {
+                        r.run();
+                    }
+                },
+                delay
+        );
+    }
+
     class PingResult{
         boolean valid;
         String players;
@@ -119,13 +120,17 @@ public class Net {
         String error;
         String wave;
         String map;
+        String ip;
+        long ping;
 
         public PingResult(String error) {
             this.valid = false;
             this.error = error;
         }
 
-        public PingResult(String players, String host, String map, String wave) {
+        public PingResult(String ip, long ping, String players, String host, String map, String wave) {
+            this.ping = ping;
+            this.ip = ip;
             this.valid = true;
             this.players = players;
             this.host = host;
