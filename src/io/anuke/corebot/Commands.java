@@ -6,6 +6,7 @@ import io.anuke.ucore.util.CommandHandler.Command;
 import io.anuke.ucore.util.CommandHandler.Response;
 import io.anuke.ucore.util.CommandHandler.ResponseType;
 import sx.blah.discord.handle.obj.IMessage;
+import sx.blah.discord.handle.obj.IMessage.Attachment;
 import sx.blah.discord.handle.obj.IUser;
 import sx.blah.discord.util.EmbedBuilder;
 
@@ -84,37 +85,23 @@ public class Commands {
             });
         });
 
-        handler.register("postmap", "<mapURL> <@author> <mapname> [description...]", "Post a map to the #maps channel.", args -> {
-            /*
-            if(!messages.lastUser.hasRole(messages.channel.getGuild().getRolesByName("Mapper").get(0)) &&
-                    !messages.lastUser.hasRole(messages.channel.getGuild().getRolesByName("Developer").get(0))){
-                messages.err("You are unauthorized.");
-                return;
-            }*/
+        handler.register("postmap", "<mapname> [description...]", "Post a map to the #maps channel.", args -> {
+            IMessage message = messages.lastMessage;
 
-            String url = args[0];
-            String author = args[1];
-            String name = args[2];
-            String desc = args.length < 4 ? "" : args[3];
-
-            if(author.length() < 4){
-                messages.err("Invalid author format. You must mention the author.");
+            if(message.getAttachments().size() != 1){
+                messages.err("You must post an image in the same message as the command!");
                 return;
             }
 
-            String id = author.substring(2, author.length() - 1);
+            Attachment a = message.getAttachments().get(0);
+
+            String name = args[2];
+            String desc = args.length < 4 ? "" : args[3];
+
             try{
-                long result = Long.parseLong(id);
-                IUser user = messages.channel.getGuild().getUserByID(result);
-
-                if(user == null){
-                    messages.err("No such user.");
-                    return;
-                }
-
                 EmbedBuilder builder = new EmbedBuilder().withColor(messages.normalColor).withColor(messages.normalColor)
-                        .withImage(url).withAuthorName(user.getName()).withTitle(name)
-                        .withAuthorIcon(user.getAvatarURL());
+                        .withImage(a.getUrl()).withAuthorName(messages.lastUser.getName()).withTitle(name)
+                        .withAuthorIcon(messages.lastUser.getAvatarURL());
 
                 if(!desc.isEmpty()) builder.withFooterText(desc);
 
@@ -144,6 +131,7 @@ public class Commands {
         if(message.getContent() != null && message.getContent().startsWith(prefix)){
             messages.channel = message.getChannel();
             messages.lastUser = message.getAuthor();
+            messages.lastMessage = message;
         }
 
         Response response = handler.handleMessage(text);

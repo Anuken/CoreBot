@@ -19,6 +19,7 @@ public class Messages {
     IDiscordClient client;
     IChannel channel;
     IUser lastUser;
+    IMessage lastMessage;
     Color normalColor = Color.decode("#FAB462");
     Color errorColor = Color.decode("#ff3838");
 
