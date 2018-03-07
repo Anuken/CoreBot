@@ -38,9 +38,8 @@ public class Net {
                             if (sent.get()) return;
                             sent.set(true);
                             String[] split = message.substring(3).split("\\|");
-                            listener.accept(split.length == 4 ?
-                                    new PingResult(ip, System.currentTimeMillis() - start[0], split[0], split[1], split[2], split[3]) :
-                                    new PingResult(ip, System.currentTimeMillis() - start[0], split[0], split[1], "Unknown", "Unknown"));
+                            String version = split.length >= 5 ? (split[4].equals("-1") ? "Custom Build" : split[4]) : "Outdated";
+                            listener.accept(new PingResult(ip, System.currentTimeMillis() - start[0], split[0], split[1], split[2], split[3], version));
                             clients[0].close();
                             Log.info("Finish get ping packet");
                         }
@@ -123,6 +122,7 @@ public class Net {
         String wave;
         String map;
         String ip;
+        String version;
         long ping;
 
         public PingResult(String error) {
@@ -130,7 +130,7 @@ public class Net {
             this.error = error;
         }
 
-        public PingResult(String ip, long ping, String players, String host, String map, String wave) {
+        public PingResult(String ip, long ping, String players, String host, String map, String wave, String version) {
             this.ping = ping;
             this.ip = ip;
             this.valid = true;
@@ -138,6 +138,7 @@ public class Net {
             this.host = host;
             this.map = map;
             this.wave = wave;
+            this.version = version;
         }
     }
 }

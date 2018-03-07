@@ -37,19 +37,19 @@ public enum Info {
             "Note that the server does not automatically start hosting. Type `host <map> <gamemode>` to open the server.\n" + 
             "Type `help` for a list of all commands.\n"),
     suggested("Suggested Ideas",
-        "**The following ideas have been suggested many times before, and will most likely not be added to the game.**\n\n" +
-        "- Texture packs\n" +
-        "- Online player profiles\n" +
-        "- Player mech on Android\n" +
-        "- Modding support\n" +
-        "- Game speed increase (fast forward)\n" +
-        "- Liquid teleporter\n" +
-        "- More teleporter colors/any system that gives it more frequencies (numbers)\n" +
-        "- Power wires or conduits\n" +
-        "- Map browser\n" +
-        "- Server brower\n" +
-        "- Underground map layer\n" +
-        "- Tech tree, research");
+            "**The following ideas have been suggested many times before, and will most likely not be added to the game.**\n\n" +
+            "- Texture packs\n" +
+            "- Online player profiles\n" +
+            "- Player mech on Android\n" +
+            "- Modding support\n" +
+            "- Game speed increase (fast forward)\n" +
+            "- Liquid teleporter\n" +
+            "- More teleporter colors/any system that gives it more frequencies (numbers)\n" +
+            "- Power wires or conduits\n" +
+            "- Map browser\n" +
+            "- Server brower\n" +
+            "- Underground map layer\n" +
+            "- Tech tree, research");
 
     public final String text;
     public final String title;
