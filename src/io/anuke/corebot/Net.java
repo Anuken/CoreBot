@@ -1,5 +1,6 @@
 package io.anuke.corebot;
 
+import com.badlogic.gdx.utils.Base64Coder;
 import io.anuke.ucore.util.Log;
 import org.java_websocket.client.WebSocketClient;
 import org.java_websocket.handshake.ServerHandshake;
@@ -7,6 +8,7 @@ import org.java_websocket.handshake.ServerHandshake;
 import java.net.ConnectException;
 import java.net.URI;
 import java.net.UnknownHostException;
+import java.nio.ByteBuffer;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -26,23 +28,23 @@ public class Net {
                 @Override
                 public void onOpen(ServerHandshake handshakedata) {
                     start[0] = System.currentTimeMillis();
-                    clients[0].send("_ping_");
+                    clients[0].send("ping");
                     Log.info("Pinging!");
                 }
 
                 @Override
                 public void onMessage(String message) {
-                    synchronized (sent) {
-                        if (message.startsWith("---")) {
+                    try {
+                        synchronized (sent) {
                             Log.info("Got ping packet");
                             if (sent.get()) return;
                             sent.set(true);
-                            String[] split = message.substring(3).split("\\|");
-                            String version = split.length >= 5 ? (split[4].equals("-1") ? "Custom Build" : split[4]) : "Outdated";
-                            listener.accept(new PingResult(ip, System.currentTimeMillis() - start[0], split[0], split[1], split[2], split[3], version));
+                            listener.accept(readServerData(ByteBuffer.wrap(Base64Coder.decode(message)), ip, System.currentTimeMillis() - start[0]));
                             clients[0].close();
                             Log.info("Finish get ping packet");
                         }
+                    }catch (Exception e){
+                        listener.accept(new PingResult(ip, System.currentTimeMillis() - start[0], "Unknown", "Unknown", "Unknown", "Unknown", "Outdated"));
                     }
                 }
 
@@ -112,6 +114,25 @@ public class Net {
                 },
                 delay
         );
+    }
+
+    public PingResult readServerData(ByteBuffer buffer, String ip, long ping){
+        byte hlength = buffer.get();
+        byte[] hb = new byte[hlength];
+        buffer.get(hb);
+
+        byte mlength = buffer.get();
+        byte[] mb = new byte[mlength];
+        buffer.get(mb);
+
+        String host = new String(hb);
+        String map = new String(mb);
+
+        int players = buffer.getInt();
+        int wave = buffer.getInt();
+        int version = buffer.getInt();
+
+        return new PingResult(ip, ping, players + "", host, map, wave + "", version + "");
     }
 
     class PingResult{

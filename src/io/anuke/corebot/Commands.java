@@ -46,8 +46,8 @@ public class Commands {
         handler.register("ping", "<ip>", "Pings a server.", args -> {
             net.pingServer(args[0], result -> {
                 if(result.valid){
-                    messages.info("Server Online", "Host: {0}\nPlayers: {1}\nMap: {2}\nWave: {3}\nPing: {4}ms",
-                            result.host, result.players, result.map, result.wave, result.ping);
+                    messages.info("Server Online", "Host: {0}\nPlayers: {1}\nMap: {2}\nWave: {3}\nVersion: {4}\nPing: {5}ms",
+                            result.host, result.players, result.map, result.wave, result.version, result.ping);
                 }else{
                     messages.err("Server Offline", "Reason: {0}", result.error);
                 }
