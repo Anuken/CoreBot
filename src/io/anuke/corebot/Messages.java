@@ -1,5 +1,6 @@
 package io.anuke.corebot;
 
+import io.anuke.corebot.Net.VersionInfo;
 import io.anuke.ucore.util.Log;
 import sx.blah.discord.api.ClientBuilder;
 import sx.blah.discord.api.IDiscordClient;
@@ -9,11 +10,13 @@ import sx.blah.discord.api.internal.json.objects.EmbedObject;
 import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedEvent;
 import sx.blah.discord.handle.impl.events.guild.member.UserJoinEvent;
 import sx.blah.discord.handle.obj.IChannel;
+import sx.blah.discord.handle.obj.IGuild;
 import sx.blah.discord.handle.obj.IMessage;
 import sx.blah.discord.handle.obj.IUser;
 import sx.blah.discord.util.EmbedBuilder;
 
 import java.awt.*;
+import java.util.Arrays;
 
 public class Messages {
     IDiscordClient client;
@@ -48,6 +51,14 @@ public class Messages {
     public void onUserJoinEvent(UserJoinEvent event){
         event.getGuild().getChannelsByName("general").get(0)
                 .sendMessage("*Welcome* " + event.getUser().mention() + " *to the Mindustry Discord!*", true);
+    }
+
+    public void sendUpdate(VersionInfo info){
+        client.getGuildByID(CoreBot.guildID)
+                .getChannelsByName("announcements").get(0)
+                .sendMessage(new EmbedBuilder()
+                        .withColor(normalColor).withTitle(info.name)
+                        .appendDesc(info.description).build());
     }
 
     public void text(String text, Object... args){
