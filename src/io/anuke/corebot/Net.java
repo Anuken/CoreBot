@@ -37,13 +37,14 @@ public class Net {
                     synchronized (sent) {
                         byte[] bytes = Base64Coder.decode(message);
 
-                        if(bytes.length != 128)
-                            listener.accept(new PingResult(ip, System.currentTimeMillis() - start[0], "Unknown", "Unknown", "Unknown", "Unknown", "Outdated"));
 
                         Log.info("Got ping packet");
                         if (sent.get()) return;
                         sent.set(true);
-                        listener.accept(readServerData(ByteBuffer.wrap(bytes), ip, System.currentTimeMillis() - start[0]));
+                        if(bytes.length != 128)
+                            listener.accept(new PingResult(ip, System.currentTimeMillis() - start[0], "Unknown", "Unknown", "Unknown", "Unknown", "Outdated"));
+                        else
+                            listener.accept(readServerData(ByteBuffer.wrap(bytes), ip, System.currentTimeMillis() - start[0]));
                         clients[0].close();
                         Log.info("Finish get ping packet");
                     }
