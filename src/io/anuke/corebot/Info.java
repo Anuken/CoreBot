@@ -49,7 +49,11 @@ public enum Info {
             "- Map browser\n" +
             "- Server brower\n" +
             "- Underground map layer\n" +
-            "- Tech tree, research");
+            "- Tech tree, research"),
+    bugs("Bug Reports",
+            "Bug reports of the form \"my game crashed\" or \"it froze\" are nearly **completely useless**. I can't just *'fix'* a crash unless you **send me the crash report**, either from the desktop crash log or the android 'report crash' dialog.\n" +
+                    "\n" +
+                    "The only possible exception to this rule is crashes that happen consistently when you perform some action, and even then, I can't help unless the crash also occurs on my machine in the same situation.");
 
     public final String text;
     public final String title;
