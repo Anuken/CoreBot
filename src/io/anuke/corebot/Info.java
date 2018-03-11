@@ -51,9 +51,13 @@ public enum Info {
             "- Underground map layer\n" +
             "- Tech tree, research"),
     bugs("Bug Reports",
-            "Bug reports of the form \"my game crashed\" or \"it froze\" are nearly **completely useless**. I can't just *'fix'* a crash unless you **send me the crash report**, either from the desktop crash log or the android 'report crash' dialog.\n" +
-                    "\n" +
-                    "The only possible exception to this rule is crashes that happen consistently when you perform some action, and even then, I can't help unless the crash also occurs on my machine in the same situation.");
+            "Bug reports of the form \"my game crashed\" or \"it froze\" are nearly **completely useless**. \n" +
+            "I can't just *'fix'* a crash unless you **send me the crash report**, either from the desktop crash log or the android 'report crash' dialog.\n" +
+            "\n" +
+            "Similarly, server connection issues usually aren't a 'bug' I can fix either. \n" +
+            "Most problems tend to be caused by an outdated version or bad port-forwarding set up, so only start reporting connection issues **when you are absolutely sure that it's not a problem on your end.**\n" +
+            "\n" +
+            "The only possible exception to this rule is crashes that happen consistently when you perform some action, and even then, I can't help unless the crash also occurs on my machine in the same situation.");
 
     public final String text;
     public final String title;
