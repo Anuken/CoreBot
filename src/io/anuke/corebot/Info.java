@@ -51,12 +51,13 @@ public enum Info {
             "- Underground map layer\n" +
             "- Tech tree, research"),
     bugs("Bug Reports",
-            "Bug reports of the form \"my game crashed\" or \"it froze\" are nearly **completely useless**. \n" +
+            "Bug reports of the form \"my game crashed\" or \"it froze\" or \"I can't connect\" are nearly **completely useless**. \n" +
             "I can't just *'fix'* a crash unless you **send me the crash report**, either from the desktop crash log or the android 'report crash' dialog.\n" +
             "The only possible exception to this rule is crashes that happen consistently when you perform some action, and even then, I can't help unless the crash also occurs on my machine in the same situation.\n" +
             "\n" +
             "Similarly, server connection issues usually aren't a 'bug' I can fix either. \n" +
-            "Most problems tend to be caused by an outdated version or bad port-forwarding set up, so only start reporting connection issues **when you are absolutely sure that it's not a problem on your end.** And no, *a server being down is not a bug.*");
+            "If you are experiencing multiplayer problems of any sort, the first thing you should do is **check for game updates**. Most issues are caused by an outdated game version.\n"+
+            "If that still doesn't fix it, check your port-forwarding set up. Only start reporting connection issues **when you are absolutely sure that it's not a problem on your end.** And no, *a server being down is not a bug.*");
     public final String text;
     public final String title;
 
