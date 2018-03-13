@@ -30,7 +30,7 @@ public class Net {
         Executors.newSingleThreadScheduledExecutor().scheduleAtFixedRate(() -> {
             getChangelog(list -> {
                 try {
-                    VersionInfo latest = list.peek();
+                    VersionInfo latest = list.first();
 
                     if(!CoreBot.prefsFile.exists()) CoreBot.prefsFile.createNewFile();
 
