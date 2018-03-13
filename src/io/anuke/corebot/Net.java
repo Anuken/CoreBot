@@ -52,7 +52,7 @@ public class Net {
                     e.printStackTrace();
                 }
             }, Log::err);
-        }, 5, 30, TimeUnit.SECONDS);
+        }, 60, 240, TimeUnit.SECONDS);
     }
 
     public void pingServer(String ip, Consumer<PingResult> listener){
