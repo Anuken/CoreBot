@@ -4,7 +4,7 @@ public enum Info {
     links("Relevant Links",
             "[Github](https://github.com/Anuken/Mindustry/)\n" +
             "[Latest Builds](https://github.com/Anuken/Mindustry/wiki)\n" +
-            "[4.0 Plans](https://trello.com/b/aE2tcUwF)\n" +
+            "[4.0 Plans / Trello](https://trello.com/b/aE2tcUwF)\n" +
             "[Downloads, Web Version](https://anuke.itch.io/mindustry)\n" +
             "[Itch.io App / Updater](https://itch.io/app)\n" +
             "[Google Play Listing](https://play.google.com/store/apps/details?id=io.anuke.mindustry)\n" +
