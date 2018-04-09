@@ -134,7 +134,7 @@ public class Commands {
                 int warnings =  prefs.getInt("warnings-" + l, 0) + 1;
                 messages.text("**{0}**, you've been warned *{1}*.", user.mention(), warningStrings[Mathf.clamp(warnings-1, 0, warningStrings.length-1)]);
                 prefs.put("warnings-" + l, warnings + "");
-                if(warnings > 3){
+                if(warnings >= 3){
                     messages.lastMessage.getGuild().getChannelsByName("moderation").get(0)
                             .sendMessage("User "+user.mention()+" has been warned 3 or more times!");
                 }
@@ -151,6 +151,19 @@ public class Commands {
                 IUser user = messages.client.getUserByID(l);
                 int warnings =  prefs.getInt("warnings-" + l, 0) + 1;
                 messages.text("User '{0}' has **{1}** {2}.", user.getDisplayName(messages.channel.getGuild()), warnings, warnings == 1 ? "warning" : "warnings");
+            }catch (Exception e){
+                e.printStackTrace();
+                messages.err("Incorrect name format.");
+            }
+        });
+
+        adminHandler.register("clearwarnings", "<@user>", "Clear number of warnings for a person.", args -> {
+            String author = args[0].substring(2, args[0].length()-1);
+            try{
+                long l = Long.parseLong(author);
+                IUser user = messages.client.getUserByID(l);
+                prefs.put("warnings-" + l, 0 + "");
+                messages.text("Cleared warnings for user '{0}'.", user.getDisplayName(messages.channel.getGuild()));
             }catch (Exception e){
                 e.printStackTrace();
                 messages.err("Incorrect name format.");
