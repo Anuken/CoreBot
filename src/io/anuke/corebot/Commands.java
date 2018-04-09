@@ -132,7 +132,7 @@ public class Commands {
                 long l = Long.parseLong(author);
                 IUser user = messages.client.getUserByID(l);
                 int warnings =  prefs.getInt("warnings-" + l, 0) + 1;
-                Log.info("**{0}**, you've been warned *{2}*.", user.mention(), warningStrings[Mathf.clamp(warnings-1, 0, warningStrings.length-1)]);
+                messages.info("**{0}**, you've been warned *{2}*.", user.mention(), warningStrings[Mathf.clamp(warnings-1, 0, warningStrings.length-1)]);
                 prefs.put("warnings-" + l, warnings + "");
                 if(warnings > 3){
                     messages.lastMessage.getGuild().getChannelsByName("moderation").get(0)
@@ -150,7 +150,7 @@ public class Commands {
                 long l = Long.parseLong(author);
                 IUser user = messages.client.getUserByID(l);
                 int warnings =  prefs.getInt("warnings-" + l, 0) + 1;
-                Log.info("User '{0}' has **{1}** {2}.", user.getDisplayName(messages.channel.getGuild()), warnings, warnings == 1 ? "warning" : "warnings");
+                messages.info("User '{0}' has **{1}** {2}.", user.getDisplayName(messages.channel.getGuild()), warnings, warnings == 1 ? "warning" : "warnings");
             }catch (Exception e){
                 e.printStackTrace();
                 messages.err("Incorrect name format.");
