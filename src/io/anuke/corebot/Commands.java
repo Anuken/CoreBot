@@ -132,7 +132,7 @@ public class Commands {
                 long l = Long.parseLong(author);
                 IUser user = messages.client.getUserByID(l);
                 int warnings =  prefs.getInt("warnings-" + l, 0) + 1;
-                messages.text("**{0}**, you've been warned *{2}*.", user.mention(), warningStrings[Mathf.clamp(warnings-1, 0, warningStrings.length-1)]);
+                messages.text("**{0}**, you've been warned *{1}*.", user.mention(), warningStrings[Mathf.clamp(warnings-1, 0, warningStrings.length-1)]);
                 prefs.put("warnings-" + l, warnings + "");
                 if(warnings > 3){
                     messages.lastMessage.getGuild().getChannelsByName("moderation").get(0)
