@@ -54,7 +54,7 @@ public enum Info {
             "- Tech tree, research"),
     pings("Ping and PM Policy",
             "*Please do not PM or ping me (Anuke) unless it is something important.*\n\n" +
-            "'Important' includes things like major unreported game server issues or serious exploits," +
+            "'Important' includes things like major unreported game server issues or serious exploits, " +
             "problems with the Discord server (e.g. spammers), or Github pull request related issues." +
             "\n" +
             "Do *not* PM or ping me when posting normal suggestions or bugs reports. If it's relevant, I'll read it.\nIf you have a question about the game, *ask in #general.*\n" +
