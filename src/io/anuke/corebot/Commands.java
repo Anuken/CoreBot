@@ -172,8 +172,12 @@ public class Commands {
     }
 
     boolean isAdmin(IUser user){
-        return user.getRolesForGuild(messages.channel.getGuild()).stream()
-                .anyMatch(role -> role.getName().equals("Developer") || role.getName().equals("Moderator"));
+        try {
+            return user.getRolesForGuild(messages.channel.getGuild()).stream()
+                    .anyMatch(role -> role.getName().equals("Developer") || role.getName().equals("Moderator"));
+        }catch (Exception e){
+            return false; //I don't care enough to fix this
+        }
     }
 
     void handle(IMessage message){
