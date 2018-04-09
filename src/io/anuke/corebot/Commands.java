@@ -130,7 +130,7 @@ public class Commands {
             String author = args[0].substring(2, args[0].length()-3);
             try{
                 long l = Long.parseLong(author);
-                Log.info("NAME: {0} FORMAT: {1}", author, l);
+                Log.info("NAME: {0} FORMAT: {1}", args[0], l);
                 IUser user = messages.client.getUserByID(l);
                 int warnings =  prefs.getInt("warnings-" + l, 0) + 1;
                 Log.info("**{0}**, you've been warned *{2}*.", user.mention(), warningStrings[Mathf.clamp(warnings-1, 0, warningStrings.length-1)]);
