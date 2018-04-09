@@ -6,6 +6,7 @@ import io.anuke.ucore.util.CommandHandler.Command;
 import io.anuke.ucore.util.CommandHandler.Response;
 import io.anuke.ucore.util.CommandHandler.ResponseType;
 import io.anuke.ucore.util.Log;
+import io.anuke.ucore.util.Mathf;
 import sx.blah.discord.handle.obj.IMessage;
 import sx.blah.discord.handle.obj.IMessage.Attachment;
 import sx.blah.discord.handle.obj.IUser;
@@ -22,6 +23,8 @@ import static io.anuke.corebot.CoreBot.*;
 public class Commands {
     private final String prefix = "!";
     private CommandHandler handler = new CommandHandler(prefix);
+    private CommandHandler adminHandler = new CommandHandler(prefix);
+    private String[] warningStrings = {"once", "twice", "thrice", "more than thrice"};
 
     Commands(){
         handler.register("help", "Displays all bot commands.", args -> {
@@ -122,6 +125,42 @@ public class Commands {
                 e.printStackTrace();
             }
         });
+
+        adminHandler.register("warn", "<@user>", "Warn a user.", args -> {
+            String author = args[0].substring(2, args[0].length()-3);
+            try{
+                long l = Long.parseLong(author);
+                IUser user = messages.client.getUserByID(l);
+                int warnings =  prefs.getInt("warnings-" + l, 0) + 1;
+                Log.info("**{0}**, you've been warned *{2}*.", user.mention(), warningStrings[Mathf.clamp(warnings-1, 0, warningStrings.length-1)]);
+                prefs.put("warnings-" + l, warnings + "");
+                if(warnings > 3){
+                    messages.lastMessage.getGuild().getChannelsByName("moderation").get(0)
+                            .sendMessage("User "+user.mention()+" has been warned 3 or more times!");
+                }
+            }catch (Exception e){
+                e.printStackTrace();
+                messages.err("Incorrect name format.");
+            }
+        });
+
+        adminHandler.register("warnings", "<@user>", "Get number of warnings a user has.", args -> {
+            String author = args[0].substring(2, args[0].length()-3);
+            try{
+                long l = Long.parseLong(author);
+                IUser user = messages.client.getUserByID(l);
+                int warnings =  prefs.getInt("warnings-" + l, 0) + 1;
+                Log.info("User '{0}' has **{1}** {2}.", user.getDisplayName(messages.channel.getGuild()), warnings, warnings == 1 ? "warning" : "warnings");
+            }catch (Exception e){
+                e.printStackTrace();
+                messages.err("Incorrect name format.");
+            }
+        });
+    }
+
+    boolean isAdmin(IUser user){
+        return user.getRolesForGuild(messages.channel.getGuild()).stream()
+                .anyMatch(role -> role.getName().equals("Developer") || role.getName().equals("Moderator"));
     }
 
     void handle(IMessage message){
@@ -135,17 +174,27 @@ public class Commands {
             messages.lastMessage = message;
         }
 
-        Response response = handler.handleMessage(text);
+        if(isAdmin(message.getAuthor())){
+            boolean unknown = handleResponse(adminHandler.handleMessage(text), false);
+            handleResponse(handler.handleMessage(text), unknown);
+        }else{
+            handleResponse(handler.handleMessage(text), true);
+        }
+    }
 
+    boolean handleResponse(Response response, boolean logUnknown){
         if(response.type == ResponseType.unknownCommand){
-            messages.err("Unknown command. Type !help for a list of commands.");
+            if(logUnknown) messages.err("Unknown command. Type !help for a list of commands.");
+            return false;
         }else if(response.type == ResponseType.manyArguments || response.type == ResponseType.fewArguments){
             if(response.command.params.length == 0){
                 messages.err("Invalid arguments.", "Usage: {0}{1}", prefix, response.command.text);
             }else {
                 messages.err("Invalid arguments.", "Usage: {0}{1} *{2}*", prefix, response.command.text, response.command.paramText);
             }
+            return false;
         }
+        return true;
     }
 
 }

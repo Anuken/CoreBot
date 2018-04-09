@@ -22,6 +22,7 @@ public enum Info {
             "**6.** Please do not post invite links to this server in public places.\n" +
             "**7.** Do not beg for roles.\n" +
             "**8.** Do not impersonate other members or intentionally edit your messages to mislead others.\n" +
+            "**9.** Breaking any of these rules in a non-serious way may result in a warning. 3 warnings is a ban.\n" +
             "*If I don't like your behavior, you're out. Obey the spirit, not the word.*"),
     multiplayer("Multiplayer",
             "Multiplayer in Mindustry works just as it does in many other sandbox games.\n" + 
@@ -49,7 +50,17 @@ public enum Info {
             "- Map browser\n" +
             "- Server brower\n" +
             "- Underground map layer\n" +
+            "- Trains\n" +
             "- Tech tree, research"),
+    pings("Ping and PM Policy",
+            "*Please do not PM or ping me (Anuke) unless it is something important.*\n\n" +
+            "'Important' includes things like major unreported game server issues or serious exploits," +
+            "problems with the Discord server (e.g. spammers), or Github pull request related issues." +
+            "\n" +
+            "Do *not* PM or ping me when posting normal suggestions or bugs reports. If it's relevant, I'll read it.\nIf you have a question about the game, *ask in #general.*\n" +
+            "\n" +
+            "I will not respond to PMs with non-personal game-related questions or messages such as 'hey'.\n" +
+            "**I also do not accept random friend requests.**"),
     bugs("Bug Reports",
             "Bug reports of the form \"my game crashed\" or \"it froze\" or \"I can't connect\" are nearly **completely useless**. \n" +
             "I can't just *'fix'* a crash unless you **send me the crash report**, either from the desktop crash log or the android 'report crash' dialog.\n" +

@@ -32,21 +32,15 @@ public class Net {
                 try {
                     VersionInfo latest = list.first();
 
-                    if(!CoreBot.prefsFile.exists()) CoreBot.prefsFile.createNewFile();
-
-                    Properties prop = new Properties();
-                    prop.load(new FileInputStream(CoreBot.prefsFile));
-                    int lastVersion = Integer.parseInt(prop.getProperty("lastBuild", "33"));
+                    int lastVersion = Integer.parseInt(CoreBot.prefs.get("lastBuild", "33"));
 
                     if(latest.build > lastVersion){
                         Log.info("Posting update!");
 
                         CoreBot.messages.sendUpdate(latest);
 
-                        prop.setProperty("lastBuild", latest.build + "");
+                        CoreBot.prefs.put("lastBuild", latest.build + "");
                     }
-
-                    prop.store(new FileOutputStream(CoreBot.prefsFile), null);
 
                 }catch (Exception e){
                     e.printStackTrace();
