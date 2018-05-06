@@ -76,6 +76,7 @@ public class Commands {
                 messages.info(info.title, info.text);
             }catch (IllegalArgumentException e){
                 messages.err("Error", "Invalid topic '{0}'.\nValid topics: *{1}*", args[0], Arrays.toString(Info.values()));
+                messages.deleteMessages();
             }
         });
 
@@ -112,6 +113,7 @@ public class Commands {
 
             if(message.getAttachments().size() != 1){
                 messages.err("You must post an image in the same message as the command!");
+                messages.deleteMessages();
                 return;
             }
 
@@ -133,6 +135,7 @@ public class Commands {
                 messages.text("*Map posted successfully.*");
             }catch (Exception e){
                 messages.err("Invalid username format.");
+                messages.deleteMessages();
             }
         });
 
@@ -159,6 +162,7 @@ public class Commands {
             }catch (Exception e){
                 e.printStackTrace();
                 messages.err("Incorrect name format.");
+                messages.deleteMessages();
             }
         });
 
@@ -172,6 +176,7 @@ public class Commands {
             }catch (Exception e){
                 e.printStackTrace();
                 messages.err("Incorrect name format.");
+                messages.deleteMessages();
             }
         });
 
@@ -185,6 +190,7 @@ public class Commands {
             }catch (Exception e){
                 e.printStackTrace();
                 messages.err("Incorrect name format.");
+                messages.deleteMessages();
             }
         });
     }
