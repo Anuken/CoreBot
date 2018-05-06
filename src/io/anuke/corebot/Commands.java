@@ -30,6 +30,7 @@ public class Commands {
         handler.register("help", "Displays all bot commands.", args -> {
             if(messages.lastMessage.getChannel().getName().equalsIgnoreCase("multiplayer")){
                 messages.err("Use this command in #bots.");
+                messages.deleteMessages();
                 return;
             }
 
@@ -55,6 +56,7 @@ public class Commands {
         handler.register("ping", "<ip>", "Pings a server.", args -> {
             if(!messages.lastMessage.getChannel().getName().equalsIgnoreCase("bots")){
                 messages.err("Use this command in #bots.");
+                messages.deleteMessages();
                 return;
             }
 
@@ -80,6 +82,7 @@ public class Commands {
         handler.register("servers", "Displays all known online servers.", args -> {
             if(!messages.lastMessage.getChannel().getName().equalsIgnoreCase("bots")){
                 messages.err("Use this command in #bots.");
+                messages.deleteMessages();
                 return;
             }
 
@@ -216,13 +219,18 @@ public class Commands {
 
     boolean handleResponse(Response response, boolean logUnknown){
         if(response.type == ResponseType.unknownCommand){
-            if(logUnknown) messages.err("Unknown command. Type !help for a list of commands.");
+            if(logUnknown){
+                messages.err("Unknown command. Type !help for a list of commands.");
+                messages.deleteMessages();
+            }
             return false;
         }else if(response.type == ResponseType.manyArguments || response.type == ResponseType.fewArguments){
             if(response.command.params.length == 0){
                 messages.err("Invalid arguments.", "Usage: {0}{1}", prefix, response.command.text);
+                messages.deleteMessages();
             }else {
                 messages.err("Invalid arguments.", "Usage: {0}{1} *{2}*", prefix, response.command.text, response.command.paramText);
+                messages.deleteMessages();
             }
             return false;
         }

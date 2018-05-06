@@ -17,12 +17,15 @@ import sx.blah.discord.util.EmbedBuilder;
 
 import java.awt.*;
 import java.util.Arrays;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class Messages {
     IDiscordClient client;
     IChannel channel;
     IUser lastUser;
     IMessage lastMessage;
+    IMessage lastSentMessage;
     Color normalColor = Color.decode("#FAB462");
     Color errorColor = Color.decode("#ff3838");
 
@@ -61,14 +64,29 @@ public class Messages {
                         .appendDesc(info.description).build());
     }
 
+    public void deleteMessages(){
+        IMessage last = lastMessage, lastSent = lastSentMessage;
+
+        new Timer().schedule(
+            new TimerTask() {
+                @Override
+                public void run() {
+                    last.delete();
+                    lastSent.delete();
+                }
+            },
+            5000
+        );
+    }
+
     public void text(String text, Object... args){
-        channel.sendMessage(format(text, args));
+        lastSentMessage = channel.sendMessage(format(text, args));
     }
 
     public void info(String title, String text, Object... args){
         EmbedObject object = new EmbedBuilder()
                 .appendField(title, format(text, args), true).withColor(normalColor).build();
-        channel.sendMessage(object);
+        lastSentMessage = channel.sendMessage(object);
     }
 
     public void err(String text, Object... args){
@@ -78,7 +96,7 @@ public class Messages {
     public void err(String title, String text, Object... args){
         EmbedObject object = new EmbedBuilder()
                 .appendField(title, format(text, args), true).withColor(errorColor).build();
-        channel.sendMessage(object);
+        lastSentMessage = channel.sendMessage(object);
     }
 
     private String format(String text, Object... args){
