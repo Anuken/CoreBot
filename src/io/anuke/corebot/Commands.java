@@ -28,6 +28,11 @@ public class Commands {
 
     Commands(){
         handler.register("help", "Displays all bot commands.", args -> {
+            if(messages.lastMessage.getChannel().getName().equalsIgnoreCase("multiplayer")){
+                messages.err("Use this command in #bots.");
+                return;
+            }
+
             StringBuilder builder = new StringBuilder();
             for(Command command : handler.getCommandList()){
                 builder.append(prefix);
@@ -48,6 +53,11 @@ public class Commands {
         });
 
         handler.register("ping", "<ip>", "Pings a server.", args -> {
+            if(messages.lastMessage.getChannel().getName().equalsIgnoreCase("multiplayer")){
+                messages.err("Use this command in #bots.");
+                return;
+            }
+
             net.pingServer(args[0], result -> {
                 if(result.valid){
                     messages.info("Server Online", "Host: {0}\nPlayers: {1}\nMap: {2}\nWave: {3}\nVersion: {4}\nPing: {5}ms",
@@ -68,6 +78,11 @@ public class Commands {
         });
 
         handler.register("servers", "Displays all known online servers.", args -> {
+            if(messages.lastMessage.getChannel().getName().equalsIgnoreCase("multiplayer")){
+                messages.err("Use this command in #bots.");
+                return;
+            }
+
             List<PingResult> results = new CopyOnWriteArrayList<>();
 
             for(String server : allServers){

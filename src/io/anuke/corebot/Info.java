@@ -17,7 +17,7 @@ public enum Info {
             "**1.** Don't be rude. This should be obvious. No racism/sexism/etc.\n" +
             "**2.** No spamming or advertising.\n" +
             "**3.** No NSFW content or politics. This includes NSFW conversations. Take it elsewhere.\n" +
-            "**4.** Keep content to the aproppriate text channels. **Do not ping servers outside of #bots or #servers.**\n" +
+            "**4.** Keep content to the aproppriate text channels. **Do not ping servers outside of #bots or #multiplayer.**\n" +
             "**5.** Please keep memes to a minimum.\n" +
             "**6.** Please do not post invite links to this server in public places.\n" +
             "**7.** Do not beg for roles.\n" +
@@ -31,7 +31,7 @@ public enum Info {
             "To join a server, enter their IP in the 'add server' box and click the server.\n" + 
             "Both over-the-internet and LAN play is supported. For someone outside your network to connect to your games, **port forwarding is required.**\n" +
             "Multiplayer is cross-platform, although **the web version does not support hosting.**\n\n" + 
-            "*For more info on how to port forward, check the pinned messages in #servers.*\n"),
+            "*For more info on how to port forward, check the pinned messages in #multiplayer.*\n"),
     server("Dedicated Server",
             "To run the dedicated server .JAR file, you need to use the command prompt or terminal. **Java is required**.\n\n" + 
             "Navigate to the file location and type `java -jar <server-file-name>.jar`, which should start the server.\n" + 
@@ -62,12 +62,12 @@ public enum Info {
             "I will not respond to PMs with non-personal game-related questions or messages such as 'hey'.\n" +
             "**I also do not accept random friend requests.**"),
     bugs("Bug Reports",
-            "Bug reports of the form \"my game crashed\" or \"it froze\" or \"I can't connect\" are nearly **completely useless**. \n" +
-            "I can't just *'fix'* a crash unless you **send me the crash report**, either from the desktop crash log or the android 'report crash' dialog.\n" +
-            "The only possible exception to this rule is crashes that happen consistently when you perform some action, and even then, I can't help unless the crash also occurs on my machine in the same situation.\n" +
+            "Bug reports of the form \"my game crashed\" or \"it froze\" or \"I can't connect\" are not useful. \n" +
+            "I can't fix a crash unless you **send me the crash report**, either from the desktop crash log or the android 'report crash' dialog.\n" +
+            "The only exception to this rule is crashes that happen consistently when you perform some action, and even then, I can't help unless the crash also occurs on my machine in the same situation.\n" +
             "\n" +
             "Similarly, server connection issues usually aren't a 'bug' I can fix either. \n" +
-            "If you are experiencing multiplayer problems of any sort, the first thing you should do is **check for game updates**. Most issues are caused by an outdated game version.\n"+
+            "If you are experiencing multiplayer problems of any sort, the first thing you should do is **check for game updates**. Most issues are caused by an outdated game version or a misspelled server IP.\n"+
             "If that still doesn't fix it, check your port-forwarding set up. Only start reporting connection issues **when you are absolutely sure that it's not a problem on your end.** And no, *a server being down is not a bug.*");
     public final String text;
     public final String title;
