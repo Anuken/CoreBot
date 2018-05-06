@@ -75,7 +75,7 @@ public class Messages {
                     lastSent.delete();
                 }
             },
-            5000
+            8000
         );
     }
 
