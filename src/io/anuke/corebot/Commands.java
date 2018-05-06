@@ -53,7 +53,7 @@ public class Commands {
         });
 
         handler.register("ping", "<ip>", "Pings a server.", args -> {
-            if(messages.lastMessage.getChannel().getName().equalsIgnoreCase("multiplayer")){
+            if(!messages.lastMessage.getChannel().getName().equalsIgnoreCase("bots")){
                 messages.err("Use this command in #bots.");
                 return;
             }
@@ -78,7 +78,7 @@ public class Commands {
         });
 
         handler.register("servers", "Displays all known online servers.", args -> {
-            if(messages.lastMessage.getChannel().getName().equalsIgnoreCase("multiplayer")){
+            if(!messages.lastMessage.getChannel().getName().equalsIgnoreCase("bots")){
                 messages.err("Use this command in #bots.");
                 return;
             }
