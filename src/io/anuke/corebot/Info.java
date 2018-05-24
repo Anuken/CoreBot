@@ -7,6 +7,7 @@ public enum Info {
             "[4.0 Plans / Trello](https://trello.com/b/aE2tcUwF)\n" +
             "[Downloads, Web Version](https://anuke.itch.io/mindustry)\n" +
             "[Itch.io App / Updater](https://itch.io/app)\n" +
+            "[iOS version](https://itunes.apple.com/us/app/mindustry/id1385258906?mt=8&ign-mpt=uo%3D8)\n" +
             "[Google Play Listing](https://play.google.com/store/apps/details?id=io.anuke.mindustry)\n" +
             "[Wiki](http://mindustry.wikia.com/wiki/Mindustry_Wiki)\n"),
     beta("Android Beta",
