@@ -18,7 +18,7 @@ public enum Info {
             "**1.** Don't be rude. This should be obvious. No racism/sexism/etc.\n" +
             "**2.** No spamming or advertising.\n" +
             "**3.** No NSFW content or politics. This includes NSFW conversations. Take it elsewhere.\n" +
-            "**4.** Keep content to the aproppriate text channels. **Do not ping servers outside of #bots or #multiplayer.**\n" +
+            "**4.** Keep content to the aproppriate text channels.\n" +
             "**5.** Please keep memes to a minimum.\n" +
             "**6.** Please do not post invite links to this server in public places.\n" +
             "**7.** Do not beg for roles.\n" +
