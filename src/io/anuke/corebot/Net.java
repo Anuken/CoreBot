@@ -212,7 +212,7 @@ public class Net {
         int wave = buffer.getInt();
         int version = buffer.getInt();
 
-        return new PingResult(ip, ping, players + "", host, map, wave + "", version + "");
+        return new PingResult(ip, ping, players + "", host, map, wave + "", version == -1 ? "Custom Build" : version + "");
     }
 
     class PingResult{
