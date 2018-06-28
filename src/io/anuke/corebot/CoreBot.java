@@ -4,7 +4,7 @@ import java.io.File;
 
 public class CoreBot {
 	public static final String[] allServers = {"mindustry.us.to", "mindustry.oa.to", "batata69.zapto.org",
-			"67.41.250.201", "thebabinator.servegame.com", "mindustry.pastorhudson.com"};
+			"67.41.250.201", "thebabinator.servegame.com", "mindustry.pastorhudson.com", "mindustry.indielm.com"};
 	public static final String releasesURL = "https://api.github.com/repos/Anuken/Mindustry/releases";
 	public static final long guildID = 391020510269669376L;
 	public static final File prefsFile = new File("prefs.properties");
