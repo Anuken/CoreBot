@@ -1,6 +1,7 @@
 package io.anuke.corebot;
 
 import io.anuke.ucore.function.Consumer;
+import io.anuke.ucore.util.Log;
 
 import java.io.ByteArrayInputStream;
 import java.util.Scanner;
@@ -24,6 +25,7 @@ public class CrashReport {
             Scanner scan = new Scanner(new ByteArrayInputStream(text.getBytes()));
 
             String line = scan.nextLine();
+            Log.info("Read line: {0}", line);
             if(line.equals(header)){
                 scan.nextLine();
             }else if(!line.equals(infoHeader)){
