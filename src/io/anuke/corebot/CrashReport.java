@@ -16,9 +16,6 @@ public class CrashReport {
     public boolean valid = true;
     public boolean hasInfoError;
 
-    public String os;
-    public int version;
-    public boolean netServer, netActive, multithreading;
     public String trace;
     public ObjectMap<String, String> values = new ObjectMap<>();
 
@@ -27,7 +24,6 @@ public class CrashReport {
             Scanner scan = new Scanner(new ByteArrayInputStream(text.getBytes()));
 
             String line = scan.nextLine().trim();
-            Log.info("Read line: {0}", line);
             if(line.equals(header)){
                 scan.nextLine();
             }else if(!line.equals(infoHeader)){
@@ -36,7 +32,6 @@ public class CrashReport {
 
             while(true){
                 String next = scan.nextLine();
-                Log.info("Process " + next);
                 if(next.equals(traceHeader) || next.equals(errorHeader)){
                     break;
                 }
@@ -46,6 +41,7 @@ public class CrashReport {
             StringBuilder builder = new StringBuilder();
             while(scan.hasNextLine()){
                 builder.append(scan.nextLine());
+                builder.append('\n');
             }
 
             trace = builder.toString();

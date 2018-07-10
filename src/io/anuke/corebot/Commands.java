@@ -212,18 +212,38 @@ public class Commands {
         if(!message.getAttachments().isEmpty()){
             Attachment at = message.getAttachments().get(0);
 
+            if(message.getAttachments().size() > 0){
+                messages.err("Please do not send multiple reports in one message.");
+                return;
+            }
+
             //is crash report
             if(at.getFilename().startsWith("crash-report") && at.getFilename().endsWith("txt")){
                 String text = net.getText(at.getUrl());
                 CrashReport report = new CrashReport(text);
-                Log.info("Got crash report");
                 if(!report.valid){
-                    Log.info("report invalid");
                     messages.err("Invalid crash report.");
                     messages.deleteMessages();
                 }else{
-                    Log.info("report valid");
-                    messages.info("Crash Report Output", "Results: {0} /// {1}", report.values, report.trace.substring(0, 100) + "[...]");
+                    try{
+                        int build = Integer.parseInt(report.values.get("build"));
+
+                        if(build == -1){
+                            messages.err("Do not report crashes for custom builds. No support is provided.");
+                            messages.deleteMessages();
+                        }else if(build != 0 && build < net.getLastBuild()){
+                            messages.err("Outdated game: You are using build {0}, while the latest is build {1}.\n**Update your game.**", build, net.getLastBuild());
+                            messages.deleteMessages();
+                        }else{
+                            messages.info("Info", "Crash report submitted successfully.");
+                            //TODO add and display
+                        }
+
+                    }catch (Exception e){
+                        messages.err("Invalid crash report.");
+                        messages.deleteMessages();
+                        return;
+                    }
                 }
             }else{
                 messages.err("Please do not send images or other unrelated files in this channel.\nCrash reports should be sent as un-renamed **text files.**");

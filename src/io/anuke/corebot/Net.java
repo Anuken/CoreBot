@@ -35,7 +35,7 @@ public class Net {
                 try {
                     VersionInfo latest = list.first();
 
-                    int lastVersion = Integer.parseInt(CoreBot.prefs.get("lastBuild", "33"));
+                    int lastVersion = getLastBuild();
 
                     if(latest.build > lastVersion){
                         Log.info("Posting update!");
@@ -50,6 +50,10 @@ public class Net {
                 }
             }, Log::err);
         }, 60, 240, TimeUnit.SECONDS);
+    }
+
+    public int getLastBuild(){
+        return Integer.parseInt(CoreBot.prefs.get("lastBuild", "33"));
     }
 
     public String getText(String url){
