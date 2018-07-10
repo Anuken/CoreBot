@@ -17,14 +17,14 @@ public class CrashReport {
 
     public String os;
     public int version;
-    public boolean netServer, netActive;
+    public boolean netServer, netActive, multithreading;
     public String trace;
 
     public CrashReport(String text){
         try {
             Scanner scan = new Scanner(new ByteArrayInputStream(text.getBytes()));
 
-            String line = scan.nextLine();
+            String line = scan.nextLine().trim();
             Log.info("Read line: {0}", line);
             if(line.equals(header)){
                 scan.nextLine();
@@ -36,6 +36,7 @@ public class CrashReport {
             scanOr(scan, str -> netActive = Boolean.parseBoolean(str.substring("Net Active: ".length())));
             scanOr(scan, str -> netServer = Boolean.parseBoolean(str.substring("Net Server: ".length())));
             scanOr(scan, str -> os = str.substring("OS: ".length()));
+            scanOr(scan, str -> multithreading = Boolean.parseBoolean(str.substring("Multithreading: ".length())));
             scanOr(scan, str -> {
                 if(!str.equals(traceHeader)) stop("Invalid stack trace header");
             });
@@ -55,7 +56,7 @@ public class CrashReport {
     private void scanOr(Scanner scan, Consumer<String> cons){
         if(hasInfoError) return;
         String line = scan.nextLine();
-        if(line.equals(errorHeader)){
+        if(line.equals(errorHeader) || line.equals(traceHeader)){
             hasInfoError = true;
         }else{
             cons.accept(line);
