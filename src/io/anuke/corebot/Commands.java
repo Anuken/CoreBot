@@ -216,6 +216,7 @@ public class Commands {
             if(at.getFilename().startsWith("crash-report") && at.getFilename().endsWith("txt")){
                 String text = net.getText(at.getUrl());
                 CrashReport report = new CrashReport(text);
+                Log.info("Got crash report");
                 if(!report.valid){
                     messages.err("Invalid crash report.");
                     messages.deleteMessages();
@@ -226,8 +227,7 @@ public class Commands {
                 messages.err("Please do not send images or other files in this channel.\nCrash reports should be sent as **text files.**");
                 messages.deleteMessages();
             }
-        }
-        if(message.getContent() == null || message.getContent().isEmpty()){
+        }else if(emptyText(message)){
             sendReportTemplate(message);
             return;
         }

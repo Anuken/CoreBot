@@ -23,8 +23,12 @@ public class CrashReport {
         try {
             Scanner scan = new Scanner(new ByteArrayInputStream(text.getBytes()));
 
-            if(!scan.nextLine().equals(header)) stop("Invalid header");
-            if(!scan.nextLine().equals(infoHeader)) stop("Invalid info header");
+            String line = scan.nextLine();
+            if(line.equals(header)){
+                scan.nextLine();
+            }else if(!scan.equals(infoHeader)){
+                stop("Invalid header.");
+            }
 
             scanOr(scan, str -> version = Integer.parseInt(str.substring("Build: ".length())));
             scanOr(scan, str -> netActive = Boolean.parseBoolean(str.substring("Net Active: ".length())));
