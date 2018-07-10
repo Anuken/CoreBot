@@ -35,7 +35,7 @@ public class CrashReport {
             }
 
             while(true){
-                String next = scan.next();
+                String next = scan.nextLine();
                 Log.info("Process " + next);
                 if(next.equals(traceHeader) || next.equals(errorHeader)){
                     break;
