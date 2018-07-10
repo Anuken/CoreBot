@@ -239,6 +239,9 @@ public class Commands {
 
     void handle(IMessage message){
         if(message.getChannel().getName().equals(CoreBot.bugChannelName)) {
+            messages.channel = message.getChannel();
+            messages.lastUser = message.getAuthor();
+            messages.lastMessage = message;
             checkForReport(message);
             return;
         }
