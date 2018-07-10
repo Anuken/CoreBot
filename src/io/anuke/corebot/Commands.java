@@ -218,11 +218,12 @@ public class Commands {
                 CrashReport report = new CrashReport(text);
                 Log.info("Got crash report");
                 if(!report.valid){
+                    Log.info("report invalid");
                     messages.err("Invalid crash report.");
                     messages.deleteMessages();
                 }else{
-                    messages.info("Crash Report Output", "Results: version={0} net={1} server={2} os={3} multithread={4}",
-                            report.version, report.netActive, report.netServer, report.os, report.multithreading);
+                    Log.info("report valid");
+                    messages.info("Crash Report Output", "Results: ", report.values);
                 }
             }else{
                 messages.err("Please do not send images or other files in this channel.\nCrash reports should be sent as **text files.**");

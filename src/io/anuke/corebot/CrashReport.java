@@ -1,5 +1,6 @@
 package io.anuke.corebot;
 
+import com.badlogic.gdx.utils.ObjectMap;
 import io.anuke.ucore.function.Consumer;
 import io.anuke.ucore.util.Log;
 
@@ -12,13 +13,14 @@ public class CrashReport {
     private static final String errorHeader = "--error getting additional info--";
     private static final String traceHeader = "----";
 
-    public boolean valid;
+    public boolean valid = true;
     public boolean hasInfoError;
 
     public String os;
     public int version;
     public boolean netServer, netActive, multithreading;
     public String trace;
+    public ObjectMap<String, String> values = new ObjectMap<>();
 
     public CrashReport(String text){
         try {
@@ -32,14 +34,13 @@ public class CrashReport {
                 stop("Invalid header.");
             }
 
-            scanOr(scan, str -> version = Integer.parseInt(str.substring("Build: ".length())));
-            scanOr(scan, str -> netActive = Boolean.parseBoolean(str.substring("Net Active: ".length())));
-            scanOr(scan, str -> netServer = Boolean.parseBoolean(str.substring("Net Server: ".length())));
-            scanOr(scan, str -> os = str.substring("OS: ".length()));
-            scanOr(scan, str -> multithreading = Boolean.parseBoolean(str.substring("Multithreading: ".length())));
-            scanOr(scan, str -> {
-                if(!str.equals(traceHeader)) stop("Invalid stack trace header");
-            });
+            while(true){
+                String next = scan.next();
+                if(next.equals(traceHeader) || next.equals(errorHeader)){
+                    break;
+                }
+                values.put(next.substring(0, next.indexOf(':')), next.substring(next.indexOf(':') + 1));
+            }
 
             StringBuilder builder = new StringBuilder();
             while(scan.hasNextLine()){
@@ -50,16 +51,6 @@ public class CrashReport {
         }catch (Exception e){
             e.printStackTrace();
             valid = false;
-        }
-    }
-
-    private void scanOr(Scanner scan, Consumer<String> cons){
-        if(hasInfoError) return;
-        String line = scan.nextLine();
-        if(line.equals(errorHeader) || line.equals(traceHeader)){
-            hasInfoError = true;
-        }else{
-            cons.accept(line);
         }
     }
 
