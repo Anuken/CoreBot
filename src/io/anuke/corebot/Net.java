@@ -6,14 +6,17 @@ import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.JsonValue;
 import io.anuke.ucore.util.Log;
 import org.apache.commons.io.IOUtils;
+import org.apache.http.util.VersionInfo;
 import org.java_websocket.client.WebSocketClient;
 import org.java_websocket.handshake.ServerHandshake;
 
+import javax.imageio.ImageIO;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.net.*;
 import java.nio.ByteBuffer;
+import java.nio.charset.Charset;
 import java.util.Properties;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -47,6 +50,16 @@ public class Net {
                 }
             }, Log::err);
         }, 60, 240, TimeUnit.SECONDS);
+    }
+
+    public String getText(String url){
+        try {
+            HttpURLConnection connection = (HttpURLConnection) new URL(url).openConnection();
+            connection.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/56.0.2924.87 Safari/537.36");
+            return IOUtils.toString(connection.getInputStream(), Charset.defaultCharset());
+        }catch (Exception e){
+            throw new RuntimeException(e);
+        }
     }
 
     public void pingServer(String ip, Consumer<PingResult> listener){

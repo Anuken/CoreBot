@@ -8,6 +8,7 @@ public class CoreBot {
 	public static final String releasesURL = "https://api.github.com/repos/Anuken/Mindustry/releases";
 	public static final long guildID = 391020510269669376L;
 	public static final File prefsFile = new File("prefs.properties");
+	public static final String bugChannelName = "secret-bot-testing";
 
 	public static Messages messages = new Messages();
 	public static Commands commands = new Commands();

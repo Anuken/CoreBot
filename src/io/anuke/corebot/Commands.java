@@ -204,7 +204,45 @@ public class Commands {
         }
     }
 
+    void sendReportTemplate(IMessage message){
+
+    }
+
+    void checkForReport(IMessage message){
+        if(!message.getAttachments().isEmpty()){
+            Attachment at = message.getAttachments().get(0);
+
+            //is crash report
+            if(at.getFilename().startsWith("crash-report") && at.getFilename().endsWith("txt")){
+                String text = net.getText(at.getUrl());
+                CrashReport report = new CrashReport(text);
+                if(!report.valid){
+                    messages.err("Invalid crash report.");
+                    messages.deleteMessages();
+                }else{
+                    messages.info("Crash Report Output", "Results: version={0} net={1} server={2} os={3}", report.version, report.netActive, report.netServer, report.os);
+                }
+            }else{
+                messages.err("Please do not send images or other files in this channel.\nCrash reports should be sent as **text files.**");
+                messages.deleteMessages();
+            }
+        }
+        if(message.getContent() == null || message.getContent().isEmpty()){
+            sendReportTemplate(message);
+            return;
+        }
+    }
+
+    boolean emptyText(IMessage message){
+        return message.getContent() == null || message.getContent().isEmpty();
+    }
+
     void handle(IMessage message){
+        if(message.getChannel().getName().equals(CoreBot.bugChannelName)) {
+            checkForReport(message);
+            return;
+        }
+
         if(message.getContent() == null) return;
 
         String text = message.getContent();
