@@ -26,7 +26,7 @@ public class CrashReport {
             String line = scan.nextLine();
             if(line.equals(header)){
                 scan.nextLine();
-            }else if(!scan.equals(infoHeader)){
+            }else if(!line.equals(infoHeader)){
                 stop("Invalid header.");
             }
 
