@@ -212,7 +212,7 @@ public class Commands {
         if(!message.getAttachments().isEmpty()){
             Attachment at = message.getAttachments().get(0);
 
-            if(message.getAttachments().size() > 0){
+            if(message.getAttachments().size() > 1){
                 messages.err("Please do not send multiple reports in one message.");
                 return;
             }
@@ -240,7 +240,7 @@ public class Commands {
                         }
 
                     }catch (Exception e){
-                        messages.err("Invalid crash report.");
+                        messages.err("Outdated game: You are using an old version of Mindustry\n**Update your game.**");
                         messages.deleteMessages();
                         return;
                     }
