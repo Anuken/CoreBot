@@ -223,10 +223,10 @@ public class Commands {
                     messages.deleteMessages();
                 }else{
                     Log.info("report valid");
-                    messages.info("Crash Report Output", "Results: {0}", report.values);
+                    messages.info("Crash Report Output", "Results: {0} /// {1}", report.values, report.trace);
                 }
             }else{
-                messages.err("Please do not send images or other files in this channel.\nCrash reports should be sent as **text files.**");
+                messages.err("Please do not send images or other unrelated files in this channel.\nCrash reports should be sent as un-renamed **text files.**");
                 messages.deleteMessages();
             }
         }else if(emptyText(message)){

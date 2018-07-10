@@ -40,7 +40,7 @@ public class CrashReport {
                 if(next.equals(traceHeader) || next.equals(errorHeader)){
                     break;
                 }
-                values.put(next.substring(0, next.indexOf(':')), next.substring(next.indexOf(':') + 1));
+                values.put(next.substring(0, next.indexOf(':')), next.substring(next.indexOf(':') + 2));
             }
 
             StringBuilder builder = new StringBuilder();
