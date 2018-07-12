@@ -79,7 +79,7 @@ public class Messages {
     }
 
     public void deleteMessage(){
-        IMessage last = lastMessage;
+        IMessage last = lastSentMessage;
 
         new Timer().schedule(
                 new TimerTask() {

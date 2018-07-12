@@ -206,7 +206,7 @@ public class Commands {
     }
 
     void sendReportTemplate(IMessage message){
-        messages.text("**Do not send messages here unless you are reporting a crash or issue!**\nTo report an issue, follow the template provided in `!info issues`.\nTo report a crash, send the crash report text file.");
+        messages.err("**Do not send messages here unless you are reporting a crash or issue!**\nTo report an issue, follow the template provided in **!info issues**.\nTo report a crash, send the crash report text file.");
         messages.deleteMessages();
     }
 
