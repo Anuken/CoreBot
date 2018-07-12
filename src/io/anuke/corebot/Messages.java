@@ -74,8 +74,20 @@ public class Messages {
                     last.delete();
                     lastSent.delete();
                 }
-            },
-            9000
+            }, CoreBot.messageDeleteTime
+        );
+    }
+
+    public void deleteMessage(){
+        IMessage last = lastMessage;
+
+        new Timer().schedule(
+                new TimerTask() {
+                    @Override
+                    public void run() {
+                        last.delete();
+                    }
+                }, CoreBot.messageDeleteTime
         );
     }
 

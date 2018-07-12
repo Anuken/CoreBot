@@ -69,7 +69,12 @@ public enum Info {
             "\n" +
             "Similarly, server connection issues usually aren't a 'bug' I can fix either. \n" +
             "If you are experiencing multiplayer problems of any sort, the first thing you should do is **check for game updates**. Most issues are caused by an outdated game version or a misspelled server IP.\n"+
-            "If that still doesn't fix it, check your port-forwarding set up. Only start reporting connection issues **when you are absolutely sure that it's not a problem on your end.** And no, *a server being down is not a bug.*");
+            "If that still doesn't fix it, check your port-forwarding set up. Only start reporting connection issues **when you are absolutely sure that it's not a problem on your end.** And no, *a server being down is not a bug.*"),
+    issues("Issue Reporting Template",
+            "**Platform:** *<Android/iOS/Mac/Windows/Linux/Web>*\n" +
+            "**Build:** *<Post the build number in the bottom left corner of main menu>*\n" +
+            "**Issue:** *<What goes wrong. Be specific!>*\n" +
+            "**Circumstances:** *<Provide details on what you were doing when this bug occurred, as well as any other helpful information.>*");
     public final String text;
     public final String title;
 

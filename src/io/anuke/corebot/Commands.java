@@ -1,5 +1,6 @@
 package io.anuke.corebot;
 
+import com.badlogic.gdx.utils.Array;
 import io.anuke.corebot.Net.PingResult;
 import io.anuke.ucore.util.CommandHandler;
 import io.anuke.ucore.util.CommandHandler.Command;
@@ -205,7 +206,8 @@ public class Commands {
     }
 
     void sendReportTemplate(IMessage message){
-
+        messages.text("**Do not send messages here unless you are reporting a crash or issue!**\nTo report an issue, follow the template provided in `!info issues`.\nTo report a crash, send the crash report text file.");
+        messages.deleteMessages();
     }
 
     void checkForReport(IMessage message){
@@ -213,7 +215,8 @@ public class Commands {
             Attachment at = message.getAttachments().get(0);
 
             if(message.getAttachments().size() > 1){
-                messages.err("Please do not send multiple reports in one message.");
+                messages.err("Please do not send multiple crash reports in one message.");
+                messages.deleteMessages();
                 return;
             }
 
@@ -242,7 +245,6 @@ public class Commands {
                     }catch (Exception e){
                         messages.err("Outdated game: You are using an old version of Mindustry\n**Update your game.**");
                         messages.deleteMessages();
-                        return;
                     }
                 }
             }else{
@@ -251,7 +253,37 @@ public class Commands {
             }
         }else if(emptyText(message)){
             sendReportTemplate(message);
-            return;
+        }else{
+            String text = message.getContent();
+            String[] required = {"Platform:", "Build:", "Issue:", "Circumstances:"};
+            String[] split = text.split("\n");
+
+            if(split.length == 0){
+                sendReportTemplate(message);
+                return;
+            }
+
+            Array<String> arr = Array.with(required);
+            for(String s : split){
+                for(String req : required){
+                    if(s.startsWith(req)){
+                        arr.removeValue(req, false);
+                    }
+                }
+            }
+
+            if(arr.size == required.length){
+                sendReportTemplate(message);
+                return;
+            }
+
+            if(arr.size != 0){
+                messages.err("Your issue report is incomplete. Make sure you've followed the issue template correctly!");
+                return;
+            }
+
+            messages.text("*Issue reported successfully.*");
+            messages.deleteMessage();
         }
     }
 
