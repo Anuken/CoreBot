@@ -266,7 +266,7 @@ public class Commands {
             Array<String> arr = Array.with(required);
             for(String s : split){
                 for(String req : required){
-                    if(s.startsWith(req)){
+                    if(s.startsWith(req) && s.length() > req.length() + 1){
                         arr.removeValue(req, false);
                     }
                 }
@@ -279,6 +279,13 @@ public class Commands {
 
             if(arr.size != 0){
                 messages.err("Your issue report is incomplete. Make sure you've followed the issue template correctly!");
+                messages.deleteMessages();
+                return;
+            }
+
+            if(text.contains("<Android/iOS/Mac/Windows/Linux/Web>") || text.contains("<Post the build number in the bottom left corner of main menu>>")
+                    || text.contains("<What goes wrong. Be specific!>") || text.contains("<Provide details on what you were doing when this bug occurred, as well as any other helpful information.>")){
+                messages.err("You have not filled in your issue report! Make sure you've replaced all template text properly.");
                 messages.deleteMessages();
                 return;
             }
