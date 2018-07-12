@@ -10,7 +10,7 @@ public class CoreBot {
 	public static final File prefsFile = new File("prefs.properties");
 	public static final String bugChannelName = "bugs";
 
-	public static final long messageDeleteTime = 10000;
+	public static final long messageDeleteTime = 20000;
 
 	public static Messages messages = new Messages();
 	public static Commands commands = new Commands();
