@@ -303,7 +303,7 @@ public class Commands {
             }
 
             //validate template text
-            if(text.contains("<Android/iOS/Mac/Windows/Linux/Web>") || text.contains("<Post the build number in the bottom left corner of main menu>>")
+            if(text.contains("<Android/iOS/Mac/Windows/Linux/Web>") || text.contains("<Post the build number in the bottom left corner of main menu>")
                     || text.contains("<What goes wrong. Be specific!>") || text.contains("<Provide details on what you were doing when this bug occurred, as well as any other helpful information.>")){
                 messages.err("You have not filled in your issue report! Make sure you've replaced all template text properly.");
                 messages.deleteMessages();
