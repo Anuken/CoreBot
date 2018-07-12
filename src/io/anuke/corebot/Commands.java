@@ -249,10 +249,9 @@ public class Commands {
 
                                 String extraText = message.getContent() == null || message.getContent().isEmpty() ? "" :
                                         "\"" + message.getContent() + "\"";
-
+                                messages.deleteMessages();
                                 message.getChannel().getGuild().getChannelsByName("crashes").get(0).sendFile("v**" + report.values.get("build")+"**\n" + extraText +
                                         "\n*Submitted by " + message.getAuthor().mention() + ".*", file);
-                                messages.deleteMessages();
                             }catch (Exception e){
                                 e.printStackTrace();
                             }
