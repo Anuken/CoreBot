@@ -13,6 +13,8 @@ import sx.blah.discord.handle.obj.IMessage.Attachment;
 import sx.blah.discord.handle.obj.IUser;
 import sx.blah.discord.util.EmbedBuilder;
 
+import java.io.File;
+import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.Arrays;
@@ -239,7 +241,12 @@ public class Commands {
                             messages.deleteMessages();
                         }else{
                             messages.info("Info", "Crash report submitted successfully.");
-                            //TODO add and display
+                            File file = File.createTempFile("crash", "txt");
+                            PrintWriter out = new PrintWriter(file);
+                            out.print(text);
+                            out.close();
+
+                            message.getChannel().getGuild().getChannelsByName("crashes").get(0).sendFile(file);
                         }
 
                     }catch (Exception e){
@@ -263,26 +270,30 @@ public class Commands {
                 return;
             }
 
+            //get used entries
             Array<String> arr = Array.with(required);
             for(String s : split){
                 for(String req : required){
-                    if(s.startsWith(req) && s.length() > req.length() + 1){
+                    if(s.startsWith(req) && s.length() > req.length()){
                         arr.removeValue(req, false);
                     }
                 }
             }
 
+            //validate entries
             if(arr.size == required.length){
                 sendReportTemplate(message);
                 return;
             }
 
+            //validate all entries present
             if(arr.size != 0){
                 messages.err("Your issue report is incomplete. Make sure you've followed the issue template correctly!");
                 messages.deleteMessages();
                 return;
             }
 
+            //validate template text
             if(text.contains("<Android/iOS/Mac/Windows/Linux/Web>") || text.contains("<Post the build number in the bottom left corner of main menu>>")
                     || text.contains("<What goes wrong. Be specific!>") || text.contains("<Provide details on what you were doing when this bug occurred, as well as any other helpful information.>")){
                 messages.err("You have not filled in your issue report! Make sure you've replaced all template text properly.");
