@@ -240,18 +240,23 @@ public class Commands {
                             messages.err("Outdated game: You are using build {0}, while the latest is build {1}.\n**Update your game.**", build, net.getLastBuild());
                             messages.deleteMessages();
                         }else{
-                            messages.info("Info", "Crash report submitted successfully.");
-                            File file = File.createTempFile("crash", "txt");
-                            PrintWriter out = new PrintWriter(file);
-                            out.print(text);
-                            out.close();
+                            try {
+                                messages.info("Info", "Crash report submitted successfully.");
+                                File file = File.createTempFile("crash", "txt");
+                                PrintWriter out = new PrintWriter(file);
+                                out.print(text);
+                                out.close();
 
-                            message.getChannel().getGuild().getChannelsByName("crashes").get(0).sendFile(file);
+                                message.getChannel().getGuild().getChannelsByName("crashes").get(0).sendFile(file);
+                            }catch (Exception e){
+                                e.printStackTrace();
+                            }
                         }
 
-                    }catch (Exception e){
+                    }catch (NumberFormatException | NullPointerException e){
                         messages.err("Outdated game: You are using an old version of Mindustry\n**Update your game.**");
                         messages.deleteMessages();
+                        e.printStackTrace();
                     }
                 }
             }else{
