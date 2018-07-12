@@ -247,7 +247,7 @@ public class Commands {
                                 out.print(text);
                                 out.close();
 
-                                message.getChannel().getGuild().getChannelsByName("crashes").get(0).sendFile(file);
+                                message.getChannel().getGuild().getChannelsByName("crashes").get(0).sendFile("*Submitted by " + message.getAuthor().mention() + ".*", file);
                             }catch (Exception e){
                                 e.printStackTrace();
                             }
