@@ -279,6 +279,7 @@ public class Commands {
 
             if(arr.size != 0){
                 messages.err("Your issue report is incomplete. Make sure you've followed the issue template correctly!");
+                messages.deleteMessages();
                 return;
             }
 
