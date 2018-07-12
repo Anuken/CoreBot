@@ -247,7 +247,12 @@ public class Commands {
                                 out.print(text);
                                 out.close();
 
-                                message.getChannel().getGuild().getChannelsByName("crashes").get(0).sendFile("v**" + report.values.get("build")+"**\n*Submitted by " + message.getAuthor().mention() + ".*", file);
+                                String extraText = message.getContent() == null || message.getContent().isEmpty() ? "" :
+                                        "\"" + message.getContent() + "\"";
+
+                                message.getChannel().getGuild().getChannelsByName("crashes").get(0).sendFile("v**" + report.values.get("build")+"**\n" + extraText +
+                                        "\n*Submitted by " + message.getAuthor().mention() + ".*", file);
+                                messages.deleteMessages();
                             }catch (Exception e){
                                 e.printStackTrace();
                             }
