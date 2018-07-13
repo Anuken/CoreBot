@@ -263,56 +263,62 @@ public class Commands {
                         e.printStackTrace();
                     }
                 }
-            }else{
+            }else if(emptyText(message)){
                 messages.err("Please do not send images or other unrelated files in this channel.\nCrash reports should be sent as un-renamed **text files.**");
                 messages.deleteMessages();
+            }else{
+                checkForIssue(message);
             }
         }else if(emptyText(message)){
             sendReportTemplate(message);
         }else{
-            String text = message.getContent();
-            String[] required = {"Platform:", "Build:", "Issue:", "Circumstances:"};
-            String[] split = text.split("\n");
+            checkForIssue(message);
+        }
+    }
 
-            if(split.length == 0){
-                sendReportTemplate(message);
-                return;
-            }
+    void checkForIssue(IMessage message){
+        String text = message.getContent();
+        String[] required = {"Platform:", "Build:", "Issue:", "Circumstances:"};
+        String[] split = text.split("\n");
 
-            //get used entries
-            Array<String> arr = Array.with(required);
-            for(String s : split){
-                for(String req : required){
-                    if(s.startsWith(req) && s.length() > req.length()){
-                        arr.removeValue(req, false);
-                    }
+        if(split.length == 0){
+            sendReportTemplate(message);
+            return;
+        }
+
+        //get used entries
+        Array<String> arr = Array.with(required);
+        for(String s : split){
+            for(String req : required){
+                if(s.startsWith(req) && s.length() > req.length()){
+                    arr.removeValue(req, false);
                 }
             }
-
-            //validate entries
-            if(arr.size == required.length){
-                sendReportTemplate(message);
-                return;
-            }
-
-            //validate all entries present
-            if(arr.size != 0){
-                messages.err("Your issue report is incomplete. Make sure you've followed the issue template correctly!\n*Copy and re-send your message with a corrected report.*");
-                messages.deleteMessages();
-                return;
-            }
-
-            //validate template text
-            if(text.contains("<Android/iOS/Mac/Windows/Linux/Web>") || text.contains("<Post the build number in the bottom left corner of main menu>")
-                    || text.contains("<What goes wrong. Be specific!>") || text.contains("<Provide details on what you were doing when this bug occurred, as well as any other helpful information.>")){
-                messages.err("You have not filled in your issue report! Make sure you've replaced all template text properly.\n*Copy and re-send your message with a corrected report.*");
-                messages.deleteMessages();
-                return;
-            }
-
-            messages.text("*Issue reported successfully.*");
-            messages.deleteMessage();
         }
+
+        //validate entries
+        if(arr.size == required.length){
+            sendReportTemplate(message);
+            return;
+        }
+
+        //validate all entries present
+        if(arr.size != 0){
+            messages.err("Your issue report is incomplete. Make sure you've followed the issue template correctly!\n*Copy and re-send your message with a corrected report.*");
+            messages.deleteMessages();
+            return;
+        }
+
+        //validate template text
+        if(text.contains("<Android/iOS/Mac/Windows/Linux/Web>") || text.contains("<Post the build number in the bottom left corner of main menu>")
+                || text.contains("<What goes wrong. Be specific!>") || text.contains("<Provide details on what you were doing when this bug occurred, as well as any other helpful information.>")){
+            messages.err("You have not filled in your issue report! Make sure you've replaced all template text properly.\n*Copy and re-send your message with a corrected report.*");
+            messages.deleteMessages();
+            return;
+        }
+
+        messages.text("*Issue reported successfully.*");
+        messages.deleteMessage();
     }
 
     boolean emptyText(IMessage message){
