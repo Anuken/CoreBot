@@ -104,7 +104,7 @@ public class Commands {
                 }else{
                     StringBuilder s = new StringBuilder();
                     for(PingResult r : results){
-                        s.append("**").append(r.ip).append("** **/** ").append(r.players).append(" players ").append(" **/** v").append(r.version).append(" `[").append(r.ping).append("ms]`\n");
+                        s.append("**").append(r.ip).append("** **/** ").append(r.players).append(" players ").append(" **/** ").append(r.version).append(" `[").append(r.ping).append("ms]`\n");
                     }
                     messages.info("Online Servers", s.toString());
                 }
