@@ -290,8 +290,18 @@ public class Commands {
         Array<String> arr = Array.with(required);
         for(String s : split){
             for(String req : required){
-                if(s.startsWith(req) && s.length() > req.length()){
+                if(s.toLowerCase().startsWith(req.toLowerCase()) && s.length() > req.length()){
                     arr.removeValue(req, false);
+
+                    //special case: don't let people report a build as a version such as 4.0/3.5
+                    if(req.equals("Build:")){
+                        String buildText = req.substring("Build:".length());
+                        if(buildText.contains("4.") || buildText.contains("3.")){
+                            messages.err("The build you specified is incorrect!\nWrite **only the build number**, not the version. *(for example, build 47, not 4.0)*.\n*Copy and re-send your message with a corrected report.*");
+                            messages.deleteMessages();
+                            return;
+                        }
+                    }
                 }
             }
         }
