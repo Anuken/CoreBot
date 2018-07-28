@@ -53,7 +53,7 @@ public class Messages {
     @EventSubscriber
     public void onUserJoinEvent(UserJoinEvent event){
         event.getGuild().getChannelsByName("general").get(0)
-                .sendMessage("*Welcome* " + event.getUser().mention() + " *to the Mindustry Discord!*", true);
+                .sendMessage("*Welcome* " + event.getUser().mention() + " *to the Mindustry Discord!*", false);
     }
 
     public void sendUpdate(VersionInfo info){
@@ -92,7 +92,7 @@ public class Messages {
     }
 
     public void text(String text, Object... args){
-        lastSentMessage = channel.sendMessage(format(text, args));
+        lastSentMessage = channel.sendMessage(format(text, args), false);
     }
 
     public void info(String title, String text, Object... args){
