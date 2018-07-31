@@ -1,9 +1,7 @@
 package io.anuke.corebot;
 
-import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.Base64Coder;
-import com.badlogic.gdx.utils.Json;
-import com.badlogic.gdx.utils.JsonValue;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.utils.*;
 import io.anuke.ucore.util.Log;
 import org.apache.commons.io.IOUtils;
 import org.apache.http.util.VersionInfo;
@@ -67,91 +65,27 @@ public class Net {
     }
 
     public void pingServer(String ip, Consumer<PingResult> listener){
-        AtomicBoolean sent = new AtomicBoolean();
+        run(0, () -> {
+            try{
+                long start = System.currentTimeMillis();
 
-        long[] start = {0};
+                DatagramSocket socket = new DatagramSocket();
+                socket.send(new DatagramPacket(new byte[]{-2, 1}, 2, InetAddress.getByName(ip), 6567));
 
-        try{
-            WebSocketClient[] clients = new WebSocketClient[1];
-            clients[0] = new WebSocketClient(new URI("ws://" + ip + ":" + 6568)) {
-                @Override
-                public void onOpen(ServerHandshake handshakedata) {
-                    start[0] = System.currentTimeMillis();
-                    clients[0].send("ping");
-                    Log.info("Pinging!");
-                }
+                socket.setSoTimeout(2000);
 
-                @Override
-                public void onMessage(String message) {
-                    synchronized (sent) {
-                        byte[] bytes = Base64Coder.decode(message);
+                DatagramPacket packet = new DatagramPacket(new byte[128], 128);
 
-                        Log.info("Got ping packet");
-                        if (sent.get()) return;
-                        sent.set(true);
-                        if(bytes.length != 128)
-                            listener.accept(new PingResult(ip, System.currentTimeMillis() - start[0], "Unknown", "Unknown", "Unknown", "Unknown", "Outdated"));
-                        else
-                            listener.accept(readServerData(ByteBuffer.wrap(bytes), ip, System.currentTimeMillis() - start[0]));
-                        clients[0].close();
-                        Log.info("Finish get ping packet");
-                    }
-                }
+                socket.receive(packet);
 
-                @Override
-                public void onClose(int code, String reason, boolean remote) {
-                    Net.this.run(100, () -> {
-                        synchronized (sent) {
-                            if (sent.get()) return;
-                            sent.set(true);
-                            Log.info("Got close.");
-                            listener.accept(new PingResult("Closed: " + reason));
-                        }
-                    });
-                }
-
-                @Override
-                public void onError(Exception ex) {
-                    synchronized (sent) {
-                        if (sent.get()) return;
-                        sent.set(true);
-                        Log.info("Got error:");
-                        if (ex instanceof IllegalArgumentException || ex instanceof UnknownHostException) {
-                            listener.accept(new PingResult("Invalid IP."));
-                        } else if (ex instanceof ConnectException) {
-                            listener.accept(new PingResult("Connection refused."));
-                        } else {
-                            listener.accept(new PingResult(ex.getMessage()));
-                        }
-
-                        ex.printStackTrace();
-                    }
-                }
-            };
-
-            clients[0].setConnectionLostTimeout(timeout);
-            clients[0].connect();
-
-            run(timeout, () -> {
-                synchronized (sent) {
-                    Log.info("Got timeout.");
-
-                    if (sent.get()) return;
-                    sent.set(true);
-                    listener.accept(new PingResult("Timed out."));
-                    Log.info("Finish get timeout.");
-                }
-            });
-
-        }catch (Exception e){
-            synchronized (sent) {
-                if (sent.get()) return;
-                sent.set(true);
+                ByteBuffer buffer = ByteBuffer.wrap(packet.getData());
+                listener.accept(readServerData(buffer, ip, System.currentTimeMillis() - start));
+            }catch (Exception e){
                 Log.info("Got send error:");
-                listener.accept(new PingResult("Timed out."));
+                listener.accept(new PingResult("Failed to connect."));
                 e.printStackTrace();
             }
-        }
+        });
     }
 
     public void getChangelog(Consumer<Array<VersionInfo>> success, Consumer<Throwable> fail){
