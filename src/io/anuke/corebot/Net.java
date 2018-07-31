@@ -1,27 +1,19 @@
 package io.anuke.corebot;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.utils.*;
+import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.Json;
+import com.badlogic.gdx.utils.JsonValue;
 import io.anuke.ucore.util.Log;
 import org.apache.commons.io.IOUtils;
-import org.apache.http.util.VersionInfo;
-import org.java_websocket.client.WebSocketClient;
-import org.java_websocket.handshake.ServerHandshake;
 
-import javax.imageio.ImageIO;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.net.*;
 import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
-import java.util.Properties;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Consumer;
 
 public class Net {
