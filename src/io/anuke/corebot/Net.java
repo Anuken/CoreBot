@@ -59,7 +59,6 @@ public class Net {
     public void pingServer(String ip, Consumer<PingResult> listener){
         run(0, () -> {
             try{
-                long start = System.currentTimeMillis();
 
                 DatagramSocket socket = new DatagramSocket();
                 socket.send(new DatagramPacket(new byte[]{-2, 1}, 2, InetAddress.getByName(ip), 6567));
@@ -68,10 +67,12 @@ public class Net {
 
                 DatagramPacket packet = new DatagramPacket(new byte[128], 128);
 
+                long start = System.currentTimeMillis();
                 socket.receive(packet);
 
                 ByteBuffer buffer = ByteBuffer.wrap(packet.getData());
                 listener.accept(readServerData(buffer, ip, System.currentTimeMillis() - start));
+                socket.disconnect();
             }catch (Exception e){
                 Log.info("Got send error:");
                 listener.accept(new PingResult("Failed to connect."));
