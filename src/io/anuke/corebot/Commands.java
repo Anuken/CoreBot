@@ -336,7 +336,7 @@ public class Commands {
     }
 
     void handle(IMessage message){
-        if(message.getChannel().getName().equals(CoreBot.bugChannelName)
+        if(message.getChannel().getName().equals(CoreBot.bugChannelName) && !message.isSystemMessage()
                 && message.getAuthor().getRolesForGuild(message.getGuild()).stream().noneMatch(role -> role.getName().equals("Developer"))) {
             messages.channel = message.getChannel();
             messages.lastUser = message.getAuthor();
