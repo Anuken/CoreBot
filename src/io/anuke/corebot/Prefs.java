@@ -1,11 +1,15 @@
 package io.anuke.corebot;
 
+import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.Json;
+
 import java.io.*;
 import java.util.Properties;
 
 public class Prefs {
-    private Properties prop = new Properties();
+    private Properties prop;
     private File file;
+    private Json json = new Json();
 
     public Prefs(File file){
         this.file = file;
@@ -16,6 +20,16 @@ public class Prefs {
         }catch (IOException e){
             throw new RuntimeException(e);
         }
+    }
+
+    public Array<String> getArray(String property){
+        String value = prop.getProperty(property, "[]");
+        return json.fromJson(Array.class, value);
+    }
+
+    public void putArray(String property, Array<String> arr){
+        prop.put(property, json.toJson(arr));
+        save();
     }
 
     public String get(String property, String def){

@@ -92,7 +92,7 @@ public class Commands {
 
             List<PingResult> results = new CopyOnWriteArrayList<>();
 
-            for(String server : allServers){
+            for(String server : prefs.getArray("servers")){
                 net.pingServer(server, result -> {
                     if(result.valid) results.add(result);
                 });
@@ -147,6 +147,28 @@ public class Commands {
                 messages.text("http://lmgtfy.com/?q={0}", URLEncoder.encode(args[0], "UTF-8"));
             }catch (UnsupportedEncodingException e){
                 e.printStackTrace();
+            }
+        });
+
+        adminHandler.register("listservers", "List servers pinged automatically.", args -> {
+            messages.text("**Servers:** {0}", prefs.getArray("servers").toString().replace("[", "").replace("]", ""));
+        });
+
+        adminHandler.register("addserver", "<IP>", "Add server to list.", args -> {
+            Array<String> servers = prefs.getArray("servers");
+            servers.add(args[0]);
+            prefs.putArray("servers", servers);
+            messages.text("*Server added.*");
+        });
+
+        adminHandler.register("removeserver", "<IP>", "Remove server from list.", args -> {
+            Array<String> servers = prefs.getArray("servers");
+            boolean removed = servers.removeValue(args[0], false);
+            prefs.putArray("servers", servers);
+            if(removed){
+                messages.text("*Server removed.*");
+            }else{
+                messages.err("Server not found!");
             }
         });
 
