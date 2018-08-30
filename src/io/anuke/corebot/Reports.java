@@ -1,6 +1,7 @@
 package io.anuke.corebot;
 
 import com.badlogic.gdx.utils.Json;
+import com.badlogic.gdx.utils.JsonValue;
 import com.badlogic.gdx.utils.JsonValue.PrettyPrintSettings;
 import com.badlogic.gdx.utils.JsonWriter.OutputType;
 import com.sun.net.httpserver.HttpServer;
@@ -35,7 +36,14 @@ public class Reports{
 
                 String message = new String(bytes);
                 Json json = new Json();
-                CoreBot.messages.sendCrash(json.fromJson(null, message));
+                JsonValue value = json.fromJson(null, message);
+                int build = value.getInt("build");
+
+                //only the latest build is processed, everything else is skipped
+                if(build == CoreBot.net.getLastBuild()){
+                    CoreBot.messages.sendCrash(value);
+                }
+
                 Log.info("Recieved crash report.");
 
                 t.sendResponseHeaders(200, 0);

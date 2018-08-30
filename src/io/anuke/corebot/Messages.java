@@ -102,7 +102,6 @@ public class Messages {
         StringBuilder builder = new StringBuilder();
         value = value.child;
         while(value.next != null){
-            value = value.next;
             builder.append("**");
             builder.append(value.name);
             builder.append("**");
@@ -115,6 +114,7 @@ public class Messages {
                 builder.append(value.asString());
             }
             builder.append("\n");
+            value = value.next;
         }
         getGuild().getChannelsByName(CoreBot.crashReportChannelName).get(0).sendMessage(builder.toString());
     }
