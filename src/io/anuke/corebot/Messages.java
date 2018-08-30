@@ -104,16 +104,17 @@ public class Messages {
         while(value.next != null){
             value = value.next;
             builder.append("**");
-            builder.append(Strings.canParseInt(value.name));
+            builder.append(Strings.capitalize(value.name));
             builder.append("**");
             builder.append(": ");
             if(value.name.equals("trace")){
-                builder.append("```xl"); //xl formatting looks nice
+                builder.append("```xl\n"); //xl formatting looks nice
                 builder.append(value.asString().replace("\\n", "\n").replace("\t", "  "));
                 builder.append("```");
             }else{
                 builder.append(value.asString());
             }
+            builder.append("\n");
         }
         getGuild().getChannelsByName(CoreBot.crashReportChannelName).get(0).sendMessage(builder.toString());
     }
