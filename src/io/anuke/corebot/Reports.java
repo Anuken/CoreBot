@@ -36,6 +36,7 @@ public class Reports{
                 String message = new String(bytes);
                 Json json = new Json();
                 CoreBot.messages.sendCrash(json.fromJson(null, message));
+                Log.info("Recieved crash report.");
 
                 t.sendResponseHeaders(200, 0);
             });

@@ -100,6 +100,7 @@ public class Messages {
 
     public void sendCrash(JsonValue value){
         StringBuilder builder = new StringBuilder();
+        value = value.child;
         while(value.next != null){
             value = value.next;
             builder.append("**");
