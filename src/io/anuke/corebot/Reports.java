@@ -1,6 +1,8 @@
 package io.anuke.corebot;
 
 import com.badlogic.gdx.utils.Json;
+import com.badlogic.gdx.utils.JsonValue.PrettyPrintSettings;
+import com.badlogic.gdx.utils.JsonWriter.OutputType;
 import com.sun.net.httpserver.HttpServer;
 import io.anuke.ucore.util.Log;
 
@@ -18,7 +20,7 @@ public class Reports{
 
             HashMap<String, Long> rateLimit = new HashMap<>();
 
-            HttpServer server = HttpServer.create(new InetSocketAddress(8080), 0);
+            HttpServer server = HttpServer.create(new InetSocketAddress(80), 0);
             server.createContext("/report", t -> {
                 String key = t.getRemoteAddress().getAddress().getHostName();
                 if(rateLimit.get(key) != null && (currentTimeMillis() - rateLimit.get(key)) < REQUEST_TIME){
@@ -32,7 +34,10 @@ public class Reports{
                 new DataInputStream(t.getRequestBody()).readFully(bytes);
 
                 String message = new String(bytes);
-                String result = new Json().prettyPrint(message);
+                Json json = new Json();
+                String result = json.prettyPrint(message, new PrettyPrintSettings(){{
+                    outputType = OutputType.json;
+                }});
 
                 CoreBot.messages.getGuild().getChannelsByName(CoreBot.crashReportChannelName).get(0).sendMessage(result);
 
