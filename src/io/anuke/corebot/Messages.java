@@ -104,7 +104,7 @@ public class Messages {
         while(value.next != null){
             value = value.next;
             builder.append("**");
-            builder.append(Strings.capitalize(value.name));
+            builder.append(value.name);
             builder.append("**");
             builder.append(": ");
             if(value.name.equals("trace")){
