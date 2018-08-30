@@ -35,11 +35,7 @@ public class Reports{
 
                 String message = new String(bytes);
                 Json json = new Json();
-                String result = json.prettyPrint(message, new PrettyPrintSettings(){{
-                    outputType = OutputType.json;
-                }});
-
-                CoreBot.messages.getGuild().getChannelsByName(CoreBot.crashReportChannelName).get(0).sendMessage(result);
+                CoreBot.messages.sendCrash(json.fromJson(null, message));
 
                 t.sendResponseHeaders(200, 0);
             });

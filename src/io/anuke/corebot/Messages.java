@@ -1,7 +1,9 @@
 package io.anuke.corebot;
 
+import com.badlogic.gdx.utils.JsonValue;
 import io.anuke.corebot.Net.VersionInfo;
 import io.anuke.ucore.util.Log;
+import io.anuke.ucore.util.Strings;
 import sx.blah.discord.api.ClientBuilder;
 import sx.blah.discord.api.IDiscordClient;
 import sx.blah.discord.api.events.EventDispatcher;
@@ -94,6 +96,25 @@ public class Messages {
                     }
                 }, CoreBot.messageDeleteTime
         );
+    }
+
+    public void sendCrash(JsonValue value){
+        StringBuilder builder = new StringBuilder();
+        while(value.next != null){
+            value = value.next;
+            builder.append("**");
+            builder.append(Strings.canParseInt(value.name));
+            builder.append("**");
+            builder.append(": ");
+            if(value.name.equals("trace")){
+                builder.append("```xl"); //xl formatting looks nice
+                builder.append(value.asString().replace("\\n", "\n").replace("\t", "  "));
+                builder.append("```");
+            }else{
+                builder.append(value.asString());
+            }
+        }
+        getGuild().getChannelsByName(CoreBot.crashReportChannelName).get(0).sendMessage(builder.toString());
     }
 
     public void text(String text, Object... args){
