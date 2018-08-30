@@ -9,6 +9,7 @@ import sx.blah.discord.api.events.EventSubscriber;
 import sx.blah.discord.api.internal.json.objects.EmbedObject;
 import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedEvent;
 import sx.blah.discord.handle.impl.events.guild.member.UserJoinEvent;
+import sx.blah.discord.handle.impl.obj.Guild;
 import sx.blah.discord.handle.obj.IChannel;
 import sx.blah.discord.handle.obj.IGuild;
 import sx.blah.discord.handle.obj.IMessage;
@@ -54,6 +55,10 @@ public class Messages {
     public void onUserJoinEvent(UserJoinEvent event){
         event.getGuild().getChannelsByName("general").get(0)
                 .sendMessage("*Welcome* " + event.getUser().mention() + " *to the Mindustry Discord!*", false);
+    }
+
+    public IGuild getGuild(){
+        return client.getGuilds().stream().filter(guild -> guild.getName().equals("Mindustry")).findAny().orElseThrow(() -> new RuntimeException("No Mindustry guild!"));
     }
 
     public void sendUpdate(VersionInfo info){
