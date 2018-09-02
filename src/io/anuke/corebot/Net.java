@@ -4,6 +4,7 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.JsonValue;
 import io.anuke.ucore.util.Log;
+import io.anuke.ucore.util.Strings;
 import org.apache.commons.io.IOUtils;
 
 import java.io.InputStream;
@@ -59,9 +60,15 @@ public class Net {
     public void pingServer(String ip, Consumer<PingResult> listener){
         run(0, () -> {
             try{
+                String resultIP = ip;
+                int port = 6567;
+                if(ip.contains(":") && Strings.canParsePostiveInt(ip.split(":")[1])){
+                    resultIP = ip.split(":")[0];
+                    port = Strings.parseInt(ip.split(":")[1]);
+                }
 
                 DatagramSocket socket = new DatagramSocket();
-                socket.send(new DatagramPacket(new byte[]{-2, 1}, 2, InetAddress.getByName(ip), 6567));
+                socket.send(new DatagramPacket(new byte[]{-2, 1}, 2, InetAddress.getByName(resultIP), port));
 
                 socket.setSoTimeout(2000);
 
