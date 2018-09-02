@@ -99,17 +99,15 @@ public class Messages {
     }
 
     public void sendCrash(JsonValue value){
-        Log.info("Raw report: {0}", value.toString());
-        
+
         StringBuilder builder = new StringBuilder();
         value = value.child;
-        while(value.next != null){
+        while(value != null){
             builder.append("**");
             builder.append(value.name);
             builder.append("**");
             builder.append(": ");
             if(value.name.equals("trace")){
-                Log.info("Recieved trace: " + value.asString());
                 builder.append("```xl\n"); //xl formatting looks nice
                 builder.append(value.asString().replace("\\n", "\n").replace("\t", "  "));
                 builder.append("```");
