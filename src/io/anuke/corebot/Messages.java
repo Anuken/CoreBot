@@ -89,12 +89,12 @@ public class Messages {
         IMessage last = lastSentMessage;
 
         new Timer().schedule(
-                new TimerTask() {
-                    @Override
-                    public void run() {
-                        last.delete();
-                    }
-                }, CoreBot.messageDeleteTime
+            new TimerTask() {
+                @Override
+                public void run() {
+                    last.delete();
+                }
+            }, CoreBot.messageDeleteTime
         );
     }
 

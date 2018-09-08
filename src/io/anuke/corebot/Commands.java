@@ -196,7 +196,7 @@ public class Commands {
             try{
                 long l = Long.parseLong(author);
                 IUser user = messages.client.getUserByID(l);
-                int warnings =  prefs.getInt("warnings-" + l, 0) + 1;
+                int warnings =  prefs.getInt("warnings-" + l, 0);
                 messages.text("User '{0}' has **{1}** {2}.", user.getDisplayName(messages.channel.getGuild()), warnings, warnings == 1 ? "warning" : "warnings");
             }catch (Exception e){
                 e.printStackTrace();
