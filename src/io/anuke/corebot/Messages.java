@@ -57,6 +57,14 @@ public class Messages {
     public void onUserJoinEvent(UserJoinEvent event){
         event.getGuild().getChannelsByName("general").get(0)
                 .sendMessage("*Welcome* " + event.getUser().mention() + " *to the Mindustry Discord!*", false);
+
+        event.getUser().getOrCreatePMChannel().sendMessage(
+            "**Welcome to the Mindustry Discord.**" +
+            "\n\n*Make sure you read #rules and the channel topics before posting.*\n\n" +
+            "**For a list of public servers**, see `!servers` in #bots.\n" +
+            "**For info on how to play with friends**, see `!info multiplayer` in #bots.\n" +
+            "**If you need info on the dedicated server**, see `!info server` in #bots.\n"
+        );
     }
 
     public IGuild getGuild(){
