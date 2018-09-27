@@ -71,13 +71,13 @@ public class Messages {
                 }else{
                     StringBuilder s = new StringBuilder();
                     for(PingResult r : results){
-                        s.append("**").append(r.ip).append("** **/** ").append(r.players).append(" players ").append(" **/** ").append(r.version).append(" `[").append(r.ping).append("ms]`\n");
+                        s.append("*").append(r.ip).append("* **/** ").append(r.players).append(" players ").append(" **/** ").append(r.version);
                     }
                     result = s.toString();
                 }
 
-                 client.getGuilds().stream().filter(g -> g.getName().equals("Mindustry")).findFirst().orElseThrow(() -> new RuntimeException("Guild not found"))
-                            .getChannelByID(CoreBot.multiplayerChannelID).changeTopic("**Server List:**\n\n" + result);
+                client.getGuilds().stream().filter(g -> g.getName().equals("Mindustry")).findFirst().orElseThrow(() -> new RuntimeException("Guild not found"))
+                            .getChannelByID(CoreBot.multiplayerChannelID).changeTopic("**Server List:**\n\n" + result + "\n\n*This list is automatically updated every minute.*");
 
             });
         }, 120, 60, TimeUnit.SECONDS);
