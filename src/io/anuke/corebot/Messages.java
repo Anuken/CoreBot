@@ -71,7 +71,7 @@ public class Messages {
                 }else{
                     StringBuilder s = new StringBuilder();
                     for(PingResult r : results){
-                        s.append("*").append(r.ip).append("* **/** ").append(r.players).append(" players ").append(" **/** ").append(r.version);
+                        s.append("*").append(r.ip).append("* **/** ").append(r.players).append(" players ").append(" **/** ").append(r.version).append("\n");
                     }
                     result = s.toString();
                 }

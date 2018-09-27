@@ -25,7 +25,6 @@ public class Reports{
             server.createContext("/report", t -> {
                 String key = t.getRemoteAddress().getAddress().getHostName();
                 if(rateLimit.get(key) != null && (currentTimeMillis() - rateLimit.get(key)) < REQUEST_TIME){
-                    rateLimit.put(key, currentTimeMillis());
                     Log.err("Connection " + key + " is being rate limited!");
                     return;
                 }
