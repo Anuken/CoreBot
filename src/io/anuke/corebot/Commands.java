@@ -236,57 +236,9 @@ public class Commands {
 
     void checkForReport(IMessage message){
         if(!message.getAttachments().isEmpty()){
-            Attachment at = message.getAttachments().get(0);
 
-            if(message.getAttachments().size() > 1){
-                messages.err("Please do not send multiple crash reports in one message.");
-                messages.deleteMessages();
-                return;
-            }
-
-            //is crash report
-            if(at.getFilename().startsWith("crash-report") && at.getFilename().endsWith("txt")){
-                String text = net.getText(at.getUrl());
-                CrashReport report = new CrashReport(text);
-                if(!report.valid){
-                    messages.err("Invalid crash report.");
-                    messages.deleteMessages();
-                }else{
-                    try{
-                        int build = Integer.parseInt(report.values.get("build"));
-
-                        if(build == -1){
-                            messages.err("Do not report crashes for custom builds. No support is provided.");
-                            messages.deleteMessages();
-                        }else if(build != 0 && build < net.getLastBuild()){
-                            messages.err("Outdated game: You are using build {0}, while the latest is build {1}.\n**Update your game.**", build, net.getLastBuild());
-                            messages.deleteMessages();
-                        }else{
-                            try {
-                                messages.info("Info", "Crash report submitted successfully.");
-                                File file = File.createTempFile("crash", "txt");
-                                PrintWriter out = new PrintWriter(file);
-                                out.print(text);
-                                out.close();
-
-                                String extraText = message.getContent() == null || message.getContent().isEmpty() ? "" :
-                                        "\"" + message.getContent() + "\"";
-                                messages.deleteMessages();
-                                message.getChannel().getGuild().getChannelsByName("crashes").get(0).sendFile("v**" + report.values.get("build")+"**\n" + extraText +
-                                        "\n*Submitted by " + message.getAuthor().mention() + ".*", file);
-                            }catch (Exception e){
-                                e.printStackTrace();
-                            }
-                        }
-
-                    }catch (NumberFormatException | NullPointerException e){
-                        messages.err("Outdated game: You are using an old version of Mindustry\n**Update your game.**");
-                        messages.deleteMessages();
-                        e.printStackTrace();
-                    }
-                }
-            }else if(emptyText(message)){
-                messages.err("Please do not send images or other unrelated files in this channel.\nCrash reports should be sent as un-renamed **text files.**");
+            if(emptyText(message)){
+                messages.err("Please do not send images or other unrelated files in this channel.");
                 messages.deleteMessages();
             }else{
                 checkForIssue(message);
