@@ -6,8 +6,9 @@ public class CoreBot {
 	public static final String releasesURL = "https://api.github.com/repos/Anuken/Mindustry/releases";
 	public static final long guildID = 391020510269669376L;
 	public static final File prefsFile = new File("prefs.properties");
-	public static final String bugChannelName = "bugs";
-	public static final String crashReportChannelName = "crashes";
+	public static final long bugReportChannelID = 391073027309305856L;
+	public static final long crashReportChannelID = 467033526018113546L;
+    public static final long multiplayerChannelID = 402527137229438996L;
 
 	public static final long messageDeleteTime = 20000;
 

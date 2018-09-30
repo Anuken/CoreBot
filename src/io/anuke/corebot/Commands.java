@@ -106,6 +106,7 @@ public class Commands {
                     for(PingResult r : results){
                         s.append("**").append(r.ip).append("** **/** ").append(r.players).append(" players ").append(" **/** ").append(r.version).append(" `[").append(r.ping).append("ms]`\n");
                     }
+                    s.append("\n\n*Note: You can see an automatically updated list of servers in the <#402527137229438996> channel topic.*");
                     messages.info("Online Servers", s.toString());
                 }
             });
@@ -310,7 +311,7 @@ public class Commands {
     }
 
     void handle(IMessage message){
-        if(message.getChannel().getName().equals(CoreBot.bugChannelName) && !message.isSystemMessage()
+        if(message.getChannel().getLongID() == bugReportChannelID && !message.isSystemMessage()
                 && message.getAuthor().getRolesForGuild(message.getGuild()).stream().noneMatch(role -> role.getName().equals("Developer"))) {
             messages.channel = message.getChannel();
             messages.lastUser = message.getAuthor();

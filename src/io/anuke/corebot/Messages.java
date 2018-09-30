@@ -1,6 +1,7 @@
 package io.anuke.corebot;
 
 import com.badlogic.gdx.utils.JsonValue;
+import io.anuke.corebot.Net.PingResult;
 import io.anuke.corebot.Net.VersionInfo;
 import io.anuke.ucore.util.Log;
 import io.anuke.ucore.util.Strings;
@@ -20,8 +21,16 @@ import sx.blah.discord.util.EmbedBuilder;
 
 import java.awt.*;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
+
+import static io.anuke.corebot.CoreBot.messages;
+import static io.anuke.corebot.CoreBot.net;
+import static io.anuke.corebot.CoreBot.prefs;
 
 public class Messages {
     IDiscordClient client;
@@ -45,6 +54,33 @@ public class Messages {
         event.registerListener(this);
 
         Log.info("Discord bot up.");
+
+        Executors.newSingleThreadScheduledExecutor().scheduleAtFixedRate(() -> {
+            List<PingResult> results = new CopyOnWriteArrayList<>();
+
+            for(String server : prefs.getArray("servers")){
+                net.pingServer(server, result -> {
+                    if(result.valid) results.add(result);
+                });
+            }
+
+            net.run(Net.timeout, () -> {
+                String result;
+                if(results.isEmpty()){
+                    result = "All known servers are offline.";
+                }else{
+                    StringBuilder s = new StringBuilder();
+                    for(PingResult r : results){
+                        s.append("*").append(r.ip).append("* **/** ").append(r.players).append(" players ").append(" **/** ").append(r.version).append("\n");
+                    }
+                    result = s.toString();
+                }
+
+                client.getGuilds().stream().filter(g -> g.getName().equals("Mindustry")).findFirst().orElseThrow(() -> new RuntimeException("Guild not found"))
+                            .getChannelByID(CoreBot.multiplayerChannelID).changeTopic("**Server List:**\n\n" + result + "\n\n*This list is automatically updated every minute.*");
+
+            });
+        }, 120, 60, TimeUnit.SECONDS);
     }
 
     @EventSubscriber
@@ -125,7 +161,7 @@ public class Messages {
             builder.append("\n");
             value = value.next;
         }
-        getGuild().getChannelsByName(CoreBot.crashReportChannelName).get(0).sendMessage(builder.toString());
+        getGuild().getChannelByID(CoreBot.crashReportChannelID).sendMessage(builder.toString());
     }
 
     public void text(String text, Object... args){
