@@ -108,11 +108,22 @@ public class Messages {
     }
 
     public void sendUpdate(VersionInfo info){
-        client.getGuildByID(CoreBot.guildID)
+        String text = info.description;
+        int maxLength = 2000;
+        while(true){
+            String current = text.substring(0, Math.min(maxLength, text.length()));
+            client.getGuildByID(CoreBot.guildID)
                 .getChannelsByName("announcements").get(0)
                 .sendMessage(new EmbedBuilder()
-                        .withColor(normalColor).withTitle(info.name)
-                        .appendDesc(info.description).build());
+                .withColor(normalColor).withTitle(info.name)
+                .appendDesc(current).build());
+
+            if(text.length() < maxLength){
+                return;
+            }
+
+            text = text.substring(maxLength);
+        }
     }
 
     public void deleteMessages(){
