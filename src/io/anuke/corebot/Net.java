@@ -21,26 +21,25 @@ public class Net {
     public static final int timeout = 2000;
 
     public Net(){
-        Executors.newSingleThreadScheduledExecutor().scheduleAtFixedRate(() -> {
-            getChangelog(list -> {
-                try {
-                    VersionInfo latest = list.first();
+        Executors.newSingleThreadScheduledExecutor().scheduleAtFixedRate(() ->
+        getChangelog(list -> {
+            try {
+                VersionInfo latest = list.first();
 
-                    int lastVersion = getLastBuild();
+                int lastVersion = getLastBuild();
 
-                    if(latest.build > lastVersion){
-                        Log.info("Posting update!");
+                if(latest.build > lastVersion){
+                    Log.info("Posting update!");
 
-                        CoreBot.messages.sendUpdate(latest);
+                    CoreBot.messages.sendUpdate(latest);
 
-                        CoreBot.prefs.put("lastBuild", latest.build + "");
-                    }
-
-                }catch (Exception e){
-                    e.printStackTrace();
+                    CoreBot.prefs.put("lastBuild", latest.build + "");
                 }
-            }, Log::err);
-        }, 60, 240, TimeUnit.SECONDS);
+
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+        }, Log::err), 60, 240, TimeUnit.SECONDS);
     }
 
     public int getLastBuild(){

@@ -253,7 +253,7 @@ public class Commands {
 
     void checkForIssue(IMessage message){
         String text = message.getContent();
-        String[] required = {"Platform:", "Build:", "Issue:", "Circumstances:"};
+        String[] required = {"Platform:", "Build:", "Issue:"};
         String[] split = text.split("\n");
 
         if(split.length == 0){
@@ -289,7 +289,7 @@ public class Commands {
 
         //validate all entries present
         if(arr.size != 0){
-            messages.err("Your issue report is incomplete. Make sure you've followed the issue template correctly!\n*Copy and re-send your message with a corrected report.*");
+            messages.err("Your issue report is incomplete. You have not provided: *{0}*.\n*Copy and re-send your message with a corrected report.*", arr.toString());
             messages.deleteMessages();
             return;
         }
