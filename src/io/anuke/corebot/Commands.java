@@ -289,7 +289,7 @@ public class Commands {
 
         //validate all entries present
         if(arr.size != 0){
-            messages.err("Your issue report is incomplete. You have not provided: *{0}*.\n*Copy and re-send your message with a corrected report.*", arr.toString());
+            messages.err("Error", "Your issue report is incomplete. You have not provided: *{0}*.\n*Copy and re-send your message with a corrected report.*", arr.toString());
             messages.deleteMessages();
             return;
         }
