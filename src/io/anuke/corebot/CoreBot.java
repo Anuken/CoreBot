@@ -9,6 +9,7 @@ public class CoreBot {
 	public static final long bugReportChannelID = 391073027309305856L;
 	public static final long crashReportChannelID = 467033526018113546L;
     public static final long multiplayerChannelID = 402527137229438996L;
+	public static final boolean sendWelcomeMessages = false;
 
 	public static final long messageDeleteTime = 20000;
 

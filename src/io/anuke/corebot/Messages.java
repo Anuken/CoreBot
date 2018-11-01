@@ -91,8 +91,10 @@ public class Messages {
 
     @EventSubscriber
     public void onUserJoinEvent(UserJoinEvent event){
-        event.getGuild().getChannelsByName("general").get(0)
-                .sendMessage("*Welcome* " + event.getUser().mention() + " *to the Mindustry Discord!*", false);
+        if(CoreBot.sendWelcomeMessages){
+            event.getGuild().getChannelsByName("general").get(0)
+            .sendMessage("*Welcome* " + event.getUser().mention() + " *to the Mindustry Discord!*", false);
+        }
 
         event.getUser().getOrCreatePMChannel().sendMessage(
             "**Welcome to the Mindustry Discord.**" +
