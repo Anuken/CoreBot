@@ -41,6 +41,8 @@ public class Reports{
                 //only the latest build is processed, everything else is skipped
                 if(build == CoreBot.net.getLastBuild()){
                     CoreBot.messages.sendCrash(value);
+                }else{
+                    Log.info("Rejecting report with invalid build: " + build);
                 }
 
                 Log.info("Recieved crash report.");
@@ -52,6 +54,7 @@ public class Reports{
             Log.info("Crash reporting server up.");
 
         }catch(Exception e){
+            Log.info("Error parsing report: ");
             e.printStackTrace();
         }
     }

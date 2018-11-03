@@ -79,11 +79,7 @@ public class Net {
                 ByteBuffer buffer = ByteBuffer.wrap(packet.getData());
                 listener.accept(readServerData(buffer, ip, System.currentTimeMillis() - start));
                 socket.disconnect();
-            }catch (Exception e){
-                Log.info("Got send error:");
-                listener.accept(new PingResult("Failed to connect."));
-                e.printStackTrace();
-            }
+            }catch (Exception ignored){}
         });
     }
 
