@@ -20,6 +20,8 @@ import sx.blah.discord.handle.obj.IUser;
 import sx.blah.discord.util.EmbedBuilder;
 
 import java.awt.*;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Timer;
@@ -62,8 +64,12 @@ public class Messages {
 
             net.run(Net.timeout, () -> {
                 //clear old messages
-                client.getGuildByID(guildID).getChannelByID(serverChannelID).getFullMessageHistory().bulkDelete();
+                try{
+                    client.getGuildByID(guildID).getChannelByID(serverChannelID).getFullMessageHistory().bulkDelete();
+                }catch(Throwable ignored){}
+
                 messages.channel = client.getGuildByID(guildID).getChannelByID(serverChannelID);
+                messages.text("*Last Updated: {0}*", DateTimeFormatter.ofPattern("dd MMM yyyy HH:mm:ss").format(LocalDateTime.now()));
 
                 //send new messages
                 for(PingResult result : results){
