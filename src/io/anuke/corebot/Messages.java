@@ -73,7 +73,7 @@ public class Messages {
 
                 //send new messages
                 for(PingResult result : results){
-                    if(result.valid){
+                    if(!result.valid){
                         messages.err(result.ip, "Server offline.");
                     }else{
                         messages.info(result.ip, "Host: {0}\nPlayers: {1}\nMap: {2}\nWave: {3}\nVersion: {4}\nPing: {5}ms",
@@ -82,7 +82,7 @@ public class Messages {
                 }
 
             });
-        }, 120, 60, TimeUnit.SECONDS);
+        }, 60, 60, TimeUnit.SECONDS);
     }
 
     @EventSubscriber
