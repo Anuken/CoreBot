@@ -69,16 +69,18 @@ public class Messages {
                 }catch(Throwable ignored){}
 
                 messages.channel = client.getGuildByID(guildID).getChannelByID(serverChannelID);
-                messages.text("*Last Updated: {0}*", DateTimeFormatter.ofPattern("dd MMM yyyy HH:mm:ss").format(LocalDateTime.now()));
 
                 StringBuilder builder = new StringBuilder();
+
+                builder.append(Strings.formatArgs("*Last Updated: {0}*\n\n", DateTimeFormatter.ofPattern("dd MMM yyyy HH:mm:ss").format(LocalDateTime.now())));
+
 
                 //send new messages
                 for(PingResult result : results){
                     if(!result.valid){
-                        builder.append(Strings.formatArgs("**{0}** // `offline`", result.ip));
+                        builder.append(Strings.formatArgs("|**{0}** // `offline`", result.ip));
                     }else{
-                        builder.append(Strings.formatArgs("***{0}***\n*Players:* {1}\n*Map:* {2}\n*Wave:* {3}\n*Version:* {4}\n*Ping:* {5}ms",
+                        builder.append(Strings.formatArgs("|***{0}***\n|*Players:* {1}\n|*Map:* {2}\n|*Wave:* {3}\n|*Version:* {4}\n|*Ping:* {5}ms",
                             result.ip, result.players, result.map, result.wave, result.version, result.ping));
                     }
 
