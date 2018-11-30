@@ -28,9 +28,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
-import static io.anuke.corebot.CoreBot.messages;
-import static io.anuke.corebot.CoreBot.net;
-import static io.anuke.corebot.CoreBot.prefs;
+import static io.anuke.corebot.CoreBot.*;
 
 public class Messages {
     IDiscordClient client;
@@ -59,25 +57,23 @@ public class Messages {
             List<PingResult> results = new CopyOnWriteArrayList<>();
 
             for(String server : prefs.getArray("servers")){
-                net.pingServer(server, result -> {
-                    if(result.valid) results.add(result);
-                });
+                net.pingServer(server, results::add);
             }
 
             net.run(Net.timeout, () -> {
-                String result;
-                if(results.isEmpty()){
-                    result = "All known servers are offline.";
-                }else{
-                    StringBuilder s = new StringBuilder();
-                    for(PingResult r : results){
-                        s.append("*").append(r.ip).append("* **/** ").append(r.players).append(" players ").append(" **/** ").append(r.version).append("\n");
-                    }
-                    result = s.toString();
-                }
+                //clear old messages
+                client.getGuildByID(guildID).getChannelByID(serverChannelID).getFullMessageHistory().bulkDelete();
+                messages.channel = client.getGuildByID(guildID).getChannelByID(serverChannelID);
 
-                client.getGuilds().stream().filter(g -> g.getName().equals("Mindustry")).findFirst().orElseThrow(() -> new RuntimeException("Guild not found"))
-                            .getChannelByID(CoreBot.multiplayerChannelID).changeTopic("**Server List:**\n\n" + result + "\n\n*This list is automatically updated every minute.*");
+                //send new messages
+                for(PingResult result : results){
+                    if(result.valid){
+                        messages.err(result.ip, "Server offline.");
+                    }else{
+                        messages.info(result.ip, "Host: {0}\nPlayers: {1}\nMap: {2}\nWave: {3}\nVersion: {4}\nPing: {5}ms",
+                            result.host, result.players, result.map, result.wave, result.version, result.ping);
+                    }
+                }
 
             });
         }, 120, 60, TimeUnit.SECONDS);

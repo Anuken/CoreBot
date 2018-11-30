@@ -38,5 +38,5 @@ task dist(type: Jar) {
 dependencies {
 	compile 'com.github.austinv11:Discord4j:2.9.3'
 	compile 'org.xerial:sqlite-jdbc:3.21.0'
-	compile 'com.github.anuken:ucore:0a15aeb'
+	compile 'com.github.anuken:ucore:3dfb820142a0fc583ad19413a24fc5038aa29d89'
 }
