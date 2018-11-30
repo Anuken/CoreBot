@@ -65,11 +65,7 @@ public class Messages {
             net.run(Net.timeout, () -> {
                 results.sort((a, b) -> a.valid && !b.valid ? 1 : !a.valid && b.valid ? -1 : a.ip.compareTo(b.ip));
 
-                //clear old messages
-                try{
-                    client.getGuildByID(guildID).getChannelByID(serverChannelID).getFullMessageHistory().bulkDelete();
-                }catch(Throwable ignored){}
-
+                IMessage[] arr = client.getGuildByID(guildID).getChannelByID(serverChannelID).getFullMessageHistory().asArray();
                 messages.channel = client.getGuildByID(guildID).getChannelByID(serverChannelID);
 
                 StringBuilder builder = new StringBuilder();
@@ -88,7 +84,11 @@ public class Messages {
                     builder.append("\n");
                 }
 
-                messages.text(builder.toString());
+                if(arr.length == 0){
+                    messages.text(builder.toString());
+                }else{
+                    arr[0].edit(builder.toString());
+                }
 
             });
         }, 10, 60, TimeUnit.SECONDS);
