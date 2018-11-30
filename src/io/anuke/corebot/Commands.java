@@ -84,32 +84,8 @@ public class Commands {
         });
 
         handler.register("servers", "Displays all known online servers.", args -> {
-            if(!messages.lastMessage.getChannel().getName().equalsIgnoreCase("bots")){
-                messages.err("Use this command in #bots.");
-                messages.deleteMessages();
-                return;
-            }
-
-            List<PingResult> results = new CopyOnWriteArrayList<>();
-
-            for(String server : prefs.getArray("servers")){
-                net.pingServer(server, result -> {
-                    if(result.valid) results.add(result);
-                });
-            }
-
-            net.run(Net.timeout, () -> {
-                if(results.isEmpty()){
-                    messages.err("No servers found.", "All known servers are offline.");
-                }else{
-                    StringBuilder s = new StringBuilder();
-                    for(PingResult r : results){
-                        s.append("**").append(r.ip).append("** **/** ").append(r.players).append(" players ").append(" **/** ").append(r.version).append(" `[").append(r.ping).append("ms]`\n");
-                    }
-                    s.append("\n\n*Note: You can see an automatically updated list of servers in the <#402527137229438996> channel topic.*");
-                    messages.info("Online Servers", s.toString());
-                }
-            });
+            messages.err("This command has been replaced by the #servers channel.");
+            messages.deleteMessages();
         });
 
         handler.register("postmap", "<mapname> [description...]", "Post a map to the #maps channel.", args -> {
