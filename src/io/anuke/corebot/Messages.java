@@ -63,6 +63,8 @@ public class Messages {
             }
 
             net.run(Net.timeout, () -> {
+                results.sort((a, b) -> a.valid && !b.valid ? 1 : !a.valid && b.valid ? -1 : a.ip.compareTo(b.ip));
+
                 //clear old messages
                 try{
                     client.getGuildByID(guildID).getChannelByID(serverChannelID).getFullMessageHistory().bulkDelete();
@@ -73,7 +75,6 @@ public class Messages {
                 StringBuilder builder = new StringBuilder();
 
                 builder.append(Strings.formatArgs("*Last Updated: {0}*\n\n", DateTimeFormatter.ofPattern("dd MMM yyyy HH:mm:ss").format(LocalDateTime.now())));
-
 
                 //send new messages
                 for(PingResult result : results){
