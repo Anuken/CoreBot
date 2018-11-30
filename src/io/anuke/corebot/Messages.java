@@ -85,7 +85,7 @@ public class Messages {
                             result.ip, result.players, result.map, result.wave, result.version, result.ping));
                     }
 
-                    builder.append("\n\n");
+                    builder.append("\n");
                 }
 
                 messages.text(builder.toString());
