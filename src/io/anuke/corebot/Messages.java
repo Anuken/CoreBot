@@ -79,9 +79,9 @@ public class Messages {
                 //send new messages
                 for(PingResult result : results){
                     if(!result.valid){
-                        builder.append(Strings.formatArgs("|  **{0}** // `offline`", result.ip));
+                        builder.append(Strings.formatArgs("```diff\n{0}\n- offline```", result.ip));
                     }else{
-                        builder.append(Strings.formatArgs("|  ***{0}***\n|  *Players:* {1}\n|  *Map:* {2}\n|  *Wave:* {3}\n|  *Version:* {4}\n|  *Ping:* {5}ms",
+                        builder.append(Strings.formatArgs("```http\n{0}\n\nPlayers: {1}\nMap: {2}\nWave: {3}\nVersion: {4}\nPing: {5}ms",
                             result.ip, result.players, result.map, result.wave, result.version, result.ping));
                     }
 
