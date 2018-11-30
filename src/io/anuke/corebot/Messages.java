@@ -70,7 +70,7 @@ public class Messages {
 
                 StringBuilder builder = new StringBuilder();
 
-                builder.append(Strings.formatArgs("*Last Updated: {0}*\n\n", DateTimeFormatter.ofPattern("dd MMM yyyy HH:mm:ss").format(LocalDateTime.now())));
+                builder.append(Strings.formatArgs("*Last Updated: {0} UTC*\n\n", DateTimeFormatter.ofPattern("dd MMM yyyy HH:mm:ss XXXX").format(LocalDateTime.now())));
 
                 //send new messages
                 for(PingResult result : results){
