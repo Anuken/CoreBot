@@ -79,7 +79,9 @@ public class Net {
                 ByteBuffer buffer = ByteBuffer.wrap(packet.getData());
                 listener.accept(readServerData(buffer, ip, System.currentTimeMillis() - start));
                 socket.disconnect();
-            }catch (Exception ignored){}
+            }catch (Exception ignored){
+                listener.accept(new PingResult(ip, "Timed out."));
+            }
         });
     }
 
@@ -171,6 +173,12 @@ public class Net {
         String ip;
         String version;
         long ping;
+
+        public PingResult(String ip, String error) {
+            this.valid = false;
+            this.error = error;
+            this.ip = ip;
+        }
 
         public PingResult(String error) {
             this.valid = false;
