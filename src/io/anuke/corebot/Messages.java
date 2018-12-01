@@ -20,7 +20,7 @@ import sx.blah.discord.handle.obj.IUser;
 import sx.blah.discord.util.EmbedBuilder;
 
 import java.awt.*;
-import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.List;
@@ -70,7 +70,7 @@ public class Messages {
 
                 StringBuilder builder = new StringBuilder();
 
-                builder.append(Strings.formatArgs("*Last Updated: {0}*\n\n", DateTimeFormatter.ofPattern("dd MMM yyyy HH:mm:ss").format(LocalDateTime.now())));
+                builder.append(Strings.formatArgs("*Last Updated: {0}UTC*\n\n", DateTimeFormatter.ofPattern("dd MMM yyyy HH:mm:ss Z").format(ZonedDateTime.now())));
 
                 //send new messages
                 for(PingResult result : results){
