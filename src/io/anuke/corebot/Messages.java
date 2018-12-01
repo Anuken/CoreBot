@@ -12,7 +12,6 @@ import sx.blah.discord.api.events.EventSubscriber;
 import sx.blah.discord.api.internal.json.objects.EmbedObject;
 import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedEvent;
 import sx.blah.discord.handle.impl.events.guild.member.UserJoinEvent;
-import sx.blah.discord.handle.impl.obj.Guild;
 import sx.blah.discord.handle.obj.IChannel;
 import sx.blah.discord.handle.obj.IGuild;
 import sx.blah.discord.handle.obj.IMessage;
@@ -20,9 +19,8 @@ import sx.blah.discord.handle.obj.IUser;
 import sx.blah.discord.util.EmbedBuilder;
 
 import java.awt.*;
-import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -32,7 +30,7 @@ import java.util.concurrent.TimeUnit;
 
 import static io.anuke.corebot.CoreBot.*;
 
-public class Messages {
+public class Messages{
     IDiscordClient client;
     IChannel channel;
     IUser lastUser;
@@ -70,7 +68,7 @@ public class Messages {
 
                 StringBuilder builder = new StringBuilder();
 
-                builder.append(Strings.formatArgs("*Last Updated: {0}*\n\n", DateTimeFormatter.ofPattern("dd MMM yyyy HH:mm:ss").format(LocalDateTime.now())));
+                builder.append(Strings.formatArgs("*Last Updated: {0}*\n\n", DateTimeFormatter.ofPattern("dd MMM yyyy HH:mm:ss ZZZZ").format(ZonedDateTime.now())));
 
                 //send new messages
                 for(PingResult result : results){
@@ -78,7 +76,7 @@ public class Messages {
                         builder.append(Strings.formatArgs("```diff\n{0}\n- offline```", result.ip));
                     }else{
                         builder.append(Strings.formatArgs("```http\n{0}\n\nPlayers: {1}\nMap: {2}\nWave: {3}\nVersion: {4}\nPing: {5}ms```",
-                            result.ip, result.players, result.map, result.wave, result.version, result.ping));
+                        result.ip, result.players, result.map, result.wave, result.version, result.ping));
                     }
 
                     builder.append("\n");
@@ -108,11 +106,11 @@ public class Messages {
         }
 
         event.getUser().getOrCreatePMChannel().sendMessage(
-            "**Welcome to the Mindustry Discord.**" +
-            "\n\n*Make sure you read #rules and the channel topics before posting.*\n\n" +
-            "**For a list of public servers**, see `!servers` in #bots.\n" +
-            "**For info on how to play with friends**, see `!info multiplayer` in #bots.\n" +
-            "**If you need info on the dedicated server**, see `!info server` in #bots.\n"
+        "**Welcome to the Mindustry Discord.**" +
+        "\n\n*Make sure you read #rules and the channel topics before posting.*\n\n" +
+        "**For a list of public servers**, see `!servers` in #bots.\n" +
+        "**For info on how to play with friends**, see `!info multiplayer` in #bots.\n" +
+        "**If you need info on the dedicated server**, see `!info server` in #bots.\n"
         );
     }
 
@@ -126,10 +124,10 @@ public class Messages {
         while(true){
             String current = text.substring(0, Math.min(maxLength, text.length()));
             client.getGuildByID(CoreBot.guildID)
-                .getChannelsByName("announcements").get(0)
-                .sendMessage(new EmbedBuilder()
-                .withColor(normalColor).withTitle(info.name)
-                .appendDesc(current).build());
+            .getChannelsByName("announcements").get(0)
+            .sendMessage(new EmbedBuilder()
+            .withColor(normalColor).withTitle(info.name)
+            .appendDesc(current).build());
 
             if(text.length() < maxLength){
                 return;
@@ -142,28 +140,24 @@ public class Messages {
     public void deleteMessages(){
         IMessage last = lastMessage, lastSent = lastSentMessage;
 
-        new Timer().schedule(
-            new TimerTask() {
-                @Override
-                public void run() {
-                    last.delete();
-                    lastSent.delete();
-                }
-            }, CoreBot.messageDeleteTime
-        );
+        new Timer().schedule(new TimerTask(){
+            @Override
+            public void run(){
+                last.delete();
+                lastSent.delete();
+            }
+        }, CoreBot.messageDeleteTime);
     }
 
     public void deleteMessage(){
         IMessage last = lastSentMessage;
 
-        new Timer().schedule(
-            new TimerTask() {
-                @Override
-                public void run() {
-                    last.delete();
-                }
-            }, CoreBot.messageDeleteTime
-        );
+        new Timer().schedule(new TimerTask(){
+            @Override
+            public void run(){
+                last.delete();
+            }
+        }, CoreBot.messageDeleteTime);
     }
 
     public void sendCrash(JsonValue value){
@@ -194,7 +188,7 @@ public class Messages {
 
     public void info(String title, String text, Object... args){
         EmbedObject object = new EmbedBuilder()
-                .appendField(title, format(text, args), true).withColor(normalColor).build();
+        .appendField(title, format(text, args), true).withColor(normalColor).build();
         lastSentMessage = channel.sendMessage(object);
     }
 
@@ -204,12 +198,12 @@ public class Messages {
 
     public void err(String title, String text, Object... args){
         EmbedObject object = new EmbedBuilder()
-                .appendField(title, format(text, args), true).withColor(errorColor).build();
+        .appendField(title, format(text, args), true).withColor(errorColor).build();
         lastSentMessage = channel.sendMessage(object);
     }
 
     private String format(String text, Object... args){
-        for(int i = 0; i < args.length; i ++){
+        for(int i = 0; i < args.length; i++){
             text = text.replace("{" + i + "}", String.valueOf(args[i]));
         }
 

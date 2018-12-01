@@ -2,8 +2,6 @@ package io.anuke.corebot;
 
 import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.JsonValue;
-import com.badlogic.gdx.utils.JsonValue.PrettyPrintSettings;
-import com.badlogic.gdx.utils.JsonWriter.OutputType;
 import com.sun.net.httpserver.HttpServer;
 import io.anuke.ucore.util.Log;
 

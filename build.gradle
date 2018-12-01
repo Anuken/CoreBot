@@ -5,7 +5,7 @@ project.ext.mainClassName = "io.anuke.corebot.CoreBot"
 sourceCompatibility = 1.8
 version = '1.0'
 
-sourceSets.main.java.srcDirs = [ "src/" ]
+sourceSets.main.java.srcDirs = ["src/"]
 
 repositories {
     mavenLocal()
@@ -17,7 +17,7 @@ repositories {
 }
 
 task run(dependsOn: classes, type: JavaExec) {
-    if(project.hasProperty("token")) systemProperty "token", project.getProperty("token")
+    if (project.hasProperty("token")) systemProperty "token", project.getProperty("token")
     main = project.mainClassName
     classpath = sourceSets.main.runtimeClasspath
     standardInput = System.in
@@ -27,8 +27,8 @@ task run(dependsOn: classes, type: JavaExec) {
 task dist(type: Jar) {
     from files(sourceSets.main.output.classesDirs)
     from files(sourceSets.main.output.resourcesDir)
-    from {configurations.compile.collect {zipTree(it)}}
- 
+    from { configurations.compile.collect { zipTree(it) } }
+
     manifest {
         attributes 'Main-Class': project.mainClassName
     }
@@ -36,7 +36,7 @@ task dist(type: Jar) {
 
 
 dependencies {
-	compile 'com.github.austinv11:Discord4j:2.9.3'
-	compile 'org.xerial:sqlite-jdbc:3.21.0'
-	compile 'com.github.anuken:ucore:3dfb820142a0fc583ad19413a24fc5038aa29d89'
+    compile 'com.github.austinv11:Discord4j:2.9.3'
+    compile 'org.xerial:sqlite-jdbc:3.21.0'
+    compile 'com.github.anuken:ucore:3dfb820142a0fc583ad19413a24fc5038aa29d89'
 }

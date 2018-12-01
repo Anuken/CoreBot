@@ -17,13 +17,13 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 
-public class Net {
+public class Net{
     public static final int timeout = 2000;
 
     public Net(){
         Executors.newSingleThreadScheduledExecutor().scheduleAtFixedRate(() ->
         getChangelog(list -> {
-            try {
+            try{
                 VersionInfo latest = list.first();
 
                 int lastVersion = getLastBuild();
@@ -36,7 +36,7 @@ public class Net {
                     CoreBot.prefs.put("lastBuild", latest.build + "");
                 }
 
-            }catch (Exception e){
+            }catch(Exception e){
                 e.printStackTrace();
             }
         }, Log::err), 60, 240, TimeUnit.SECONDS);
@@ -47,11 +47,11 @@ public class Net {
     }
 
     public String getText(String url){
-        try {
+        try{
             HttpURLConnection connection = (HttpURLConnection) new URL(url).openConnection();
             connection.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/56.0.2924.87 Safari/537.36");
             return IOUtils.toString(connection.getInputStream(), Charset.defaultCharset());
-        }catch (Exception e){
+        }catch(Exception e){
             throw new RuntimeException(e);
         }
     }
@@ -79,14 +79,14 @@ public class Net {
                 ByteBuffer buffer = ByteBuffer.wrap(packet.getData());
                 listener.accept(readServerData(buffer, ip, System.currentTimeMillis() - start));
                 socket.disconnect();
-            }catch (Exception ignored){
+            }catch(Exception ignored){
                 listener.accept(new PingResult(ip, "Timed out."));
             }
         });
     }
 
     public void getChangelog(Consumer<Array<VersionInfo>> success, Consumer<Throwable> fail){
-        try {
+        try{
             URL url = new URL(CoreBot.releasesURL);
             URLConnection con = url.openConnection();
             InputStream in = con.getInputStream();
@@ -105,7 +105,7 @@ public class Net {
                 out.add(new VersionInfo(name, description, id, build));
             }
             success.accept(out);
-        }catch (Exception e){
+        }catch(Exception e){
             fail.accept(e);
         }
     }
@@ -114,7 +114,7 @@ public class Net {
         public final String name, description;
         public final int id, build;
 
-        public VersionInfo(String name, String description, int id, int build) {
+        public VersionInfo(String name, String description, int id, int build){
             this.name = name;
             this.description = description;
             this.id = id;
@@ -122,25 +122,25 @@ public class Net {
         }
 
         @Override
-        public String toString() {
+        public String toString(){
             return "VersionInfo{" +
-                    "name='" + name + '\'' +
-                    ", description='" + description + '\'' +
-                    ", id=" + id +
-                    ", build=" + build +
-                    '}';
+            "name='" + name + '\'' +
+            ", description='" + description + '\'' +
+            ", id=" + id +
+            ", build=" + build +
+            '}';
         }
     }
 
     public void run(long delay, Runnable r){
         new Timer().schedule(
-                new TimerTask() {
-                    @Override
-                    public void run() {
-                        r.run();
-                    }
-                },
-                delay
+        new TimerTask(){
+            @Override
+            public void run(){
+                r.run();
+            }
+        },
+        delay
         );
     }
 
@@ -174,18 +174,18 @@ public class Net {
         String version;
         long ping;
 
-        public PingResult(String ip, String error) {
+        public PingResult(String ip, String error){
             this.valid = false;
             this.error = error;
             this.ip = ip;
         }
 
-        public PingResult(String error) {
+        public PingResult(String error){
             this.valid = false;
             this.error = error;
         }
 
-        public PingResult(String ip, long ping, String players, String host, String map, String wave, String version) {
+        public PingResult(String ip, long ping, String players, String host, String map, String wave, String version){
             this.ping = ping;
             this.ip = ip;
             this.valid = true;
