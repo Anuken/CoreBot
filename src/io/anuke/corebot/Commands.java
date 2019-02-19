@@ -128,12 +128,13 @@ public class Commands{
                 Map map = maps.parseMap(net.download(a.getUrl()));
                 new File("maps/").mkdir();
                 File mapFile = new File("maps/" + a.getFilename());
-                File imageFile = new File("maps/image_" + a.getFilename() + ".png");
+                File imageFile = new File("maps/image_" + a.getFilename().replace(".mmap", ".png"));
                 IOUtils.copy(net.download(a.getUrl()), new FileOutputStream(mapFile));
                 ImageIO.write(map.image, "png", imageFile);
 
                 EmbedBuilder builder = new EmbedBuilder().withColor(messages.normalColor).withColor(messages.normalColor)
-                .withAuthorName(messages.lastUser.getName()).withImage("file://" + imageFile).withTitle(map.name == null ? a.getFilename().replace(".mmap", "") : map.name)
+                .withThumbnail("attachment://" + imageFile.getName())
+                .withAuthorName(messages.lastUser.getName()).withTitle(map.name == null ? a.getFilename().replace(".mmap", "") : map.name)
                 .withAuthorIcon(messages.lastUser.getAvatarURL());
 
                 if(map.description != null) builder.withFooterText(map.description);
