@@ -80,10 +80,10 @@ public class Maps{
                 }
             }
 
-            BufferedImage out = new BufferedImage(width*2, height*2, BufferedImage.TYPE_INT_ARGB);
-            java.awt.Graphics2D g = out.createGraphics();
-            g.drawImage(map.image, 0, 0, out.getWidth(), out.getHeight(), null);
-            map.image = out;
+            //BufferedImage out = new BufferedImage(width*2, height*2, BufferedImage.TYPE_INT_ARGB);
+            //java.awt.Graphics2D g = out.createGraphics();
+            //g.drawImage(map.image, 0, 0, out.getWidth(), out.getHeight(), null);
+            //map.image = out;
 
             return map;
         }
