@@ -60,8 +60,10 @@ public class Maps{
                 mapping.put(id, blockNames.get(name, 0));
             }
 
-            int width = stream.readInt();
-            int height = stream.readInt();
+            int width = stream.readShort();
+            int height = stream.readShort();
+
+            if(width > 1024 || height > 1024) throw new IllegalArgumentException("Map size too large: " + width + " " + height);
 
             map.image = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
 
