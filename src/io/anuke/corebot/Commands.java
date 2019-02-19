@@ -142,6 +142,7 @@ public class Commands{
 
                 messages.text("*Map posted successfully.*");
             }catch(Exception e){
+                e.printStackTrace();
                 messages.err("Error parsing map.");
                 messages.deleteMessages();
             }
