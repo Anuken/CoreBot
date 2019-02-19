@@ -139,7 +139,7 @@ public class Commands{
 
                 if(map.description != null) builder.withFooterText(map.description);
 
-                messages.channel.getGuild().getChannelsByName("bots").get(0)
+                messages.channel.getGuild().getChannelsByName("secret-bot-testing").get(0)
                 .sendFiles(builder.build(), mapFile, imageFile);
 
                 messages.text("*Map posted successfully.*");

@@ -76,7 +76,7 @@ public class Maps{
                     int id = wall <= 1 ? ground : wall;
                     int color = blockColors[id];
                     tmp.set(color);
-                    map.image.setRGB(x, y, Color.argb8888(tmp));
+                    map.image.setRGB(width - 1 - x, y, Color.argb8888(tmp));
                 }
             }
 
