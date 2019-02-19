@@ -128,7 +128,7 @@ public class Commands{
                 Map map = maps.parseMap(net.download(a.getUrl()));
                 new File("maps/").mkdir();
                 File mapFile = new File("maps/" + a.getFilename());
-                File imageFile = new File("maps/image_" + a.getFilename());
+                File imageFile = new File("maps/image_" + a.getFilename() + ".png");
                 IOUtils.copy(net.download(a.getUrl()), new FileOutputStream(mapFile));
                 ImageIO.write(map.image, "png", imageFile);
 
