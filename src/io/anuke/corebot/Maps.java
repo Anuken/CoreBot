@@ -8,6 +8,7 @@ import io.anuke.arc.util.Pack;
 
 import java.io.*;
 import java.awt.image.BufferedImage;
+import java.util.zip.InflaterInputStream;
 
 public class Maps{
     int[] teamColors;
@@ -15,7 +16,7 @@ public class Maps{
     ObjectIntMap<String> blockNames = new ObjectIntMap<>();
 
     public Maps(){
-        try(DataInputStream stream = new DataInputStream(new FileInputStream("mapping.dat"))){
+        try(DataInputStream stream = new DataInputStream(new InflaterInputStream(new FileInputStream("mapping.dat")))){
             teamColors = new int[stream.readByte()];
             for(int i = 0; i < teamColors.length; i++){
                 teamColors[i] = stream.readInt();
