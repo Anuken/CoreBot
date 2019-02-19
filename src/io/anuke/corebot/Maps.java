@@ -69,14 +69,14 @@ public class Maps{
 
             Color tmp = new Color();
 
-            for(int x = 0; x < width; x ++){
-                for(int y = 0; y < height; y ++){
+            for(int y = 0; y < height; y ++){
+                for(int x = 0; x < width; x ++){
                     int ground = mapping.get(stream.readByte(), 0), wall = mapping.get(stream.readByte(), 0), team = Pack.rightByte(stream.readByte()), unused1 = stream.readByte(), unused2 = stream.readByte();
 
                     int id = wall <= 1 ? ground : wall;
                     int color = blockColors[id];
                     tmp.set(color);
-                    map.image.setRGB(width - 1 - x, y, Color.argb8888(tmp));
+                    map.image.setRGB(x, y, Color.argb8888(tmp));
                 }
             }
 
