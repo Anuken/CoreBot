@@ -4,6 +4,7 @@ import io.anuke.arc.collection.IntIntMap;
 import io.anuke.arc.collection.ObjectIntMap;
 import io.anuke.arc.collection.ObjectMap;
 import io.anuke.arc.graphics.Color;
+import io.anuke.arc.util.Log;
 import io.anuke.arc.util.Pack;
 
 import java.io.*;
@@ -18,11 +19,16 @@ public class Maps{
     public Maps(){
         try(DataInputStream stream = new DataInputStream(new InflaterInputStream(new FileInputStream("mapping.dat")))){
             teamColors = new int[stream.readByte()];
+            Log.info("team: " + teamColors.length);
             for(int i = 0; i < teamColors.length; i++){
                 teamColors[i] = stream.readInt();
+                Log.info("color: " + new Color(teamColors[i]));
             }
 
-            blockColors = new int[stream.readByte()];
+            byte blocks = stream.readByte();
+            Log.info("blocks: " + blocks);
+
+            blockColors = new int[blocks];
             for(int i = 0; i < blockColors.length; i++){
                 int color = stream.readInt();
                 String name = stream.readUTF();
