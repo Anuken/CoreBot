@@ -133,13 +133,13 @@ public class Commands{
                 ImageIO.write(map.image, "png", imageFile);
 
                 EmbedBuilder builder = new EmbedBuilder().withColor(messages.normalColor).withColor(messages.normalColor)
-                .withThumbnail("attachment://" + imageFile.getName())
+                .withImage("attachment://" + imageFile.getName())
                 .withAuthorName(messages.lastUser.getName()).withTitle(map.name == null ? a.getFilename().replace(".mmap", "") : map.name)
                 .withAuthorIcon(messages.lastUser.getAvatarURL());
 
                 if(map.description != null) builder.withFooterText(map.description);
 
-                messages.channel.getGuild().getChannelsByName("maps").get(0)
+                messages.channel.getGuild().getChannelsByName("secret-bot-testing").get(0)
                 .sendFiles(builder.build(), mapFile, imageFile);
 
                 messages.text("*Map posted successfully.*");
