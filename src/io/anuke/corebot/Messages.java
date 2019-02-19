@@ -1,10 +1,10 @@
 package io.anuke.corebot;
 
-import com.badlogic.gdx.utils.JsonValue;
+import io.anuke.arc.util.Log;
+import io.anuke.arc.util.Strings;
+import io.anuke.arc.util.serialization.JsonValue;
 import io.anuke.corebot.Net.PingResult;
 import io.anuke.corebot.Net.VersionInfo;
-import io.anuke.ucore.util.Log;
-import io.anuke.ucore.util.Strings;
 import sx.blah.discord.api.ClientBuilder;
 import sx.blah.discord.api.IDiscordClient;
 import sx.blah.discord.api.events.EventDispatcher;

@@ -1,7 +1,7 @@
 package io.anuke.corebot;
 
-import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.Json;
+import io.anuke.arc.collection.Array;
+import io.anuke.arc.util.serialization.Json;
 
 import java.io.File;
 import java.io.FileInputStream;

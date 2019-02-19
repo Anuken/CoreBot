@@ -18,6 +18,7 @@ public class CoreBot{
     public static Net net = new Net();
     public static Prefs prefs = new Prefs(prefsFile);
     public static Reports reports = new Reports();
+    public static Maps maps = new Maps();
 
     public static void main(String[] args){
         new CoreBot();

@@ -1,16 +1,21 @@
 package io.anuke.corebot;
 
-import com.badlogic.gdx.utils.Array;
-import io.anuke.ucore.util.CommandHandler;
-import io.anuke.ucore.util.CommandHandler.Command;
-import io.anuke.ucore.util.CommandHandler.Response;
-import io.anuke.ucore.util.CommandHandler.ResponseType;
-import io.anuke.ucore.util.Mathf;
+import io.anuke.arc.collection.Array;
+import io.anuke.arc.util.CommandHandler;
+import io.anuke.arc.util.CommandHandler.Command;
+import io.anuke.arc.util.CommandHandler.Response;
+import io.anuke.arc.util.CommandHandler.ResponseType;
+import io.anuke.arc.math.Mathf;
+import io.anuke.corebot.Maps.Map;
+import org.apache.commons.io.IOUtils;
 import sx.blah.discord.handle.obj.IMessage;
 import sx.blah.discord.handle.obj.IMessage.Attachment;
 import sx.blah.discord.handle.obj.IUser;
 import sx.blah.discord.util.EmbedBuilder;
 
+import javax.imageio.ImageIO;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.Arrays;
@@ -21,7 +26,7 @@ public class Commands{
     private final String prefix = "!";
     private CommandHandler handler = new CommandHandler(prefix);
     private CommandHandler adminHandler = new CommandHandler(prefix);
-    private String[] warningStrings = {"once", "twice", "thrice", "more than thrice"};
+    private String[] warningStrings = {"once", "twice", "thrice", "too many times"};
 
     Commands(){
         handler.register("help", "Displays all bot commands.", args -> {
@@ -77,16 +82,11 @@ public class Commands{
             }
         });
 
-        handler.register("servers", "Displays all known online servers.", args -> {
-            messages.err("This command has been replaced by the #servers channel.");
-            messages.deleteMessages();
-        });
-
-        handler.register("postmap", "<mapname> [description...]", "Post a map to the #maps channel.", args -> {
+        handler.register("postimagemap", "<mapname> [description...]", "Post an image (3.5) map to the #maps channel.", args -> {
             IMessage message = messages.lastMessage;
 
-            if(message.getAttachments().size() != 1){
-                messages.err("You must post an image in the same message as the command!");
+            if(message.getAttachments().size() != 1 || !message.getAttachments().get(0).getFilename().endsWith(".png")){
+                messages.err("You must post a .png image in the same message as the command!");
                 messages.deleteMessages();
                 return;
             }
@@ -109,6 +109,40 @@ public class Commands{
                 messages.text("*Map posted successfully.*");
             }catch(Exception e){
                 messages.err("Invalid username format.");
+                messages.deleteMessages();
+            }
+        });
+
+        handler.register("postmap", "Post a mmap file to the #maps channel.", args -> {
+            IMessage message = messages.lastMessage;
+
+            if(message.getAttachments().size() != 1 || !message.getAttachments().get(0).getFilename().endsWith(".mmap")){
+                messages.err("You must have one .mmap file in the same message as the command!");
+                messages.deleteMessages();
+                return;
+            }
+
+            Attachment a = message.getAttachments().get(0);
+
+            try{
+                Map map = maps.parseMap(net.download(a.getUrl()));
+                File mapFile = new File("maps/" + a.getFilename());
+                File imageFile = new File("maps/mage_" + a.getFilename());
+                IOUtils.copy(net.download(a.getUrl()), new FileOutputStream(mapFile));
+                ImageIO.write(map.image, "png", imageFile);
+
+                EmbedBuilder builder = new EmbedBuilder().withColor(messages.normalColor).withColor(messages.normalColor)
+                .withAuthorName(messages.lastUser.getName()).withTitle(map.name == null ? a.getFilename().replace(".mmap", "") : map.name)
+                .withAuthorIcon(messages.lastUser.getAvatarURL());
+
+                if(map.description != null) builder.withFooterText(map.description);
+
+                messages.channel.getGuild().getChannelsByName("bots").get(0)
+                .sendFiles(builder.build(), imageFile, mapFile);
+
+                messages.text("*Map posted successfully.*");
+            }catch(Exception e){
+                messages.err("Error parsing map.");
                 messages.deleteMessages();
             }
         });
@@ -201,7 +235,7 @@ public class Commands{
     }
 
     void sendReportTemplate(IMessage message){
-        messages.err("**Do not send messages here unless you are reporting an issue!**\nTo report an issue, follow the template provided in **!info issues**.\nTo report a crash, send the crash report text file.");
+        messages.err("**Do not send messages here unless you are reporting an issue!**\nTo report an issue, follow the template provided in **!info bugs**.\nTo report a crash, send the crash report text file.");
         messages.deleteMessages();
     }
 
@@ -239,10 +273,10 @@ public class Commands{
                     arr.removeValue(req, false);
 
                     //special case: don't let people report a build as a version such as 4.0/3.5
-                    if(req.equals("Build:")){
+                    if(req.startsWith("Build:")){
                         String buildText = req.substring("Build:".length());
-                        if(buildText.contains("4.") || buildText.contains("3.")){
-                            messages.err("The build you specified is incorrect!\nWrite **only the build number**, not the version. *(for example, build 47, not 4.0)*.\n*Copy and re-send your message with a corrected report.*");
+                        if(buildText.contains("4.") || buildText.contains("3.") || buildText.toLowerCase().contains("latest")){
+                            messages.err("The build you specified is incorrect!\nWrite **only the build/commit number in the bottom left corner of the menu**, not the version. *(for example, build 47, not 4.0)*.\n*Copy and re-send your message with a corrected report.*");
                             messages.deleteMessages();
                             return;
                         }

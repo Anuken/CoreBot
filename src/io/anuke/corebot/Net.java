@@ -1,10 +1,10 @@
 package io.anuke.corebot;
 
-import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.Json;
-import com.badlogic.gdx.utils.JsonValue;
-import io.anuke.ucore.util.Log;
-import io.anuke.ucore.util.Strings;
+import io.anuke.arc.collection.Array;
+import io.anuke.arc.util.Log;
+import io.anuke.arc.util.Strings;
+import io.anuke.arc.util.serialization.Json;
+import io.anuke.arc.util.serialization.JsonValue;
 import org.apache.commons.io.IOUtils;
 
 import java.io.InputStream;
@@ -44,6 +44,16 @@ public class Net{
 
     public int getLastBuild(){
         return Integer.parseInt(CoreBot.prefs.get("lastBuild", "33"));
+    }
+
+    public InputStream download(String url){
+        try{
+            HttpURLConnection connection = (HttpURLConnection) new URL(url).openConnection();
+            connection.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/56.0.2924.87 Safari/537.36");
+            return connection.getInputStream();
+        }catch(Exception e){
+            throw new RuntimeException(e);
+        }
     }
 
     public String getText(String url){
@@ -139,9 +149,7 @@ public class Net{
             public void run(){
                 r.run();
             }
-        },
-        delay
-        );
+        }, delay);
     }
 
     public PingResult readServerData(ByteBuffer buffer, String ip, long ping){

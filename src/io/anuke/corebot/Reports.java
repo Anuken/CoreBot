@@ -1,9 +1,9 @@
 package io.anuke.corebot;
 
-import com.badlogic.gdx.utils.Json;
-import com.badlogic.gdx.utils.JsonValue;
 import com.sun.net.httpserver.HttpServer;
-import io.anuke.ucore.util.Log;
+import io.anuke.arc.util.Log;
+import io.anuke.arc.util.serialization.Json;
+import io.anuke.arc.util.serialization.JsonValue;
 
 import java.io.DataInputStream;
 import java.net.InetSocketAddress;
