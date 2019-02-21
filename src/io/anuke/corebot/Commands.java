@@ -12,6 +12,7 @@ import sx.blah.discord.handle.obj.IMessage;
 import sx.blah.discord.handle.obj.IMessage.Attachment;
 import sx.blah.discord.handle.obj.IUser;
 import sx.blah.discord.util.EmbedBuilder;
+import sx.blah.discord.util.MessageHistory;
 
 import javax.imageio.ImageIO;
 import java.io.File;
@@ -155,6 +156,16 @@ public class Commands{
                 messages.text("http://lmgtfy.com/?q={0}", URLEncoder.encode(args[0], "UTF-8"));
             }catch(UnsupportedEncodingException e){
                 e.printStackTrace();
+            }
+        });
+
+        adminHandler.register("delete", "<amount>", args -> {
+            try{
+                int number = Integer.parseInt(args[0]) + 1;
+                MessageHistory hist = messages.channel.getMessageHistory(number);
+                hist.bulkDelete();
+            }catch(NumberFormatException e){
+                messages.err("Invalid number.");
             }
         });
 

@@ -10,7 +10,6 @@ import org.apache.commons.io.IOUtils;
 import java.io.InputStream;
 import java.net.*;
 import java.nio.ByteBuffer;
-import java.nio.charset.Charset;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.Executors;
@@ -51,16 +50,6 @@ public class Net{
             HttpURLConnection connection = (HttpURLConnection) new URL(url).openConnection();
             connection.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/56.0.2924.87 Safari/537.36");
             return connection.getInputStream();
-        }catch(Exception e){
-            throw new RuntimeException(e);
-        }
-    }
-
-    public String getText(String url){
-        try{
-            HttpURLConnection connection = (HttpURLConnection) new URL(url).openConnection();
-            connection.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/56.0.2924.87 Safari/537.36");
-            return IOUtils.toString(connection.getInputStream(), Charset.defaultCharset());
         }catch(Exception e){
             throw new RuntimeException(e);
         }
