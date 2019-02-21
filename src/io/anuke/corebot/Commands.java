@@ -159,7 +159,7 @@ public class Commands{
             }
         });
 
-        adminHandler.register("delete", "<amount>", args -> {
+        adminHandler.register("delete", "<amount>", "Delete some messages.", args -> {
             try{
                 int number = Integer.parseInt(args[0]) + 1;
                 MessageHistory hist = messages.channel.getMessageHistory(number);
