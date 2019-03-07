@@ -6,6 +6,7 @@ import io.anuke.arc.util.CommandHandler;
 import io.anuke.arc.util.CommandHandler.Command;
 import io.anuke.arc.util.CommandHandler.Response;
 import io.anuke.arc.util.CommandHandler.ResponseType;
+import io.anuke.arc.util.Log;
 import io.anuke.corebot.Maps.Map;
 import org.apache.commons.io.IOUtils;
 import sx.blah.discord.handle.obj.IMessage;
@@ -331,7 +332,8 @@ public class Commands{
     }
 
     void handle(IMessage message){
-        if(message.getContent() != null && invitePattern.matcher(message.getContent()).find()){
+        if(message.getContent() != null && invitePattern.matcher(message.getContent()).find() && !isAdmin(message.getAuthor())){
+            Log.warn("User {0} just sent a discord invite in {1}.", message.getAuthor().getName(), message.getChannel().getName());
             message.delete();
             message.getAuthor().getOrCreatePMChannel().sendMessage("Do not send invite links in the Mindustry Discord server! Read the rules.");
             return;
