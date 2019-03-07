@@ -1,11 +1,11 @@
 package io.anuke.corebot;
 
 import io.anuke.arc.collection.Array;
+import io.anuke.arc.math.Mathf;
 import io.anuke.arc.util.CommandHandler;
 import io.anuke.arc.util.CommandHandler.Command;
 import io.anuke.arc.util.CommandHandler.Response;
 import io.anuke.arc.util.CommandHandler.ResponseType;
-import io.anuke.arc.math.Mathf;
 import io.anuke.corebot.Maps.Map;
 import org.apache.commons.io.IOUtils;
 import sx.blah.discord.handle.obj.IMessage;
@@ -20,6 +20,7 @@ import java.io.FileOutputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.Arrays;
+import java.util.regex.Pattern;
 
 import static io.anuke.corebot.CoreBot.*;
 
@@ -28,6 +29,7 @@ public class Commands{
     private CommandHandler handler = new CommandHandler(prefix);
     private CommandHandler adminHandler = new CommandHandler(prefix);
     private String[] warningStrings = {"once", "twice", "thrice", "too many times"};
+    private Pattern invitePattern = Pattern.compile("(discord\\.gg/\\w|discordapp\\.com/invite/\\w)");
 
     Commands(){
         handler.register("help", "Displays all bot commands.", args -> {
@@ -329,8 +331,13 @@ public class Commands{
     }
 
     void handle(IMessage message){
-        if(message.getChannel().getLongID() == bugReportChannelID && !message.isSystemMessage()
-        && message.getAuthor().getRolesForGuild(message.getGuild()).stream().noneMatch(role -> role.getName().equals("Developer"))){
+        if(message.getContent() != null && invitePattern.matcher(message.getContent()).find()){
+            message.delete();
+            message.getAuthor().getOrCreatePMChannel().sendMessage("Do not send invite links in the Mindustry Discord server! Read the rules.");
+            return;
+        }
+
+        if(message.getChannel().getLongID() == bugReportChannelID && !message.isSystemMessage() && !isAdmin(message.getAuthor())){
             messages.channel = message.getChannel();
             messages.lastUser = message.getAuthor();
             messages.lastMessage = message;
