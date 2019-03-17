@@ -292,8 +292,16 @@ public class Commands{
                     //special case: don't let people report a build as a version such as 4.0/3.5
                     if(req.startsWith("Build:")){
                         String buildText = req.substring("Build:".length());
+                        String test = buildText.toLowerCase().trim();
+                        String errormessage = null;
                         if(buildText.contains("4.") || buildText.contains("3.") || buildText.toLowerCase().contains("latest")){
-                            messages.err("The build you specified is incorrect!\nWrite **only the build/commit number in the bottom left corner of the menu**, not the version. *(for example, build 47, not 4.0)*.\n*Copy and re-send your message with a corrected report.*");
+                            errormessage = "The build you specified is incorrect!\nWrite **only the build/commit number in the bottom left corner of the menu**, not the version. *(for example, build 47, not 4.0)*.\n*Copy and re-send your message with a corrected report.*";
+                        }else if(test.equals("be") || test.equals("bleeding edge") || test.equals("bleedingedge")){
+                            errormessage = "Invalid bleeding edge version!\n**Only write the bleeding edge version displayed in the bottom left corner of the menu.**\n*Copy and re-send your message with a corrected report.*";
+                        }
+
+                        if(errormessage != null){
+                            messages.err(errormessage);
                             messages.deleteMessages();
                             return;
                         }
