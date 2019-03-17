@@ -290,7 +290,7 @@ public class Commands{
                     arr.removeValue(req, false);
 
                     //special case: don't let people report a build as a version such as 4.0/3.5
-                    if(req.startsWith("Build:")){
+                    if(req.toLowerCase().startsWith("build:")){
                         String buildText = req.substring("Build:".length());
                         String test = buildText.toLowerCase().trim();
                         String errormessage = null;
@@ -302,6 +302,13 @@ public class Commands{
 
                         if(errormessage != null){
                             messages.err(errormessage);
+                            messages.deleteMessages();
+                            return;
+                        }
+                    }else if(req.toLowerCase().startsWith("platform:")){
+                        String platformText = req.substring("Platform:".length()).toLowerCase().trim();
+                        if(!(platformText.contains("windows") || platformText.contains("mac") || platformText.contains("osx") || platformText.contains("linux") || platformText.contains("android") || platformText.contains("ios") || platformText.contains("iphone"))){
+                            messages.err("**Invalid platform: '" + platformText + "'**.\nPlatform must be one of the following: `windows/linux/mac/osx/android/ios`.\n*Copy and re-send your message with a corrected report.*");
                             messages.deleteMessages();
                             return;
                         }
