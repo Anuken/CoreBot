@@ -68,14 +68,14 @@ public class Messages{
 
                 StringBuilder builder = new StringBuilder();
 
-                builder.append(Strings.formatArgs("*Last Updated: {0}*\n\n", DateTimeFormatter.ofPattern("dd MMM yyyy HH:mm:ss ZZZZ").format(ZonedDateTime.now())));
+                builder.append(Strings.format("*Last Updated: {0}*\n\n", DateTimeFormatter.ofPattern("dd MMM yyyy HH:mm:ss ZZZZ").format(ZonedDateTime.now())));
 
                 //send new messages
                 for(PingResult result : results){
                     if(!result.valid){
-                        builder.append(Strings.formatArgs("```diff\n{0}\n- offline```", result.ip));
+                        builder.append(Strings.format("```diff\n{0}\n- offline```", result.ip));
                     }else{
-                        builder.append(Strings.formatArgs("```http\n{0}\n\nPlayers: {1}\nMap: {2}\nWave: {3}\nVersion: {4}\nPing: {5}ms```",
+                        builder.append(Strings.format("```http\n{0}\n\nPlayers: {1}\nMap: {2}\nWave: {3}\nVersion: {4}\nPing: {5}ms```",
                         result.ip, result.players, result.map, result.wave, result.version, result.ping));
                     }
 
