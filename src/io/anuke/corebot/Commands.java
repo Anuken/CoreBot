@@ -81,6 +81,7 @@ public class Commands{
                 Info info = Info.valueOf(args[0]);
                 messages.info(info.title, info.text);
             }catch(IllegalArgumentException e){
+                e.printStackTrace();
                 messages.err("Error", "Invalid topic '{0}'.\nValid topics: *{1}*", args[0], Arrays.toString(Info.values()));
                 messages.deleteMessages();
             }
