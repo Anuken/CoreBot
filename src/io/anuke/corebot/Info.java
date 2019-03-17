@@ -19,10 +19,10 @@ public enum Info{
     "**3.** No NSFW content or politics. This includes NSFW conversations. Take it elsewhere.\n" +
     "**4.** Keep content to the aproppriate text channels.\n" +
     "**5.** Please keep memes to a minimum; don't dump memes. Mindustry-related memes are fine.\n" +
-    "**6.** Please do not post invite links to this server in public places without context. If they have the game, they should be able to join anyway.\n" +
+    "**6.** Please do not post invite links to this server in public places without context.\n" +
     "**7.** Do not ask for roles. If I need a moderator and I think you fit the position, I will ask you personally.\n" +
     "**8.** Do not impersonate other members or intentionally edit your messages to mislead others.\n" +
-    "**9.** Do not cross-post the same message to multiple channels. One channel is enough.\n" +
+    "**9.** Do not cross-post the same message to multiple channels.\n" +
     "**10.** Breaking any of these rules in a non-serious way may result in a warning. 3 warnings is a ban.\n" +
     "*If I don't like your behavior, you're out. Obey the spirit, not the word.*"),
     multiplayer("Multiplayer",
