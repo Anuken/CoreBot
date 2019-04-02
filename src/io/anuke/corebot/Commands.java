@@ -7,6 +7,7 @@ import io.anuke.arc.util.CommandHandler.Command;
 import io.anuke.arc.util.CommandHandler.Response;
 import io.anuke.arc.util.CommandHandler.ResponseType;
 import io.anuke.arc.util.Log;
+import io.anuke.arc.util.Strings;
 import io.anuke.corebot.Maps.Map;
 import org.apache.commons.io.IOUtils;
 import sx.blah.discord.handle.obj.IMessage;
@@ -298,7 +299,9 @@ public class Commands{
                         if(buildText.contains("4.") || buildText.contains("3.") || buildText.toLowerCase().contains("latest")){
                             errormessage = "The build you specified is incorrect!\nWrite **only the build/commit number in the bottom left corner of the menu**, not the version. *(for example, build 47, not 4.0)*.\n*Copy and re-send your message with a corrected report.*";
                         }else if(test.equals("be") || test.equals("bleeding edge") || test.equals("bleedingedge")){
-                            errormessage = "Invalid bleeding edge version!\n**Only write the bleeding edge version displayed in the bottom left corner of the menu.**\n*Copy and re-send your message with a corrected report.*";
+                            errormessage = "Invalid bleeding edge version!\n**Only write the bleeding edge commit number displayed in the bottom left corner of the menu (or the or Jenkins build number).**\n*Copy and re-send your message with a corrected report.*";
+                        }else if(Strings.canParseInt(test) && Integer.parseInt(test) > CoreBot.net.getLastBuild()){
+                            errormessage = "Build " + test + " doesn't exist.\nFor bleeding edge builds, report the commit number, not the build number.";
                         }
 
                         if(errormessage != null){
