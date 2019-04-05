@@ -7,27 +7,14 @@ import io.anuke.arc.util.serialization.JsonValue;
 
 import java.io.DataInputStream;
 import java.net.InetSocketAddress;
-import java.util.HashMap;
-
-import static java.lang.System.currentTimeMillis;
 
 public class Reports{
-    private static final long REQUEST_TIME = 1000 * 10;
 
     public Reports(){
         try{
 
-            HashMap<String, Long> rateLimit = new HashMap<>();
-
             HttpServer server = HttpServer.create(new InetSocketAddress(80), 0);
             server.createContext("/report", t -> {
-                String key = t.getRemoteAddress().getAddress().getHostName();
-                if(rateLimit.get(key) != null && (currentTimeMillis() - rateLimit.get(key)) < REQUEST_TIME){
-                    Log.err("Connection " + key + " is being rate limited!");
-                    return;
-                }
-
-                rateLimit.put(key, currentTimeMillis());
                 byte[] bytes = new byte[t.getRequestBody().available()];
                 new DataInputStream(t.getRequestBody()).readFully(bytes);
 
@@ -37,7 +24,7 @@ public class Reports{
                 int build = value.getInt("build");
 
                 //only the latest build is processed, everything else is skipped
-                if(build == CoreBot.net.getLastBuild()){
+                if(build != -1){
                     CoreBot.messages.sendCrash(value);
                 }else{
                     Log.info("Rejecting report with invalid build: " + build);
