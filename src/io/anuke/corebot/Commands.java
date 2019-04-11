@@ -169,6 +169,7 @@ public class Commands{
                 int number = Integer.parseInt(args[0]) + 1;
                 MessageHistory hist = messages.channel.getMessageHistory(number);
                 hist.bulkDelete();
+                Log.info("Deleted {0} messages.", number);
             }catch(NumberFormatException e){
                 messages.err("Invalid number.");
             }
