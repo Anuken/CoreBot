@@ -351,11 +351,27 @@ public class Commands{
         return message.getContent() == null || message.getContent().isEmpty();
     }
 
-    void handle(IMessage message){
+    boolean checkInvite(IMessage message){
         if(message.getContent() != null && invitePattern.matcher(message.getContent()).find() && !isAdmin(message.getAuthor())){
             Log.warn("User {0} just sent a discord invite in {1}.", message.getAuthor().getName(), message.getChannel().getName());
             message.delete();
             message.getAuthor().getOrCreatePMChannel().sendMessage("Do not send invite links in the Mindustry Discord server! Read the rules.");
+            return true;
+        }
+        return true;
+    }
+
+    void edited(IMessage message, IMessage previous){
+        messages.logTo("**{0}#{1}** just edited a message.\n\n*From*: \"{2}\"\n*To*: \"{3}\"", message.getAuthor().getName(), message.getAuthor().getDiscriminator(), previous.getContent(), message.getContent());
+        checkInvite(message);
+    }
+
+    void deleted(IMessage message){
+        messages.logTo("**{0}#{1}** just deleted a message.\n *Text:* \"{2}\"", message.getContent());
+    }
+
+    void handle(IMessage message){
+        if(checkInvite(message)){
             return;
         }
 

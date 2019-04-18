@@ -10,7 +10,7 @@ import sx.blah.discord.api.IDiscordClient;
 import sx.blah.discord.api.events.EventDispatcher;
 import sx.blah.discord.api.events.EventSubscriber;
 import sx.blah.discord.api.internal.json.objects.EmbedObject;
-import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedEvent;
+import sx.blah.discord.handle.impl.events.guild.channel.message.*;
 import sx.blah.discord.handle.impl.events.guild.member.UserJoinEvent;
 import sx.blah.discord.handle.obj.IChannel;
 import sx.blah.discord.handle.obj.IGuild;
@@ -94,8 +94,17 @@ public class Messages{
 
     @EventSubscriber
     public void onMessageReceivedEvent(MessageReceivedEvent event){
-        IMessage m = event.getMessage();
-        CoreBot.commands.handle(m);
+        CoreBot.commands.handle(event.getMessage());
+    }
+
+    @EventSubscriber
+    public void onMessageEdited(MessageUpdateEvent event){
+        commands.edited(event.getNewMessage(), event.getOldMessage());
+    }
+
+    @EventSubscriber
+    public void onMessageDeleted(MessageDeleteEvent event){
+        commands.deleted(event.getMessage());
     }
 
     @EventSubscriber
@@ -180,6 +189,10 @@ public class Messages{
             value = value.next;
         }
         getGuild().getChannelByID(CoreBot.crashReportChannelID).sendMessage(builder.toString());
+    }
+
+    public void logTo(String text, Object... args){
+        client.getGuildByID(guildID).getChannelByID(logChannelID).sendMessage(Strings.format(text, args));
     }
 
     public void text(String text, Object... args){
