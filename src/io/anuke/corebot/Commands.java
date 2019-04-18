@@ -364,12 +364,12 @@ public class Commands{
     void edited(IMessage message, IMessage previous){
         if(message.getAuthor() == null || message.getContent() == null) return;
 
-        messages.logTo("**{0}#{1}** just edited a message.\n\n*From*: \"{2}\"\n*To*: \"{3}\"", message.getAuthor().getName(), message.getAuthor().getDiscriminator(), previous.getContent(), message.getContent());
+        messages.logTo("------\n**{0}#{1}** just edited a message.\n\n*From*: \"{2}\"\n*To*: \"{3}\"", message.getAuthor().getName(), message.getAuthor().getDiscriminator(), previous.getContent(), message.getContent());
         checkInvite(message);
     }
 
     void deleted(IMessage message){
-        messages.logTo("**{0}#{1}** just deleted a message.\n *Text:* \"{2}\"", message.getAuthor().getName(), message.getAuthor().getDiscriminator(), message.getContent());
+        messages.logTo("------\n**{0}#{1}** just deleted a message.\n *Text:* \"{2}\"", message.getAuthor().getName(), message.getAuthor().getDiscriminator(), message.getContent());
     }
 
     void handle(IMessage message){
