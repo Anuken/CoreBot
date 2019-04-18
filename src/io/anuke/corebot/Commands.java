@@ -358,7 +358,7 @@ public class Commands{
             message.getAuthor().getOrCreatePMChannel().sendMessage("Do not send invite links in the Mindustry Discord server! Read the rules.");
             return true;
         }
-        return true;
+        return false;
     }
 
     void edited(IMessage message, IMessage previous){
