@@ -362,8 +362,7 @@ public class Commands{
     }
 
     void edited(IMessage message, IMessage previous){
-        if(message.getAuthor() == null || message.getContent() == null) return;
-        Log.info(message + " " + previous);
+        if(message.getAuthor() == null || message.getContent() == null || previous == null) return;
 
         messages.logTo("------\n**{0}#{1}** just edited a message.\n\n*From*: \"{2}\"\n*To*: \"{3}\"", message.getAuthor().getName(), message.getAuthor().getDiscriminator(), previous.getContent(), message.getContent());
         checkInvite(message);
