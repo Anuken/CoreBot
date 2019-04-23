@@ -129,9 +129,9 @@ public class Maps{
                     for(int j = i + 1; j < i + 1 + consecutives; j++){
                         int newx = j % width, newy = j / width;
 
-                        tmp.set(blockid == 0 ? 0 : blockColors[blockid]);
+                        tmp.set(blockColors[blockid]);
                         if(newx >= width || newy >= height) continue;
-                        map.image.setRGB(newx, height - 1 - newy, Color.argb8888(tmp));
+                        if(blockid != 0) map.image.setRGB(newx, height - 1 - newy, Color.argb8888(tmp));
                     }
 
                     i += consecutives;
