@@ -65,6 +65,11 @@ public class Maps{
             map.tags.put(name, value);
         }
 
+        map.name = map.tags.get("name");
+        map.author = map.tags.get("author");
+        map.description = map.tags.get("description");
+
+
         int partID = blockNames.get("part", 0);
 
         if(width > 1024 || height > 1024) throw new IllegalArgumentException("Map size too large: " + width + " " + height);
@@ -130,6 +135,9 @@ public class Maps{
                     map.image.setRGB(x, height - 1 - y, Color.argb8888(tmp));
                 }else{ //no entity/part, read consecutives
                     int consecutives = stream.readUnsignedByte();
+
+                    tmp.set(blockColors[blockid]);
+                    if(blockid != 0) map.image.setRGB(x, height - 1 - y, Color.argb8888(tmp));
 
                     for(int j = i + 1; j < i + 1 + consecutives; j++){
                         int newx = j % width, newy = j / width;
