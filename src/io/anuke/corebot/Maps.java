@@ -114,6 +114,7 @@ public class Maps{
             for(int i = 0; i < width * height; i++){
                 int x = i % width, y = i / width;
                 int blockid = mapping.get(stream.readByte(), 0);
+                Log.info("Read " + nameMap[blockid]);
 
                 if(blockid == partID){
                     stream.readByte();
