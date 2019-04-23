@@ -5,6 +5,7 @@ import io.anuke.arc.collection.IntIntMap;
 import io.anuke.arc.collection.ObjectIntMap;
 import io.anuke.arc.collection.ObjectMap;
 import io.anuke.arc.graphics.Color;
+import io.anuke.arc.util.Log;
 import io.anuke.arc.util.Pack;
 
 import java.awt.image.BufferedImage;
@@ -129,6 +130,7 @@ public class Maps{
                         int newx = j % width, newy = j / width;
 
                         tmp.set(blockid == 0 ? 0 : blockColors[blockid]);
+                        Log.info(newx + " " + newy);
                         map.image.setRGB(newx, height - 1 - newy, Color.argb8888(tmp));
                     }
 
