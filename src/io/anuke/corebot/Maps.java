@@ -130,7 +130,7 @@ public class Maps{
                         int newx = j % width, newy = j / width;
 
                         tmp.set(blockid == 0 ? 0 : blockColors[blockid]);
-                        Log.info(newx + " " + newy);
+                        if(newx >= width || newy >= height) continue;
                         map.image.setRGB(newx, height - 1 - newy, Color.argb8888(tmp));
                     }
 
