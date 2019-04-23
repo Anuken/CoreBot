@@ -20,6 +20,7 @@ public class Maps{
     int[] blockColors;
     boolean[] hasEntities;
     ObjectIntMap<String> blockNames = new ObjectIntMap<>();
+    String[] nameMap;
 
     public Maps(){
         try(DataInputStream stream = new DataInputStream(new InflaterInputStream(new FileInputStream("mapping.dat")))){
@@ -30,11 +31,13 @@ public class Maps{
 
             blockColors = new int[stream.readUnsignedByte()];
             hasEntities = new boolean[blockColors.length];
+            nameMap = new String[blockColors.length];
             for(int i = 0; i < blockColors.length; i++){
                 int color = stream.readInt();
                 hasEntities[i] = stream.readBoolean();
                 String name = stream.readUTF();
                 blockColors[i] = color;
+                nameMap[i] = name;
                 blockNames.put(name, i);
             }
         }catch(IOException e){
@@ -115,6 +118,7 @@ public class Maps{
                 if(blockid == partID){
                     stream.readByte();
                 }else if(hasEntities[blockid]){
+                    Log.info("Read entity " + nameMap[blockid]);
                     byte tr = stream.readByte();
                     short health = stream.readShort();
 
@@ -130,7 +134,6 @@ public class Maps{
                         int newx = j % width, newy = j / width;
 
                         tmp.set(blockColors[blockid]);
-                        if(newx >= width || newy >= height) continue;
                         if(blockid != 0) map.image.setRGB(newx, height - 1 - newy, Color.argb8888(tmp));
                     }
 
