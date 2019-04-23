@@ -118,7 +118,6 @@ public class Maps{
                 int blockid = mapping.get(id, 0);
 
                 if(blockid == partID){
-                    Log.info("read part");
                     stream.readByte();
                 }else if(hasEntities[blockid]){
                     byte tr = stream.readByte();
