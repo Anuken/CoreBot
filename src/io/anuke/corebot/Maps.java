@@ -83,7 +83,7 @@ public class Maps{
                     //is block content type
                     if(type == 1){
                         mapping.put(id, blockNames.get(name, 0));
-                        Log.info("Map {0} -> {1}", id, blockNames.get(name, 0));
+                        Log.info("Map {0} -> {1}", id, (byte)blockNames.get(name, 0));
                     }
                 }
             }
