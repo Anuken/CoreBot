@@ -1,5 +1,6 @@
 package io.anuke.corebot;
 
+import com.jcraft.jorbis.Block;
 import io.anuke.arc.collection.IntIntMap;
 import io.anuke.arc.collection.ObjectIntMap;
 import io.anuke.arc.collection.ObjectMap;
@@ -16,6 +17,7 @@ import java.util.zip.InflaterInputStream;
 public class Maps{
     int[] teamColors;
     int[] blockColors;
+    boolean[] hasEntities;
     ObjectIntMap<String> blockNames = new ObjectIntMap<>();
 
     public Maps(){
@@ -26,8 +28,10 @@ public class Maps{
             }
 
             blockColors = new int[stream.readUnsignedByte()];
+            hasEntities = new boolean[blockColors.length];
             for(int i = 0; i < blockColors.length; i++){
                 int color = stream.readInt();
+                hasEntities[i] = stream.readBoolean();
                 String name = stream.readUTF();
                 blockColors[i] = color;
                 blockNames.put(name, i);
@@ -40,47 +44,97 @@ public class Maps{
     public Map parseMap(InputStream in) throws IOException{
         try(DataInputStream stream = new DataInputStream(in)){
             Map map = new Map();
-
             map.version = stream.readInt();
-            byte tags = stream.readByte();
-            for(int i = 0; i < tags; i++){
-                map.tags.put(stream.readUTF(), stream.readUTF());
-            }
+            readMap(stream, map);
+            return map;
+        }
+    }
 
-            map.name = map.tags.get("name");
-            map.author = map.tags.get("author");
-            map.description = map.tags.get("description");
+    void readMap(DataInputStream input, Map map) throws IOException{
+        int build = input.readInt();
+        short width = input.readShort(), height = input.readShort();
+        byte tagAmount = input.readByte();
 
+        for(int i = 0; i < tagAmount; i++){
+            String name = input.readUTF();
+            String value = input.readUTF();
+            map.tags.put(name, value);
+        }
+
+        int partID = blockNames.get("part", 0);
+
+        if(width > 1024 || height > 1024) throw new IllegalArgumentException("Map size too large: " + width + " " + height);
+
+        try(DataInputStream stream = new DataInputStream(new InflaterInputStream(input))){
+            byte mapped = stream.readByte();
             IntIntMap mapping = new IntIntMap();
 
-            short blocks = stream.readShort();
-            for(int i = 0; i < blocks; i++){
-                short id = stream.readShort();
-                String name = stream.readUTF();
-                mapping.put(id, blockNames.get(name, 0));
+            for(int i = 0; i < mapped; i++){
+                byte type = stream.readByte();
+                short total = stream.readShort();
+
+                for(int id = 0; id < total; id++){
+                    String name = stream.readUTF();
+
+                    //is block content type
+                    if(type == 1){
+                        mapping.put(id, blockNames.get(name, 0));
+                    }
+                }
             }
-
-            int width = stream.readShort();
-            int height = stream.readShort();
-
-            if(width > 1024 || height > 1024) throw new IllegalArgumentException("Map size too large: " + width + " " + height);
 
             map.image = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
 
             Color tmp = new Color();
 
-            for(int y = 0; y < height; y ++){
-                for(int x = 0; x < width; x ++){
-                    int ground = mapping.get(stream.readByte(), 0), wall = mapping.get(stream.readByte(), 0), team = Pack.rightByte(stream.readByte()), unused1 = stream.readByte(), unused2 = stream.readByte();
+            //read floor and create tiles first
+            for(int i = 0; i < width * height; i++){
+                int x = i % width, y = i / width;
+                int floorid = mapping.get(stream.readByte(), 0);
+                int oreid = mapping.get(stream.readByte(), 0);
+                int consecutives = stream.readUnsignedByte();
+                int color = blockColors[oreid == 0 ? floorid : oreid];
 
-                    int id = wall <= 1 ? ground : wall;
-                    int color = blockColors[id];
-                    tmp.set(color);
-                    map.image.setRGB(x, height - 1 - y, Color.argb8888(tmp));
+                tmp.set(color);
+                map.image.setRGB(x, height - 1 - y, Color.argb8888(tmp));
+
+                for(int j = i + 1; j < i + 1 + consecutives; j++){
+                    int newx = j % width, newy = j / width;
+                    map.image.setRGB(newx, height - 1 - newy, Color.argb8888(tmp));
                 }
+
+                i += consecutives;
             }
 
-            return map;
+            //read blocks
+            for(int i = 0; i < width * height; i++){
+                int x = i % width, y = i / width;
+                int blockid = mapping.get(stream.readByte(), 0);
+
+                if(blockid == partID){
+                    stream.readByte();
+                }else if(hasEntities[blockid]){
+                    byte tr = stream.readByte();
+                    short health = stream.readShort();
+
+                    byte team = Pack.leftByte(tr);
+                    byte rotation = Pack.rightByte(tr);
+
+                    tmp.set(teamColors[team]);
+                    map.image.setRGB(x, height - 1 - y, Color.argb8888(tmp));
+                }else{ //no entity/part, read consecutives
+                    int consecutives = stream.readUnsignedByte();
+
+                    for(int j = i + 1; j < i + 1 + consecutives; j++){
+                        int newx = j % width, newy = j / width;
+
+                        tmp.set(blockid == 0 ? 0 : blockColors[blockid]);
+                        map.image.setRGB(newx, height - 1 - newy, Color.argb8888(tmp));
+                    }
+
+                    i += consecutives;
+                }
+            }
         }
     }
 
