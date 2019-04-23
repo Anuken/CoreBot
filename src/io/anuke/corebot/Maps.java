@@ -83,7 +83,6 @@ public class Maps{
                     //is block content type
                     if(type == 1){
                         mapping.put(id, blockNames.get(name, 0));
-                        Log.info("Map {0} -> {1}", id, (byte)blockNames.get(name, 0));
                     }
                 }
             }
@@ -114,9 +113,12 @@ public class Maps{
             //read blocks
             for(int i = 0; i < width * height; i++){
                 int x = i % width, y = i / width;
-                int blockid = mapping.get(stream.readByte(), 0);
+                int id = stream.readByte();
+                if(id < 0) id += 256;
+                int blockid = mapping.get(id, 0);
 
                 if(blockid == partID){
+                    Log.info("read part");
                     stream.readByte();
                 }else if(hasEntities[blockid]){
                     byte tr = stream.readByte();
