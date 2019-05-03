@@ -12,7 +12,6 @@ public class Reports{
 
     public Reports(){
         try{
-
             HttpServer server = HttpServer.create(new InetSocketAddress(80), 0);
             server.createContext("/report", t -> {
                 byte[] bytes = new byte[t.getRequestBody().available()];
@@ -23,8 +22,8 @@ public class Reports{
                 JsonValue value = json.fromJson(null, message);
                 int build = value.getInt("build");
 
-                //only the latest build is processed, everything else is skipped
-                if(build != -1){
+                //custom builds and uninitialized builds (0) are skipped.
+                if(build > 0){
                     CoreBot.messages.sendCrash(value);
                 }else{
                     Log.info("Rejecting report with invalid build: " + build);
@@ -37,7 +36,6 @@ public class Reports{
             server.setExecutor(null);
             server.start();
             Log.info("Crash reporting server up.");
-
         }catch(Exception e){
             Log.info("Error parsing report: ");
             e.printStackTrace();
