@@ -16,7 +16,8 @@ import sx.blah.discord.util.MessageHistory;
 import javax.imageio.ImageIO;
 import java.io.*;
 import java.net.URLEncoder;
-import java.util.Arrays;
+import java.util.Timer;
+import java.util.*;
 import java.util.regex.Pattern;
 
 import static io.anuke.corebot.CoreBot.*;
@@ -183,7 +184,13 @@ public class Commands{
                 .sendFiles(builder.build(), mapFile, imageFile);
 
                 msg.addReaction(EmojiManager.getForAlias("thumbsup"));
-                msg.addReaction(EmojiManager.getForAlias("thumbsdown"));
+
+                new Timer().schedule(new TimerTask(){
+                    @Override
+                    public void run(){
+                        msg.addReaction(EmojiManager.getForAlias("thumbsdown"));
+                    }
+                }, 1000L);
 
                 messages.text("*Map submitted successfully.*");
             }catch(Exception e){
@@ -223,7 +230,13 @@ public class Commands{
                 .sendFiles(builder.build(), mapFile, imageFile);
 
                 msg.addReaction(EmojiManager.getForAlias("thumbsup"));
-                msg.addReaction(EmojiManager.getForAlias("thumbsdown"));
+
+                new Timer().schedule(new TimerTask(){
+                    @Override
+                    public void run(){
+                        msg.addReaction(EmojiManager.getForAlias("thumbsdown"));
+                    }
+                }, 1000L);
 
                 messages.text("*Map submitted successfully.*");
             }catch(Exception e){
