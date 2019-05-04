@@ -95,11 +95,12 @@ public class Messages{
 
         server.connect(input -> {
             if(messageBuilder.length() > 1000){
-                Log.info("Flush");
+                Log.info("Flush " + messageBuilder);
                 client.getGuildByID(CoreBot.guildID).getChannelByID(commandChannelID).sendMessage(messageBuilder.toString());
                 messageBuilder.setLength(0);
             }else if(messageBuilder.length() == 0){
                 messageBuilder.append(input);
+                Log.info("Append base {0}", input);
                 new Timer().schedule(new TimerTask(){
                     @Override
                     public void run(){
