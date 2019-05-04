@@ -57,6 +57,8 @@ public class Messages{
 
             net.run(Net.timeout, () -> {
                 results.sort((a, b) -> a.valid && !b.valid ? 1 : !a.valid && b.valid ? -1 : a.ip.compareTo(b.ip));
+                Log.info("channel is " + client.getGuildByID(guildID).getChannelByID(serverChannelID));
+                Log.info("message history is " + client.getGuildByID(guildID).getChannelByID(serverChannelID).getFullMessageHistory());
 
                 IMessage[] arr = client.getGuildByID(guildID).getChannelByID(serverChannelID).getFullMessageHistory().asArray();
                 messages.channel = client.getGuildByID(guildID).getChannelByID(serverChannelID);
