@@ -369,6 +369,7 @@ public class Commands{
     }
 
     void deleted(IMessage message){
+        if(message.getAuthor() == null) return;
         messages.logTo("------\n**{0}#{1}** just deleted a message.\n *Text:* \"{2}\"", message.getAuthor().getName(), message.getAuthor().getDiscriminator(), message.getContent());
     }
 
