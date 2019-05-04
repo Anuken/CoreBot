@@ -105,9 +105,11 @@ public class Messages{
                 new Timer().schedule(new TimerTask(){
                     @Override
                     public void run(){
-                        Log.info("Run task");
-                        client.getGuildByID(CoreBot.guildID).getChannelByID(commandChannelID).sendMessage(messageBuilder.toString());
+                        if(messageBuilder.length() == 0) return;
+                        String text = messageBuilder.toString();
                         messageBuilder.setLength(0);
+                        Log.info("Run task with text: {0}", text);
+                        client.getGuildByID(CoreBot.guildID).getChannelByID(commandChannelID).sendMessage(text);
                     }
                 }, 60L);
             }else{
@@ -119,7 +121,7 @@ public class Messages{
 
     @EventSubscriber
     public void onMessageReceivedEvent(MessageReceivedEvent event){
-        CoreBot.commands.handle(event.getMessage());
+        commands.handle(event.getMessage());
     }
 
     @EventSubscriber
