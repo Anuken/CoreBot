@@ -94,6 +94,7 @@ public class Messages{
         StringBuilder messageBuilder = new StringBuilder();
 
         server.connect(input -> {
+            Log.info("RAW input: " + input);
             if(messageBuilder.length() > 1000){
                 Log.info("Flush " + messageBuilder);
                 client.getGuildByID(CoreBot.guildID).getChannelByID(commandChannelID).sendMessage(messageBuilder.toString());

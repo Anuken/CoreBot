@@ -380,6 +380,7 @@ public class Commands{
 
         if(isAdmin(message.getAuthor()) && message.getChannel().getLongID() == commandChannelID){
             server.send(message.getContent());
+            Log.info("Send message to server: {0}", message.getContent());
             return;
         }
 
