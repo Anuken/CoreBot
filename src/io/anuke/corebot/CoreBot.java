@@ -10,7 +10,7 @@ public class CoreBot{
     public static final long crashReportChannelID = 467033526018113546L;
     public static final long serverChannelID = 517896556029149214L;
     public static final long logChannelID = 568416809964011531L;
-    public static final long commandChannelID = 568416809964011531L;
+    public static final long commandChannelID = 574274730618781706L;
     public static final long announcementsChannelID = 391020997098340352L;
     public static final boolean sendWelcomeMessages = false;
 
