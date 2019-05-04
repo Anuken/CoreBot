@@ -60,6 +60,7 @@ public class Messages{
                 try{
                     client.getGuildByID(guildID).getChannelByID(serverChannelID).getFullMessageHistory().asArray();
                 }catch(Throwable t){
+                    Log.info("{0} {1} {2} {3}", client == null, client == null ? null : client.getGuildByID(guildID), client == null || client.getGuildByID(guildID) == null ? null : client.getGuildByID(guildID).getChannelByID(serverChannelID));
                     Log.err("Failed to update server status.");
                     return;
                 }
