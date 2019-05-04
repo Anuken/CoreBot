@@ -38,6 +38,7 @@ public class Messages{
         Log.info("Found token: {0}", token);
 
         ClientBuilder clientBuilder = new ClientBuilder();
+        clientBuilder.set5xxRetryCount(99999999); //retry more or less forever
         clientBuilder.withToken(token);
 
         client = clientBuilder.login();

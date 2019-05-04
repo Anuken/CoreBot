@@ -16,13 +16,13 @@ public class CoreBot{
 
     public static final long messageDeleteTime = 20000;
 
+    public static ServerBridge server = new ServerBridge();
     public static Messages messages = new Messages();
     public static Commands commands = new Commands();
     public static Net net = new Net();
     public static Prefs prefs = new Prefs(prefsFile);
     public static Reports reports = new Reports();
     public static Maps maps = new Maps();
-    public static ServerBridge server = new ServerBridge();
 
     public static void main(String[] args){
         new CoreBot();

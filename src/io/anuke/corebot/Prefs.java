@@ -25,6 +25,7 @@ public class Prefs{
         }
     }
 
+    @SuppressWarnings("unchecked")
     public Array<String> getArray(String property){
         String value = prop.getProperty(property, "[]");
         return json.fromJson(Array.class, value);
