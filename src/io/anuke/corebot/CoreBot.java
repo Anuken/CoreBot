@@ -10,6 +10,7 @@ public class CoreBot{
     public static final long crashReportChannelID = 467033526018113546L;
     public static final long serverChannelID = 517896556029149214L;
     public static final long logChannelID = 568416809964011531L;
+    public static final long commandChannelID = 568416809964011531L;
     public static final boolean sendWelcomeMessages = false;
 
     public static final long messageDeleteTime = 20000;
@@ -20,6 +21,7 @@ public class CoreBot{
     public static Prefs prefs = new Prefs(prefsFile);
     public static Reports reports = new Reports();
     public static Maps maps = new Maps();
+    public static ServerBridge server = new ServerBridge();
 
     public static void main(String[] args){
         new CoreBot();

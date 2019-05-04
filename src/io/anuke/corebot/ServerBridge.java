@@ -1,0 +1,61 @@
+package io.anuke.corebot;
+
+import io.anuke.arc.function.Consumer;
+import io.anuke.arc.util.Log;
+
+import java.io.*;
+import java.net.InetSocketAddress;
+import java.net.Socket;
+import java.util.concurrent.ArrayBlockingQueue;
+
+public class ServerBridge{
+    private static final int port = 6859;
+
+    private ArrayBlockingQueue<String> queue = new ArrayBlockingQueue<>(32);
+
+    public void connect(Consumer<String> inputHandler){
+        Thread thread = new Thread(() -> {
+            while(true){
+                Log.info("Attempting to connect to Mindustry server...");
+                try(Socket sock = new Socket()){
+                    sock.connect(new InetSocketAddress("localhost", port));
+                    Log.info("Connected to server.");
+                    PrintWriter out = new PrintWriter(sock.getOutputStream(), true);
+                    BufferedReader in = new BufferedReader(new InputStreamReader(sock.getInputStream()));
+
+                    Thread readerThread = new Thread(() -> {
+                        try{
+                            String line;
+                            while((line = in.readLine()) != null){
+                                inputHandler.accept(line);
+                            }
+                        }catch(Exception e){
+                            e.printStackTrace();
+                        }
+                    });
+                    readerThread.setDaemon(true);
+                    readerThread.start();
+
+                    String send;
+                    while(true){
+                        send = queue.take();
+                        Log.info("Sending command: {0}", send);
+                        out.println(send);
+                    }
+                }catch(Exception e){
+                    Log.err("Disconnected from server with error: {0}", e.getClass().getSimpleName());
+                }
+            }
+        });
+        thread.setDaemon(true);
+        thread.start();
+    }
+
+    public void send(String s){
+        try{
+            queue.put(s);
+        }catch(InterruptedException e){
+            throw new RuntimeException(e);
+        }
+    }
+}

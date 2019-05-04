@@ -90,6 +90,11 @@ public class Messages{
 
             });
         }, 10, 60, TimeUnit.SECONDS);
+
+        server.connect(input -> {
+            //post input from server to command channel
+            client.getGuildByID(CoreBot.guildID).getChannelByID(commandChannelID).sendMessage(input);
+        });
     }
 
     @EventSubscriber
