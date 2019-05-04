@@ -11,6 +11,7 @@ public class CoreBot{
     public static final long serverChannelID = 517896556029149214L;
     public static final long logChannelID = 568416809964011531L;
     public static final long commandChannelID = 568416809964011531L;
+    public static final long announcementsChannelID = 391020997098340352L;
     public static final boolean sendWelcomeMessages = false;
 
     public static final long messageDeleteTime = 20000;

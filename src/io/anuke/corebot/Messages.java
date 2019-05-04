@@ -12,21 +12,15 @@ import sx.blah.discord.api.events.EventSubscriber;
 import sx.blah.discord.api.internal.json.objects.EmbedObject;
 import sx.blah.discord.handle.impl.events.guild.channel.message.*;
 import sx.blah.discord.handle.impl.events.guild.member.UserJoinEvent;
-import sx.blah.discord.handle.obj.IChannel;
-import sx.blah.discord.handle.obj.IGuild;
-import sx.blah.discord.handle.obj.IMessage;
-import sx.blah.discord.handle.obj.IUser;
+import sx.blah.discord.handle.obj.*;
 import sx.blah.discord.util.EmbedBuilder;
 
 import java.awt.*;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
-import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
+import java.util.*;
+import java.util.concurrent.*;
 
 import static io.anuke.corebot.CoreBot.*;
 
@@ -128,17 +122,13 @@ public class Messages{
         );
     }
 
-    public IGuild getGuild(){
-        return client.getGuilds().stream().filter(guild -> guild.getName().equals("Mindustry")).findAny().orElseThrow(() -> new RuntimeException("No Mindustry guild!"));
-    }
-
     public void sendUpdate(VersionInfo info){
         String text = info.description;
         int maxLength = 2000;
         while(true){
             String current = text.substring(0, Math.min(maxLength, text.length()));
             client.getGuildByID(CoreBot.guildID)
-            .getChannelsByName("announcements").get(0)
+            .getChannelByID(announcementsChannelID)
             .sendMessage(new EmbedBuilder()
             .withColor(normalColor).withTitle(info.name)
             .appendDesc(current).build());
@@ -193,7 +183,7 @@ public class Messages{
             builder.append("\n");
             value = value.next;
         }
-        getGuild().getChannelByID(CoreBot.crashReportChannelID).sendMessage(builder.toString());
+        client.getGuildByID(CoreBot.guildID).getChannelByID(CoreBot.crashReportChannelID).sendMessage(builder.toString());
     }
 
     public void logTo(String text, Object... args){
