@@ -1,18 +1,11 @@
 package io.anuke.corebot;
 
-import com.jcraft.jorbis.Block;
-import io.anuke.arc.collection.IntIntMap;
-import io.anuke.arc.collection.ObjectIntMap;
-import io.anuke.arc.collection.ObjectMap;
+import io.anuke.arc.collection.*;
 import io.anuke.arc.graphics.Color;
-import io.anuke.arc.util.Log;
 import io.anuke.arc.util.Pack;
 
 import java.awt.image.BufferedImage;
-import java.io.DataInputStream;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.util.zip.InflaterInputStream;
 
 public class Maps{
@@ -127,6 +120,10 @@ public class Maps{
                 }else if(hasEntities[blockid]){
                     byte tr = stream.readByte();
                     short health = stream.readShort();
+                    //config workaround for now
+                    if(blockid == blockNames.get("liquid-source", 0) || blockid == blockNames.get("sorter", 0) || blockid == blockNames.get("unloader", 0)){
+                        stream.readByte();
+                    }
 
                     byte team = Pack.leftByte(tr);
                     byte rotation = Pack.rightByte(tr);

@@ -119,7 +119,7 @@ public class Commands{
             }
         });
 
-        handler.register("postmap", "Post a mmap file to the #maps channel.", args -> {
+        handler.register("postmap", "Post a .mmap file to the #maps channel.", args -> {
             IMessage message = messages.lastMessage;
 
             if(message.getAttachments().size() != 1 || !message.getAttachments().get(0).getFilename().endsWith(".mmap")){
