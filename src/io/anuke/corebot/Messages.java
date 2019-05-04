@@ -57,10 +57,12 @@ public class Messages{
 
             net.run(Net.timeout, () -> {
                 results.sort((a, b) -> a.valid && !b.valid ? 1 : !a.valid && b.valid ? -1 : a.ip.compareTo(b.ip));
-                Log.info("Client is " + client);
-                Log.info("guild is "  + client.getGuildByID(guildID));
-                Log.info("channel is " + client.getGuildByID(guildID).getChannelByID(serverChannelID));
-                Log.info("message history is " + client.getGuildByID(guildID).getChannelByID(serverChannelID).getFullMessageHistory());
+                try{
+                    client.getGuildByID(guildID).getChannelByID(serverChannelID).getFullMessageHistory().asArray();
+                }catch(Throwable t){
+                    Log.err("Failed to update server status.");
+                    return;
+                }
 
                 IMessage[] arr = client.getGuildByID(guildID).getChannelByID(serverChannelID).getFullMessageHistory().asArray();
                 messages.channel = client.getGuildByID(guildID).getChannelByID(serverChannelID);
