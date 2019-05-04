@@ -95,6 +95,7 @@ public class Messages{
 
         server.connect(input -> {
             if(messageBuilder.length() == 0){
+                messageBuilder.append(input);
                 new Timer().schedule(new TimerTask(){
                     @Override
                     public void run(){
