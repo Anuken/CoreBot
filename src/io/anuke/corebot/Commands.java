@@ -377,6 +377,11 @@ public class Commands{
             return;
         }
 
+        if(isAdmin(message.getAuthor()) && message.getChannel().getLongID() == commandChannelID){
+            server.send(message.getContent());
+            return;
+        }
+
         if(message.getChannel().getLongID() == bugReportChannelID && !message.isSystemMessage() && !isAdmin(message.getAuthor())){
             messages.channel = message.getChannel();
             messages.lastUser = message.getAuthor();

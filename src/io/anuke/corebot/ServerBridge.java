@@ -12,6 +12,7 @@ public class ServerBridge{
     private static final int port = 6859;
     private static final int waitPeriod = 5000;
 
+    private boolean connected;
     private ArrayBlockingQueue<String> queue = new ArrayBlockingQueue<>(32);
 
     public void connect(Consumer<String> inputHandler){
@@ -20,6 +21,7 @@ public class ServerBridge{
                 try(Socket sock = new Socket()){
                     sock.connect(new InetSocketAddress("localhost", port));
                     Log.info("Connected to server.");
+                    connected = true;
                     PrintWriter out = new PrintWriter(sock.getOutputStream(), true);
                     BufferedReader in = new BufferedReader(new InputStreamReader(sock.getInputStream()));
 
@@ -43,6 +45,7 @@ public class ServerBridge{
                         out.println(send);
                     }
                 }catch(Exception ignored){}
+                connected = false;
 
                 try{
                     Thread.sleep(waitPeriod);
@@ -54,6 +57,10 @@ public class ServerBridge{
     }
 
     public void send(String s){
+        if(!connected){
+            return;
+        }
+
         try{
             queue.put(s);
         }catch(InterruptedException e){
