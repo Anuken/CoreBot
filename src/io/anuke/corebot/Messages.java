@@ -94,26 +94,26 @@ public class Messages{
         StringBuilder messageBuilder = new StringBuilder();
 
         server.connect(input -> {
-            Log.info("RAW input: " + input);
             if(messageBuilder.length() > 1000){
-                Log.info("Flush " + messageBuilder);
-                client.getGuildByID(CoreBot.guildID).getChannelByID(commandChannelID).sendMessage(messageBuilder.toString());
+                Log.info("[FL] {0}", messageBuilder);
+                String text = messageBuilder.toString();
                 messageBuilder.setLength(0);
+                client.getGuildByID(CoreBot.guildID).getChannelByID(commandChannelID).sendMessage(text);
             }else if(messageBuilder.length() == 0){
                 messageBuilder.append(input);
-                Log.info("Append base {0}", input);
+                Log.info("[BE] {0}", input);
                 new Timer().schedule(new TimerTask(){
                     @Override
                     public void run(){
                         if(messageBuilder.length() == 0) return;
                         String text = messageBuilder.toString();
                         messageBuilder.setLength(0);
-                        Log.info("Run task with text: {0}", text);
+                        Log.info("[TS] {0}", text);
                         client.getGuildByID(CoreBot.guildID).getChannelByID(commandChannelID).sendMessage(text);
                     }
                 }, 60L);
             }else{
-                Log.info("Append " + input);
+                Log.info("[AP] {0}" + input);
                 messageBuilder.append("\n").append(input);
             }
         });
