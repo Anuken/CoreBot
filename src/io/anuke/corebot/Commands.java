@@ -1,13 +1,10 @@
 package io.anuke.corebot;
 
+import com.vdurmont.emoji.EmojiManager;
 import io.anuke.arc.collection.Array;
 import io.anuke.arc.math.Mathf;
-import io.anuke.arc.util.CommandHandler;
-import io.anuke.arc.util.CommandHandler.Command;
-import io.anuke.arc.util.CommandHandler.Response;
-import io.anuke.arc.util.CommandHandler.ResponseType;
-import io.anuke.arc.util.Log;
-import io.anuke.arc.util.Strings;
+import io.anuke.arc.util.*;
+import io.anuke.arc.util.CommandHandler.*;
 import io.anuke.corebot.Maps.Map;
 import org.apache.commons.io.IOUtils;
 import sx.blah.discord.handle.obj.IMessage;
@@ -17,9 +14,7 @@ import sx.blah.discord.util.EmbedBuilder;
 import sx.blah.discord.util.MessageHistory;
 
 import javax.imageio.ImageIO;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.UnsupportedEncodingException;
+import java.io.*;
 import java.net.URLEncoder;
 import java.util.Arrays;
 import java.util.regex.Pattern;
@@ -184,8 +179,11 @@ public class Commands{
 
                 if(map.description != null) builder.withFooterText(map.description);
 
-                messages.channel.getGuild().getChannelByID(standardMapsChannelID)
+                IMessage msg = messages.channel.getGuild().getChannelByID(standardMapsChannelID)
                 .sendFiles(builder.build(), mapFile, imageFile);
+
+                msg.addReaction(EmojiManager.getForAlias("thumbsup"));
+                msg.addReaction(EmojiManager.getForAlias("thumbsdown"));
 
                 messages.text("*Map submitted successfully.*");
             }catch(Exception e){
@@ -221,8 +219,11 @@ public class Commands{
 
                 if(map.description != null) builder.withFooterText(map.description);
 
-                messages.channel.getGuild().getChannelByID(zoneMapsChannelID)
+                IMessage msg = messages.channel.getGuild().getChannelByID(zoneMapsChannelID)
                 .sendFiles(builder.build(), mapFile, imageFile);
+
+                msg.addReaction(EmojiManager.getForAlias("thumbsup"));
+                msg.addReaction(EmojiManager.getForAlias("thumbsdown"));
 
                 messages.text("*Map submitted successfully.*");
             }catch(Exception e){
