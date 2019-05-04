@@ -10,13 +10,13 @@ import java.util.concurrent.ArrayBlockingQueue;
 
 public class ServerBridge{
     private static final int port = 6859;
+    private static final int waitPeriod = 5000;
 
     private ArrayBlockingQueue<String> queue = new ArrayBlockingQueue<>(32);
 
     public void connect(Consumer<String> inputHandler){
         Thread thread = new Thread(() -> {
             while(true){
-                Log.info("Attempting to connect to Mindustry server...");
                 try(Socket sock = new Socket()){
                     sock.connect(new InetSocketAddress("localhost", port));
                     Log.info("Connected to server.");
@@ -42,9 +42,11 @@ public class ServerBridge{
                         Log.info("Sending command: {0}", send);
                         out.println(send);
                     }
-                }catch(Exception e){
-                    Log.err("Disconnected from server with error: {0}", e.getClass().getSimpleName());
-                }
+                }catch(Exception ignored){}
+
+                try{
+                    Thread.sleep(waitPeriod);
+                }catch(InterruptedException ignored){}
             }
         });
         thread.setDaemon(true);
