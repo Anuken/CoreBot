@@ -91,9 +91,20 @@ public class Messages{
             });
         }, 10, 60, TimeUnit.SECONDS);
 
+        StringBuilder messageBuilder = new StringBuilder();
+
         server.connect(input -> {
-            //post input from server to command channel
-            client.getGuildByID(CoreBot.guildID).getChannelByID(commandChannelID).sendMessage(input);
+            if(messageBuilder.length() == 0){
+                new Timer().schedule(new TimerTask(){
+                    @Override
+                    public void run(){
+                        client.getGuildByID(CoreBot.guildID).getChannelByID(commandChannelID).sendMessage(messageBuilder.toString());
+                        messageBuilder.setLength(0);
+                    }
+                }, 60);
+            }else{
+                messageBuilder.append("\n").append(input);
+            }
         });
     }
 
