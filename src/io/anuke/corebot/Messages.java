@@ -94,16 +94,22 @@ public class Messages{
         StringBuilder messageBuilder = new StringBuilder();
 
         server.connect(input -> {
-            if(messageBuilder.length() == 0){
+            if(messageBuilder.length() > 1000){
+                Log.info("Flush");
+                client.getGuildByID(CoreBot.guildID).getChannelByID(commandChannelID).sendMessage(messageBuilder.toString());
+                messageBuilder.setLength(0);
+            }else if(messageBuilder.length() == 0){
                 messageBuilder.append(input);
                 new Timer().schedule(new TimerTask(){
                     @Override
                     public void run(){
+                        Log.info("Run task");
                         client.getGuildByID(CoreBot.guildID).getChannelByID(commandChannelID).sendMessage(messageBuilder.toString());
                         messageBuilder.setLength(0);
                     }
-                }, 60);
+                }, 60L);
             }else{
+                Log.info("Append " + input);
                 messageBuilder.append("\n").append(input);
             }
         });
