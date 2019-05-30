@@ -1,6 +1,5 @@
 package io.anuke.corebot;
 
-import com.vdurmont.emoji.EmojiManager;
 import io.anuke.arc.collection.Array;
 import io.anuke.arc.math.Mathf;
 import io.anuke.arc.util.*;
@@ -16,8 +15,7 @@ import sx.blah.discord.util.MessageHistory;
 import javax.imageio.ImageIO;
 import java.io.*;
 import java.net.URLEncoder;
-import java.util.Timer;
-import java.util.*;
+import java.util.Arrays;
 import java.util.regex.Pattern;
 
 import static io.anuke.corebot.CoreBot.*;
@@ -151,102 +149,6 @@ public class Commands{
                 messages.deleteMessages();
             }
         });
-
-        //dupes for map submissions, to be removed once it's over
-
-        handler.register("submitmap", "Submit an .mmap file to the #map-submissions channel.", args -> {
-            IMessage message = messages.lastMessage;
-
-            if(message.getAttachments().size() != 1 || !message.getAttachments().get(0).getFilename().endsWith(".mmap")){
-                messages.err("You must have one .mmap file in the same message as the command!");
-                messages.deleteMessages();
-                return;
-            }
-
-            Attachment a = message.getAttachments().get(0);
-
-            try{
-                Map map = maps.parseMap(net.download(a.getUrl()));
-                new File("maps/").mkdir();
-                File mapFile = new File("maps/" + a.getFilename());
-                File imageFile = new File("maps/image_" + a.getFilename().replace(".mmap", ".png"));
-                IOUtils.copy(net.download(a.getUrl()), new FileOutputStream(mapFile));
-                ImageIO.write(map.image, "png", imageFile);
-
-                EmbedBuilder builder = new EmbedBuilder().withColor(messages.normalColor).withColor(messages.normalColor)
-                .withImage("attachment://" + imageFile.getName())
-                .withAuthorName(messages.lastUser.getName()).withTitle(map.name == null ? a.getFilename().replace(".mmap", "") : map.name)
-                .withAuthorIcon(messages.lastUser.getAvatarURL());
-
-                if(map.description != null) builder.withFooterText(map.description);
-
-                IMessage msg = messages.channel.getGuild().getChannelByID(standardMapsChannelID)
-                .sendFiles(builder.build(), mapFile, imageFile);
-
-                msg.addReaction(EmojiManager.getForAlias("thumbsup"));
-
-                new Timer().schedule(new TimerTask(){
-                    @Override
-                    public void run(){
-                        msg.addReaction(EmojiManager.getForAlias("thumbsdown"));
-                    }
-                }, 1000L);
-
-                messages.text("*Map submitted successfully.*");
-            }catch(Exception e){
-                e.printStackTrace();
-                messages.err("Error parsing map.");
-                messages.deleteMessages();
-            }
-        });
-
-        handler.register("submitzonemap", "Submit an .mmap file to the #zone-map-submissions channel.", args -> {
-            IMessage message = messages.lastMessage;
-
-            if(message.getAttachments().size() != 1 || !message.getAttachments().get(0).getFilename().endsWith(".mmap")){
-                messages.err("You must have one .mmap file in the same message as the command!");
-                messages.deleteMessages();
-                return;
-            }
-
-            Attachment a = message.getAttachments().get(0);
-
-            try{
-                Map map = maps.parseMap(net.download(a.getUrl()));
-                new File("maps/").mkdir();
-                File mapFile = new File("maps/" + a.getFilename());
-                File imageFile = new File("maps/image_" + a.getFilename().replace(".mmap", ".png"));
-                IOUtils.copy(net.download(a.getUrl()), new FileOutputStream(mapFile));
-                ImageIO.write(map.image, "png", imageFile);
-
-                EmbedBuilder builder = new EmbedBuilder().withColor(messages.normalColor).withColor(messages.normalColor)
-                .withImage("attachment://" + imageFile.getName())
-                .withAuthorName(messages.lastUser.getName()).withTitle(map.name == null ? a.getFilename().replace(".mmap", "") : map.name)
-                .withAuthorIcon(messages.lastUser.getAvatarURL());
-
-                if(map.description != null) builder.withFooterText(map.description);
-
-                IMessage msg = messages.channel.getGuild().getChannelByID(zoneMapsChannelID)
-                .sendFiles(builder.build(), mapFile, imageFile);
-
-                msg.addReaction(EmojiManager.getForAlias("thumbsup"));
-
-                new Timer().schedule(new TimerTask(){
-                    @Override
-                    public void run(){
-                        msg.addReaction(EmojiManager.getForAlias("thumbsdown"));
-                    }
-                }, 1000L);
-
-                messages.text("*Map submitted successfully.*");
-            }catch(Exception e){
-                e.printStackTrace();
-                messages.err("Error parsing map.");
-                messages.deleteMessages();
-            }
-        });
-
-        //end
 
         handler.register("google", "<phrase...>", "Let me google that for you.", args -> {
             try{
