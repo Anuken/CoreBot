@@ -70,7 +70,7 @@ public class Net{
 
                 socket.setSoTimeout(2000);
 
-                DatagramPacket packet = new DatagramPacket(new byte[128], 128);
+                DatagramPacket packet = new DatagramPacket(new byte[256], 256);
 
                 long start = System.currentTimeMillis();
                 socket.receive(packet);

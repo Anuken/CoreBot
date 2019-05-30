@@ -63,9 +63,6 @@ public class Messages{
 
                 results.sort((a, b) -> a.valid && !b.valid ? 1 : !a.valid && b.valid ? -1 : a.ip.compareTo(b.ip));
 
-                IMessage[] arr = client.getGuildByID(guildID).getChannelByID(serverChannelID).getFullMessageHistory().asArray();
-                messages.channel = client.getGuildByID(guildID).getChannelByID(serverChannelID);
-
                 StringBuilder builder = new StringBuilder();
 
                 builder.append(Strings.format("*Last Updated: {0}*\n\n", DateTimeFormatter.ofPattern("dd MMM yyyy HH:mm:ss ZZZZ").format(ZonedDateTime.now())));
@@ -82,11 +79,7 @@ public class Messages{
                     builder.append("\n");
                 }
 
-                if(arr.length == 0){
-                    messages.text(builder.toString());
-                }else{
-                    arr[0].edit(builder.toString());
-                }
+                client.getGuildByID(guildID).getChannelByID(serverChannelID).getMessageByID(578594853991088148L).edit(builder.toString());
 
             });
         }, 10, 60, TimeUnit.SECONDS);
