@@ -78,7 +78,9 @@ public class Net{
                 ByteBuffer buffer = ByteBuffer.wrap(packet.getData());
                 listener.accept(readServerData(buffer, ip, System.currentTimeMillis() - start));
                 socket.disconnect();
-            }catch(Exception ignored){
+            }catch(Exception e){
+                Log.info("Timeout");
+                e.printStackTrace();
                 listener.accept(new PingResult(ip, "Timed out."));
             }
         });
