@@ -26,6 +26,7 @@ public class Net{
                 VersionInfo latest = list.first();
 
                 int lastVersion = getLastBuild();
+                Log.info(latest.build + " curr is " + lastVersion);
 
                 if(latest.build > lastVersion){
                     Log.info("Posting update!");
@@ -79,8 +80,6 @@ public class Net{
                 listener.accept(readServerData(buffer, ip, System.currentTimeMillis() - start));
                 socket.disconnect();
             }catch(Exception e){
-                Log.info("Timeout");
-                e.printStackTrace();
                 listener.accept(new PingResult(ip, "Timed out."));
             }
         });
