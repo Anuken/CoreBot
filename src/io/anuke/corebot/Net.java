@@ -26,7 +26,6 @@ public class Net{
                 VersionInfo latest = list.first();
 
                 int lastVersion = getLastBuild();
-                Log.info(latest.build + " curr is " + lastVersion);
 
                 if(latest.build > lastVersion){
                     Log.info("Posting update!");
