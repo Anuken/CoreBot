@@ -23,7 +23,7 @@ public class Reports{
                 int build = value.getInt("build");
 
                 //custom builds and uninitialized builds (0) are skipped.
-                if(build != CoreBot.net.getLastBuild()){
+                if(build == CoreBot.net.getLastBuild()){
                     CoreBot.messages.sendCrash(value);
                 }else{
                     Log.info("Rejecting report with invalid build: {0}. Current latest build is {1}.", build, CoreBot.net.getLastBuild());
