@@ -73,7 +73,7 @@ public class Messages{
                         builder.append(Strings.format("```diff\n{0}\n- offline```", result.ip));
                     }else{
                         builder.append(Strings.format("```http\n{0}\n\nHost: {1}\nPlayers: {2}\nMap: {3}\nWave: {4}\nVersion: {5}\nPing: {6}ms```",
-                        result.ip, result.players, result.map, result.wave, result.version, result.ping));
+                        result.ip, result.host, result.players, result.map, result.wave, result.version, result.ping));
                     }
 
                     builder.append("\n");
