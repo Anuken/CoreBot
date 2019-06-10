@@ -72,7 +72,7 @@ public class Messages{
                         embed.appendField(result.ip, "[offline]", false);
                     }else{
                         embed.appendField(result.ip,
-                        Strings.format("*{1}*\n| Players: {2}\n| Map: {3}\n| Wave: {4}\n| Version: {5}\n| Ping: {6}ms\n \n \n",
+                        Strings.format("*{1}*\nPlayers: {2}\nMap: {3}\nWave: {4}\nVersion: {5}\nPing: {6}ms\n \n \n",
                             "oh no", result.host, result.players, result.map, result.wave, result.version, result.ping), false);
                     }
                 }
