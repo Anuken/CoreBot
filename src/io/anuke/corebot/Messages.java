@@ -64,6 +64,7 @@ public class Messages{
                 results.sort((a, b) -> a.valid && !b.valid ? 1 : !a.valid && b.valid ? -1 : a.ip.compareTo(b.ip));
 
                 EmbedBuilder embed = new EmbedBuilder();
+                embed.withColor(normalColor);
 
                 //send new messages
                 for(PingResult result : results){
@@ -71,7 +72,7 @@ public class Messages{
                         embed.appendField(result.ip, "[offline]", false);
                     }else{
                         embed.appendField(result.ip,
-                        Strings.format("**Host: {1}**\n| Players: {2}\n| Map: {3}\n| Wave: {4}\n| Version: {5}\n| Ping: {6}ms",
+                        Strings.format("*{1}*\n| Players: {2}\n| Map: {3}\n| Wave: {4}\n| Version: {5}\n| Ping: {6}ms\n \n \n",
                             "oh no", result.host, result.players, result.map, result.wave, result.version, result.ping), false);
                     }
                 }
