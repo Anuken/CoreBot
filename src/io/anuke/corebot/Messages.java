@@ -61,7 +61,7 @@ public class Messages{
                     return;
                 }
 
-                results.sort((a, b) -> a.valid && !b.valid ? 1 : !a.valid && b.valid ? -1 : a.ip.compareTo(b.ip));
+                results.sort((a, b) -> a.valid && !b.valid ? 1 : !a.valid && b.valid ? -1 : Integer.compare(Strings.parseInt(a.players), Strings.parseInt(b.players)));
 
                 EmbedBuilder embed = new EmbedBuilder();
                 embed.withColor(normalColor);
