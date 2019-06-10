@@ -71,13 +71,13 @@ public class Messages{
                         embed.appendField(result.ip, "[offline]", false);
                     }else{
                         embed.appendField(result.ip,
-                        Strings.format("**Host: {1}**\nPlayers: {2}\nMap: {3}\nWave: {4}\nVersion: {5}\nPing: {6}ms",
+                        Strings.format("**Host: {1}**\n| Players: {2}\n| Map: {3}\n| Wave: {4}\n| Version: {5}\n| Ping: {6}ms",
                             "oh no", result.host, result.players, result.map, result.wave, result.version, result.ping), false);
                     }
                 }
 
 
-                embed.withFooterText(Strings.format("*Last Updated: {0}*\n\n", DateTimeFormatter.ofPattern("dd MMM yyyy HH:mm:ss ZZZZ").format(ZonedDateTime.now())));
+                embed.withFooterText(Strings.format("Last Updated: {0}", DateTimeFormatter.ofPattern("dd MMM yyyy HH:mm:ss ZZZZ").format(ZonedDateTime.now())));
 
                 client.getGuildByID(guildID).getChannelByID(serverChannelID).getMessageByID(578594853991088148L).edit(embed.build());
 
