@@ -63,22 +63,20 @@ public class Messages{
 
                 results.sort((a, b) -> a.valid && !b.valid ? 1 : !a.valid && b.valid ? -1 : a.ip.compareTo(b.ip));
 
-                StringBuilder builder = new StringBuilder();
+                EmbedBuilder embed = new EmbedBuilder();
 
                 //send new messages
                 for(PingResult result : results){
                     if(!result.valid){
-                        builder.append(Strings.format("\n**{0}**\n- offline", result.ip));
+                        embed.appendField(result.ip, "[offline]", false);
                     }else{
-                        builder.append(Strings.format("\n**{0}**\n\nHost: {1}\nPlayers: {2}\nMap: {3}\nWave: {4}\nVersion: {5}\nPing: {6}ms",
-                        result.ip, result.host, result.players, result.map, result.wave, result.version, result.ping));
+                        embed.appendField(result.ip,
+                        Strings.format("**Host: {1}**\nPlayers: {2}\nMap: {3}\nWave: {4}\nVersion: {5}\nPing: {6}ms",
+                            "oh no", result.host, result.players, result.map, result.wave, result.version, result.ping), false);
                     }
-
-                    builder.append("\n");
                 }
 
-                EmbedBuilder embed = new EmbedBuilder();
-                embed.appendDesc(builder.toString());
+
                 embed.withFooterText(Strings.format("*Last Updated: {0}*\n\n", DateTimeFormatter.ofPattern("dd MMM yyyy HH:mm:ss ZZZZ").format(ZonedDateTime.now())));
 
                 client.getGuildByID(guildID).getChannelByID(serverChannelID).getMessageByID(578594853991088148L).edit(embed.build());
