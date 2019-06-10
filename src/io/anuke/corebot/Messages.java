@@ -65,21 +65,23 @@ public class Messages{
 
                 StringBuilder builder = new StringBuilder();
 
-                builder.append(Strings.format("*Last Updated: {0}*\n\n", DateTimeFormatter.ofPattern("dd MMM yyyy HH:mm:ss ZZZZ").format(ZonedDateTime.now())));
-
                 //send new messages
                 for(PingResult result : results){
                     if(!result.valid){
-                        builder.append(Strings.format("```diff\n{0}\n- offline```", result.ip));
+                        builder.append(Strings.format("\n**{0}**\n- offline", result.ip));
                     }else{
-                        builder.append(Strings.format("```http\n{0}\n\nHost: {1}\nPlayers: {2}\nMap: {3}\nWave: {4}\nVersion: {5}\nPing: {6}ms```",
+                        builder.append(Strings.format("\n**{0}**\n\nHost: {1}\nPlayers: {2}\nMap: {3}\nWave: {4}\nVersion: {5}\nPing: {6}ms",
                         result.ip, result.host, result.players, result.map, result.wave, result.version, result.ping));
                     }
 
                     builder.append("\n");
                 }
 
-                client.getGuildByID(guildID).getChannelByID(serverChannelID).getMessageByID(578594853991088148L).edit(builder.toString());
+                EmbedBuilder embed = new EmbedBuilder();
+                embed.appendDesc(builder.toString());
+                embed.withFooterText(Strings.format("*Last Updated: {0}*\n\n", DateTimeFormatter.ofPattern("dd MMM yyyy HH:mm:ss ZZZZ").format(ZonedDateTime.now())));
+
+                client.getGuildByID(guildID).getChannelByID(serverChannelID).getMessageByID(578594853991088148L).edit(embed.build());
 
             });
         }, 10, 60, TimeUnit.SECONDS);
