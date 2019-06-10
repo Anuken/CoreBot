@@ -69,10 +69,10 @@ public class Messages{
                 //send new messages
                 for(PingResult result : results){
                     if(!result.valid){
-                        embed.appendField(result.ip, "[offline]", false);
+                        embed.appendField(result.ip, "[offline]\n_\n_\n", false);
                     }else{
                         embed.appendField(result.ip,
-                        Strings.format("*{1}*\nPlayers: {2}\nMap: {3}\nWave: {4}\nVersion: {5}\nPing: {6}ms\n\n_\n_",
+                        Strings.format("*{1}*\nPlayers: {2}\nMap: {3}\nWave: {4}\nVersion: {5}\nPing: {6}ms\n_\n_\n",
                             "oh no", result.host, result.players, result.map, result.wave, result.version, result.ping), false);
                     }
                 }
