@@ -72,8 +72,8 @@ public class Messages{
                         embed.appendField(result.ip, "[offline]\n_\n_\n", false);
                     }else{
                         embed.appendField(result.ip,
-                        Strings.format("*{1}*\nPlayers: {2}\nMap: {3}\nWave: {4}\nVersion: {5}\nPing: {6}ms\n_\n_\n",
-                            "oh no", result.host, result.players, result.map, result.wave, result.version, result.ping), false);
+                        Strings.format("*{0}*\nPlayers: {1}\nMap: {2}\nWave: {3}\nVersion: {4}\nPing: {5}ms\n_\n_\n",
+                            result.host, result.players, result.map.replaceAll("_", "\\_").replaceAll("*", "\\*"), result.wave, result.version, result.ping), false);
                     }
                 }
 
