@@ -11,6 +11,7 @@ import sx.blah.discord.api.events.EventDispatcher;
 import sx.blah.discord.api.events.EventSubscriber;
 import sx.blah.discord.api.internal.json.objects.EmbedObject;
 import sx.blah.discord.handle.impl.events.guild.channel.message.*;
+import sx.blah.discord.handle.impl.events.guild.channel.message.reaction.ReactionAddEvent;
 import sx.blah.discord.handle.impl.events.guild.member.UserJoinEvent;
 import sx.blah.discord.handle.obj.*;
 import sx.blah.discord.util.EmbedBuilder;
@@ -122,6 +123,13 @@ public class Messages{
     @EventSubscriber
     public void onMessageDeleted(MessageDeleteEvent event){
         commands.deleted(event.getMessage());
+    }
+
+    @EventSubscriber
+    public void onReaction(ReactionAddEvent event){
+        if(event.getMessage().getChannel().getLongID() == bugReportChannelID){
+            //TODO
+        }
     }
 
     @EventSubscriber
