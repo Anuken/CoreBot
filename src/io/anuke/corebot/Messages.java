@@ -127,8 +127,8 @@ public class Messages{
 
     @EventSubscriber
     public void onReaction(ReactionAddEvent event){
-        if(event.getMessage().getChannel().getLongID() == bugReportChannelID){
-            //TODO
+        if(event.getMessage().getChannel().getLongID() == bugReportChannelID && commands.isAdmin(event.getAuthor())){
+            commands.handleBugReact(event);
         }
     }
 

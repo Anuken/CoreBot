@@ -6,13 +6,13 @@ import io.anuke.arc.util.*;
 import io.anuke.arc.util.CommandHandler.*;
 import io.anuke.corebot.Maps.Map;
 import org.apache.commons.io.IOUtils;
-import sx.blah.discord.handle.obj.IMessage;
+import sx.blah.discord.handle.impl.events.guild.channel.message.reaction.ReactionAddEvent;
+import sx.blah.discord.handle.obj.*;
 import sx.blah.discord.handle.obj.IMessage.Attachment;
-import sx.blah.discord.handle.obj.IUser;
-import sx.blah.discord.util.EmbedBuilder;
-import sx.blah.discord.util.MessageHistory;
+import sx.blah.discord.util.*;
 
 import javax.imageio.ImageIO;
+import java.awt.*;
 import java.io.*;
 import java.net.URLEncoder;
 import java.util.Arrays;
@@ -365,6 +365,29 @@ public class Commands{
     void deleted(IMessage message){
         if(message == null || message.getAuthor() == null) return;
         messages.logTo("------\n**{0}#{1}** just deleted a message.\n *Text:* \"{2}\"", message.getAuthor().getName(), message.getAuthor().getDiscriminator(), message.getContent());
+    }
+
+    void handleBugReact(ReactionAddEvent event){
+        EmbedBuilder builder = new EmbedBuilder().withColor(messages.normalColor);
+        String url = Strings.format("https://discordapp.com/channels/{0}/{1}/{2}",
+            event.getGuild().getStringID(), event.getChannel().getStringID(), event.getMessage().getStringID());
+
+        String emoji = event.getReaction().getEmoji().getName();
+        boolean valid = true;
+        if(emoji.equals("✅")){
+            builder.withColor(Color.decode("87FF4B"));
+            builder.appendDesc("[Your bug report]("+url+") in the Mindustry Discord has been marked as solved.");
+        }else if(emoji.equals("\uD83C\uDDE9")){
+            builder.withColor(messages.errorColor);
+            builder.appendDesc("[Your bug report]("+url+") in the Mindustry Discord was marked as a **duplicate** and deleted.");
+        }else{
+            valid = false;
+        }
+
+        if(valid){
+            event.getMessage().getAuthor().getOrCreatePMChannel()
+            .sendMessage(builder.build());
+        }
     }
 
     void handle(IMessage message){
