@@ -1,27 +1,31 @@
 package io.anuke.corebot;
 
-import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.Json;
+import io.anuke.arc.collection.Array;
+import io.anuke.arc.util.serialization.Json;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.Properties;
 
-public class Prefs {
+public class Prefs{
     private Properties prop;
     private File file;
     private Json json = new Json();
 
     public Prefs(File file){
         this.file = file;
-        try {
+        try{
             if(!file.exists()) file.createNewFile();
             prop = new Properties();
             prop.load(new FileInputStream(file));
-        }catch (IOException e){
+        }catch(IOException e){
             throw new RuntimeException(e);
         }
     }
 
+    @SuppressWarnings("unchecked")
     public Array<String> getArray(String property){
         String value = prop.getProperty(property, "[]");
         return json.fromJson(Array.class, value);
@@ -37,7 +41,7 @@ public class Prefs {
     }
 
     public int getInt(String property, int def){
-        return Integer.parseInt(prop.getProperty(property, def+""));
+        return Integer.parseInt(prop.getProperty(property, def + ""));
     }
 
     public void put(String property, String value){
@@ -46,9 +50,9 @@ public class Prefs {
     }
 
     public void save(){
-        try {
+        try{
             prop.store(new FileOutputStream(file), null);
-        }catch (IOException e){
+        }catch(IOException e){
             throw new RuntimeException(e);
         }
     }

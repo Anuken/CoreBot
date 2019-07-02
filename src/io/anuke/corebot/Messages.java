@@ -1,38 +1,31 @@
 package io.anuke.corebot;
 
-import com.badlogic.gdx.utils.JsonValue;
+import io.anuke.arc.util.Log;
+import io.anuke.arc.util.Strings;
+import io.anuke.arc.util.serialization.JsonValue;
 import io.anuke.corebot.Net.PingResult;
 import io.anuke.corebot.Net.VersionInfo;
-import io.anuke.ucore.util.Log;
-import io.anuke.ucore.util.Strings;
 import sx.blah.discord.api.ClientBuilder;
 import sx.blah.discord.api.IDiscordClient;
 import sx.blah.discord.api.events.EventDispatcher;
 import sx.blah.discord.api.events.EventSubscriber;
 import sx.blah.discord.api.internal.json.objects.EmbedObject;
-import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedEvent;
+import sx.blah.discord.handle.impl.events.guild.channel.message.*;
+import sx.blah.discord.handle.impl.events.guild.channel.message.reaction.ReactionAddEvent;
 import sx.blah.discord.handle.impl.events.guild.member.UserJoinEvent;
-import sx.blah.discord.handle.impl.obj.Guild;
-import sx.blah.discord.handle.obj.IChannel;
-import sx.blah.discord.handle.obj.IGuild;
-import sx.blah.discord.handle.obj.IMessage;
-import sx.blah.discord.handle.obj.IUser;
+import sx.blah.discord.handle.obj.*;
 import sx.blah.discord.util.EmbedBuilder;
 
 import java.awt.*;
-import java.util.Arrays;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
-import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
+import java.util.*;
+import java.util.concurrent.*;
 
-import static io.anuke.corebot.CoreBot.messages;
-import static io.anuke.corebot.CoreBot.net;
-import static io.anuke.corebot.CoreBot.prefs;
+import static io.anuke.corebot.CoreBot.*;
 
-public class Messages {
+public class Messages{
     IDiscordClient client;
     IChannel channel;
     IUser lastUser;
@@ -46,6 +39,7 @@ public class Messages {
         Log.info("Found token: {0}", token);
 
         ClientBuilder clientBuilder = new ClientBuilder();
+        clientBuilder.set5xxRetryCount(99999999); //retry more or less forever
         clientBuilder.withToken(token);
 
         client = clientBuilder.login();
@@ -59,87 +53,141 @@ public class Messages {
             List<PingResult> results = new CopyOnWriteArrayList<>();
 
             for(String server : prefs.getArray("servers")){
-                net.pingServer(server, result -> {
-                    if(result.valid) results.add(result);
-                });
+                net.pingServer(server, results::add);
             }
 
             net.run(Net.timeout, () -> {
-                String result;
-                if(results.isEmpty()){
-                    result = "All known servers are offline.";
-                }else{
-                    StringBuilder s = new StringBuilder();
-                    for(PingResult r : results){
-                        s.append("*").append(r.ip).append("* **/** ").append(r.players).append(" players ").append(" **/** ").append(r.version).append("\n");
-                    }
-                    result = s.toString();
+                //not loaded yet
+                if(client.getGuildByID(guildID) == null){
+                    return;
                 }
 
-                client.getGuilds().stream().filter(g -> g.getName().equals("Mindustry")).findFirst().orElseThrow(() -> new RuntimeException("Guild not found"))
-                            .getChannelByID(CoreBot.multiplayerChannelID).changeTopic("**Server List:**\n\n" + result + "\n\n*This list is automatically updated every minute.*");
+                results.sort((a, b) -> a.valid && !b.valid ? 1 : !a.valid && b.valid ? -1 : Integer.compare(Strings.parseInt(a.players), Strings.parseInt(b.players)));
+
+                EmbedBuilder embed = new EmbedBuilder();
+                embed.withColor(normalColor);
+
+                //send new messages
+                for(PingResult result : results){
+                    if(!result.valid){
+                        embed.appendField(result.ip, "[offline]\n_\n_\n", false);
+                    }else{
+                        embed.appendField(result.ip,
+                        Strings.format("*{0}*\nPlayers: {1}\nMap: {2}\nWave: {3}\nVersion: {4}\nPing: {5}ms\n_\n_\n",
+                            result.host.replace("\\", "\\\\").replace("_", "\\_").replace("*", "\\*").replace("`", "\\`"), result.players, result.map.replace("\\", "\\\\").replace("_", "\\_").replace("*", "\\*").replace("`", "\\`"), result.wave, result.version, result.ping), false);
+                    }
+                }
+
+
+                embed.withFooterText(Strings.format("Last Updated: {0}", DateTimeFormatter.ofPattern("dd MMM yyyy HH:mm:ss ZZZZ").format(ZonedDateTime.now())));
+
+                client.getGuildByID(guildID).getChannelByID(serverChannelID).getMessageByID(578594853991088148L).edit(embed.build());
 
             });
-        }, 120, 60, TimeUnit.SECONDS);
+        }, 10, 60, TimeUnit.SECONDS);
+
+        StringBuilder messageBuilder = new StringBuilder();
+
+        server.connect(input -> {
+            if(messageBuilder.length() > 1000){
+                String text = messageBuilder.toString();
+                messageBuilder.setLength(0);
+                client.getGuildByID(CoreBot.guildID).getChannelByID(commandChannelID).sendMessage(text);
+            }else if(messageBuilder.length() == 0){
+                messageBuilder.append(input);
+                new Timer().schedule(new TimerTask(){
+                    @Override
+                    public void run(){
+                        if(messageBuilder.length() == 0) return;
+                        String text = messageBuilder.toString();
+                        messageBuilder.setLength(0);
+                        client.getGuildByID(CoreBot.guildID).getChannelByID(commandChannelID).sendMessage(text);
+                    }
+                }, 60L);
+            }else{
+                messageBuilder.append("\n").append(input);
+            }
+        });
     }
 
     @EventSubscriber
     public void onMessageReceivedEvent(MessageReceivedEvent event){
-        IMessage m = event.getMessage();
-        CoreBot.commands.handle(m);
+        commands.handle(event.getMessage());
+    }
+
+    @EventSubscriber
+    public void onMessageEdited(MessageUpdateEvent event){
+        commands.edited(event.getNewMessage(), event.getOldMessage());
+    }
+
+    @EventSubscriber
+    public void onMessageDeleted(MessageDeleteEvent event){
+        commands.deleted(event.getMessage());
+    }
+
+    @EventSubscriber
+    public void onReaction(ReactionAddEvent event){
+        if(event.getMessage().getChannel().getLongID() == bugReportChannelID){
+            //TODO
+        }
     }
 
     @EventSubscriber
     public void onUserJoinEvent(UserJoinEvent event){
-        event.getGuild().getChannelsByName("general").get(0)
-                .sendMessage("*Welcome* " + event.getUser().mention() + " *to the Mindustry Discord!*", false);
+        if(CoreBot.sendWelcomeMessages){
+            event.getGuild().getChannelsByName("general").get(0)
+            .sendMessage("*Welcome* " + event.getUser().mention() + " *to the Mindustry Discord!*", false);
+        }
 
         event.getUser().getOrCreatePMChannel().sendMessage(
-            "**Welcome to the Mindustry Discord.**" +
-            "\n\n*Make sure you read #rules and the channel topics before posting.*\n\n" +
-            "**For a list of public servers**, see `!servers` in #bots.\n" +
-            "**For info on how to play with friends**, see `!info multiplayer` in #bots.\n" +
-            "**If you need info on the dedicated server**, see `!info server` in #bots.\n"
+        "**Welcome to the Mindustry Discord.**" +
+        "\n\n*Make sure you read #rules and the channel topics before posting.*\n\n" +
+        "**For a list of public servers**, see the #servers channel.\n" +
+        "**For info on how to play with friends**, see `!info multiplayer` in #bots.\n" +
+        "**If you need info on the dedicated server**, see `!info server` in #bots.\n"
         );
     }
 
-    public IGuild getGuild(){
-        return client.getGuilds().stream().filter(guild -> guild.getName().equals("Mindustry")).findAny().orElseThrow(() -> new RuntimeException("No Mindustry guild!"));
-    }
-
     public void sendUpdate(VersionInfo info){
-        client.getGuildByID(CoreBot.guildID)
-                .getChannelsByName("announcements").get(0)
-                .sendMessage(new EmbedBuilder()
-                        .withColor(normalColor).withTitle(info.name)
-                        .appendDesc(info.description).build());
+        String text = info.description;
+        int maxLength = 2000;
+        while(true){
+            String current = text.substring(0, Math.min(maxLength, text.length()));
+            client.getGuildByID(CoreBot.guildID)
+            .getChannelByID(announcementsChannelID)
+            .sendMessage(new EmbedBuilder()
+            .withColor(normalColor).withTitle(info.name)
+            .appendDesc(current).build());
+
+            if(text.length() < maxLength){
+                return;
+            }
+
+            text = text.substring(maxLength);
+        }
     }
 
     public void deleteMessages(){
         IMessage last = lastMessage, lastSent = lastSentMessage;
 
-        new Timer().schedule(
-            new TimerTask() {
-                @Override
-                public void run() {
-                    last.delete();
-                    lastSent.delete();
-                }
-            }, CoreBot.messageDeleteTime
-        );
+        new Timer().schedule(new TimerTask(){
+            @Override
+            public void run(){
+                last.delete();
+                lastSent.delete();
+            }
+        }, CoreBot.messageDeleteTime);
     }
 
     public void deleteMessage(){
         IMessage last = lastSentMessage;
 
-        new Timer().schedule(
-            new TimerTask() {
-                @Override
-                public void run() {
-                    last.delete();
-                }
-            }, CoreBot.messageDeleteTime
-        );
+        new Timer().schedule(new TimerTask(){
+            @Override
+            public void run(){
+                last.delete();
+            }
+        }, CoreBot.messageDeleteTime);
     }
 
     public void sendCrash(JsonValue value){
@@ -161,7 +209,11 @@ public class Messages {
             builder.append("\n");
             value = value.next;
         }
-        getGuild().getChannelByID(CoreBot.crashReportChannelID).sendMessage(builder.toString());
+        client.getGuildByID(CoreBot.guildID).getChannelByID(CoreBot.crashReportChannelID).sendMessage(builder.toString());
+    }
+
+    public void logTo(String text, Object... args){
+        client.getGuildByID(guildID).getChannelByID(logChannelID).sendMessage(Strings.format(text, args));
     }
 
     public void text(String text, Object... args){
@@ -170,7 +222,7 @@ public class Messages {
 
     public void info(String title, String text, Object... args){
         EmbedObject object = new EmbedBuilder()
-                .appendField(title, format(text, args), true).withColor(normalColor).build();
+        .appendField(title, format(text, args), true).withColor(normalColor).build();
         lastSentMessage = channel.sendMessage(object);
     }
 
@@ -180,12 +232,12 @@ public class Messages {
 
     public void err(String title, String text, Object... args){
         EmbedObject object = new EmbedBuilder()
-                .appendField(title, format(text, args), true).withColor(errorColor).build();
+        .appendField(title, format(text, args), true).withColor(errorColor).build();
         lastSentMessage = channel.sendMessage(object);
     }
 
     private String format(String text, Object... args){
-        for(int i = 0; i < args.length; i ++){
+        for(int i = 0; i < args.length; i++){
             text = text.replace("{" + i + "}", String.valueOf(args[i]));
         }
 

@@ -1,1 +1,9 @@
 rootProject.name = 'CoreBot'
+
+def use = { String name, String path ->
+    include(name)
+    project(name).projectDir = new File(settingsDir, path)
+}
+
+use(':Arc', '../Arc')
+use(':Arc:arc-core', '../Arc/arc-core')
