@@ -1,8 +1,6 @@
 package io.anuke.corebot;
 
 import com.badlogic.gdx.utils.ObjectMap;
-import io.anuke.ucore.function.Consumer;
-import io.anuke.ucore.util.Log;
 
 import java.io.ByteArrayInputStream;
 import java.util.Scanner;
@@ -14,7 +12,6 @@ public class CrashReport {
     private static final String traceHeader = "----";
 
     public boolean valid = true;
-    public boolean hasInfoError;
 
     public String trace;
     public ObjectMap<String, String> values = new ObjectMap<>();
