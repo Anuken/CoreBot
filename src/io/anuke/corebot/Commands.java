@@ -375,7 +375,7 @@ public class Commands{
         String emoji = event.getReaction().getEmoji().getName();
         boolean valid = true;
         if(emoji.equals("✅")){
-            builder.withColor(Color.decode("87FF4B"));
+            builder.withColor(Color.decode("#87FF4B"));
             builder.appendDesc("[Your bug report](" + url + ") in the Mindustry Discord has been marked as solved.");
         }else if(emoji.equals("❌")){
             builder.withColor(messages.errorColor);
@@ -383,6 +383,7 @@ public class Commands{
         }else if(emoji.equals("\uD83C\uDDE9")){
             builder.withColor(messages.errorColor);
             builder.appendDesc("[Your bug report]("+url+") in the Mindustry Discord was marked as a **duplicate** and deleted.");
+            event.getMessage().delete();
         }else{
             valid = false;
         }
