@@ -386,7 +386,7 @@ public class Commands{
         }else if(emoji.equals("\uD83C\uDDE9")){
             Log.info("| Duplicate.");
             builder.withColor(messages.errorColor);
-            builder.appendDesc("Your bug report in the Mindustry Discord was marked as a **duplicate** and deleted.");
+            builder.appendDesc("Your bug report in the Mindustry Discord was marked as a **duplicate** and deleted.\n\nReport: ```" + event.getMessage().getContent() + "```");
             event.getMessage().delete();
         }else{
             Log.info("| Invalid.");
