@@ -373,18 +373,23 @@ public class Commands{
             event.getGuild().getStringID(), event.getChannel().getStringID(), event.getMessage().getStringID());
 
         String emoji = event.getReaction().getEmoji().getName();
+        Log.info("Emoji -> {0}", emoji);
         boolean valid = true;
         if(emoji.equals("✅")){
+            Log.info("Solved.");
             builder.withColor(Color.decode("#87FF4B"));
             builder.appendDesc("[Your bug report](" + url + ") in the Mindustry Discord has been marked as solved.");
         }else if(emoji.equals("❌")){
+            Log.info("Error.");
             builder.withColor(messages.errorColor);
             builder.appendDesc("[Your bug report]("+url+") in the Mindustry Discord has been marked as **not a bug** (intentional behavior).");
         }else if(emoji.equals("\uD83C\uDDE9")){
+            Log.info("Duplicate.");
             builder.withColor(messages.errorColor);
             builder.appendDesc("[Your bug report]("+url+") in the Mindustry Discord was marked as a **duplicate** and deleted.");
             event.getMessage().delete();
         }else{
+            Log.info("Invalid.");
             valid = false;
         }
 
