@@ -382,11 +382,11 @@ public class Commands{
         }else if(emoji.equals("❌")){
             Log.info("| Not a bug.");
             builder.withColor(messages.errorColor);
-            builder.appendDesc("[Your bug report]("+url+") in the Mindustry Discord has been marked as **not a bug** (intentional behavior).");
+            builder.appendDesc("[Your bug report]("+url+") in the Mindustry Discord has been marked as **not a bug** (intentional or unfixable behavior).");
         }else if(emoji.equals("\uD83C\uDDE9")){
             Log.info("| Duplicate.");
             builder.withColor(messages.errorColor);
-            builder.appendDesc("Your bug report in the Mindustry Discord was marked as a **duplicate** and deleted.\n\nReport deleted: ```" + event.getMessage().getContent() + "```");
+            builder.appendDesc("Your bug report in the Mindustry Discord has been marked as a **duplicate**: Someone has reported this issue before.\nYour report has been removed to clean up the channel.\n\nReport deleted: ```" + event.getMessage().getContent() + "```");
             event.getMessage().delete();
         }else{
             Log.info("| Invalid.");
