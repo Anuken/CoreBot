@@ -10,6 +10,7 @@ import io.anuke.mindustry.game.*;
 import io.anuke.mindustry.io.*;
 import io.anuke.mindustry.type.*;
 import io.anuke.mindustry.world.*;
+import io.anuke.mindustry.world.blocks.*;
 
 import javax.imageio.*;
 import java.awt.image.*;
@@ -34,6 +35,9 @@ public class Maps{
 
             for(Block block : Vars.content.blocks()){
                 Color.argb8888ToColor(block.color, image.getRGB(block.id, 0));
+                if(block instanceof OreBlock){
+                    block.color.set(((OreBlock)block).itemDrop.color);
+                }
             }
         }catch(Exception e){
             throw new RuntimeException(e);
