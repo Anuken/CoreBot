@@ -113,11 +113,11 @@ public class Commands{
             }
         });
 
-        handler.register("postmap", "Post a .mmap file to the #maps channel.", args -> {
+        handler.register("postmap", "Post a .msav file to the #maps channel.", args -> {
             IMessage message = messages.lastMessage;
 
-            if(message.getAttachments().size() != 1 || !message.getAttachments().get(0).getFilename().endsWith(".mmap")){
-                messages.err("You must have one .mmap file in the same message as the command!");
+            if(message.getAttachments().size() != 1 || !message.getAttachments().get(0).getFilename().endsWith(".msav")){
+                messages.err("You must have one .msav file in the same message as the command!");
                 messages.deleteMessages();
                 return;
             }
@@ -128,13 +128,13 @@ public class Commands{
                 Map map = maps.parseMap(net.download(a.getUrl()));
                 new File("maps/").mkdir();
                 File mapFile = new File("maps/" + a.getFilename());
-                File imageFile = new File("maps/image_" + a.getFilename().replace(".mmap", ".png"));
+                File imageFile = new File("maps/image_" + a.getFilename().replace(".msav", ".png"));
                 IOUtils.copy(net.download(a.getUrl()), new FileOutputStream(mapFile));
                 ImageIO.write(map.image, "png", imageFile);
 
                 EmbedBuilder builder = new EmbedBuilder().withColor(messages.normalColor).withColor(messages.normalColor)
                 .withImage("attachment://" + imageFile.getName())
-                .withAuthorName(messages.lastUser.getName()).withTitle(map.name == null ? a.getFilename().replace(".mmap", "") : map.name)
+                .withAuthorName(messages.lastUser.getName()).withTitle(map.name == null ? a.getFilename().replace(".msav", "") : map.name)
                 .withAuthorIcon(messages.lastUser.getAvatarURL());
 
                 if(map.description != null) builder.withFooterText(map.description);
@@ -145,7 +145,7 @@ public class Commands{
                 messages.text("*Map posted successfully.*");
             }catch(Exception e){
                 e.printStackTrace();
-                messages.err("Error parsing map.");
+                messages.err("Error parsing map.\n```{0}```", Strings.parseException(e, true));
                 messages.deleteMessages();
             }
         });

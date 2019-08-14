@@ -40,13 +40,15 @@ allprojects{
     }
 }
 
-repositories {
-    mavenLocal()
-    mavenCentral()
-    maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
-    maven { url "https://oss.sonatype.org/content/repositories/releases/" }
-    maven { url 'https://jitpack.io' }
-    jcenter()
+allprojects{
+    repositories{
+        mavenLocal()
+        mavenCentral()
+        maven{ url "https://oss.sonatype.org/content/repositories/snapshots/" }
+        maven{ url "https://oss.sonatype.org/content/repositories/releases/" }
+        maven{ url 'https://jitpack.io' }
+        jcenter()
+    }
 }
 
 task run(dependsOn: classes, type: JavaExec) {
@@ -67,8 +69,38 @@ task dist(type: Jar) {
     }
 }
 
+project(":Mindustry:core"){
+    apply plugin: "java"
+
+    dependencies {
+        compile project(":Arc:arc-core")
+        compile project(":Arc:extensions:freetype")
+        compileOnly project(":Mindustry:annotations")
+        annotationProcessor project(":Mindustry:annotations")
+    }
+}
+
+project(":Mindustry:annotations"){
+    apply plugin: "java"
+
+    task cleanGen{
+        doFirst{
+            delete{
+                delete "../core/src/io/anuke/mindustry/gen/"
+            }
+        }
+    }
+
+    compileJava.dependsOn(cleanGen)
+
+    dependencies {
+        compile 'com.squareup:javapoet:1.11.0'
+        compile files("${System.getProperty('java.home')}/../lib/tools.jar")
+    }
+}
 
 dependencies {
     compile 'com.github.austinv11:Discord4j:2.9.3'
     compile arcModule("arc-core")
+    compile project(":Mindustry:core")
 }
