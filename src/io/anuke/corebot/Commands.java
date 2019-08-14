@@ -417,6 +417,16 @@ public class Commands{
             return;
         }
 
+        if(message.getChannel().getLongID() == screenshotsChannelID && message.getAttachments().isEmpty()){
+            message.delete();
+            try{
+                message.getAuthor().getOrCreatePMChannel().sendMessage("Don't send messages without images in the #screenshots channel.");
+            }catch(Exception e){
+                e.printStackTrace();
+            }
+            return;
+        }
+
         if(message.getContent() == null) return;
 
         String text = message.getContent();
