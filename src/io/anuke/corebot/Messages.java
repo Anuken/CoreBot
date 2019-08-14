@@ -127,7 +127,6 @@ public class Messages{
 
     @EventSubscriber
     public void onReaction(ReactionAddEvent event){
-        Log.info("Count on {0} | {1}", event.getReaction().getUsers().size(), event.getReaction().getUsers().get(0).getName());
 
         if(event.getMessage().getChannel().getLongID() == bugReportChannelID && event.getReaction().getUsers().size() == 1 && commands.isAdmin(event.getReaction().getUsers().get(0))){
             commands.handleBugReact(event);
