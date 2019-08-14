@@ -101,6 +101,6 @@ project(":Mindustry:annotations"){
 
 dependencies {
     compile 'com.github.austinv11:Discord4j:2.9.3'
-    compile arcModule("arc-core")
+    compile project(":Arc:arc-core")
     compile project(":Mindustry:core")
 }

@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 cd ../Mindustry
 git pull
+cd ../Arc
+git pull
 cd ../CoreBot
 git pull
 
