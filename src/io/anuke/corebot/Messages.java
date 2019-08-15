@@ -144,8 +144,7 @@ public class Messages{
         "**Welcome to the Mindustry Discord.**" +
         "\n\n*Make sure you read #rules and the channel topics before posting.*\n\n" +
         "**For a list of public servers**, see the #servers channel.\n" +
-        "**For info on how to play with friends**, see `!info multiplayer` in #bots.\n" +
-        "**If you need info on the dedicated server**, see `!info server` in #bots.\n"
+        "**Make sure you check out the #faq channel here:**\n<https://discordapp.com/channels/391020510269669376/611204372592066570/611586644402765828>"
         );
     }
 
