@@ -26,9 +26,16 @@ public class Maps{
     public Maps(){
         Version.enabled = false;
         Vars.content = new ContentLoader();
-        Vars.content.load();
-        Vars.content.initialize(c -> { try{ c.init(); }catch(Throwable ignored){} });
-        Vars.content.initialize(c -> { try{ c.load(); }catch(Throwable ignored){} });
+        Vars.content.createContent();
+        for(ContentType type : ContentType.values()){
+            for(Content content : Vars.content.getBy(type)){
+                try{
+                    content.init();
+                }catch(Throwable t){
+
+                }
+            }
+        }
 
         try{
             BufferedImage image = ImageIO.read(new File("../Mindustry/core/assets/sprites/block_colors.png"));
