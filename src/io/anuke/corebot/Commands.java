@@ -94,14 +94,17 @@ public class Commands{
 
                     EmbedBuilder builder = new EmbedBuilder().withColor(messages.normalColor).
                     withColor(messages.normalColor)
-                    .appendField("Link", args[0], false)
                     .withAuthorName(messages.lastUser.getName()).withTitle(doc.select("strong[itemprop=name]").text())
                     .withAuthorIcon(messages.lastUser.getAvatarURL());
 
                     Elements elem = doc.select("span[itemprop=about]");
                     if(!elem.isEmpty()){
-                        builder.withFooterText(elem.text());
+                        builder.appendField("About", elem.text(), false);
                     }
+
+                    builder.appendField("Link", args[0], false);
+
+                    builder.appendField("Downloads", args[0] + (args[0].endsWith("/") ? "" : "/") + "releases", false);
 
                     messages.channel.getGuild().getChannelsByName("plugins").get(0)
                     .sendMessage(builder.build());
