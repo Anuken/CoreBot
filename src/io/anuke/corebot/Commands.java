@@ -95,7 +95,7 @@ public class Commands{
                     EmbedBuilder builder = new EmbedBuilder().withColor(messages.normalColor).
                     withColor(messages.normalColor)
                     .appendField("Link", args[0], false)
-                    .withAuthorName(messages.lastUser.getName()).withTitle(doc.title())
+                    .withAuthorName(messages.lastUser.getName()).withTitle(doc.select("strong[itemprop=name]").text())
                     .withAuthorIcon(messages.lastUser.getAvatarURL());
 
                     Elements elem = doc.select("span[itemprop=about]");
