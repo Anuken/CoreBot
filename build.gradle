@@ -102,6 +102,7 @@ project(":Mindustry:annotations"){
 
 dependencies {
     compile 'com.github.austinv11:Discord4j:2.9.3'
+    compile "org.jsoup:jsoup:1.7.2"
     compile project(":Arc:arc-core")
     compile project(":Mindustry:core")
 }

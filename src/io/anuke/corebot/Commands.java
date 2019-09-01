@@ -1,22 +1,25 @@
 package io.anuke.corebot;
 
-import io.anuke.arc.collection.Array;
-import io.anuke.arc.math.Mathf;
+import io.anuke.arc.collection.*;
+import io.anuke.arc.math.*;
 import io.anuke.arc.util.*;
 import io.anuke.arc.util.CommandHandler.*;
 import io.anuke.corebot.Maps.Map;
-import org.apache.commons.io.IOUtils;
-import sx.blah.discord.handle.impl.events.guild.channel.message.reaction.ReactionAddEvent;
+import org.apache.commons.io.*;
+import org.jsoup.*;
+import org.jsoup.nodes.*;
+import org.jsoup.select.*;
+import sx.blah.discord.handle.impl.events.guild.channel.message.reaction.*;
 import sx.blah.discord.handle.obj.*;
-import sx.blah.discord.handle.obj.IMessage.Attachment;
+import sx.blah.discord.handle.obj.IMessage.*;
 import sx.blah.discord.util.*;
 
-import javax.imageio.ImageIO;
+import javax.imageio.*;
 import java.awt.*;
 import java.io.*;
-import java.net.URLEncoder;
-import java.util.Arrays;
-import java.util.regex.Pattern;
+import java.net.*;
+import java.util.*;
+import java.util.regex.*;
 
 import static io.anuke.corebot.CoreBot.*;
 
@@ -79,6 +82,35 @@ public class Commands{
                 e.printStackTrace();
                 messages.err("Error", "Invalid topic '{0}'.\nValid topics: *{1}*", args[0], Arrays.toString(Info.values()));
                 messages.deleteMessages();
+            }
+        });
+
+        handler.register("postplugin", "<github-url>", "Post a plugin via Github repository URL.", args -> {
+            if(args[0].startsWith("https") || !args[0].contains("github")){
+                messages.err("That's not a valid Github URL.");
+            }else{
+                try{
+                    Document doc = Jsoup.connect(args[0]).get();
+
+                    EmbedBuilder builder = new EmbedBuilder().withColor(messages.normalColor).
+                    withColor(messages.normalColor)
+                    .appendField("Link", args[0], false)
+                    .withAuthorName(messages.lastUser.getName()).withTitle(doc.title())
+                    .withAuthorIcon(messages.lastUser.getAvatarURL());
+
+                    Elements elem = doc.select("span[itemprop=about]");
+                    if(!elem.isEmpty()){
+                        builder.withFooterText(elem.text());
+                    }
+
+                    messages.channel.getGuild().getChannelsByName("plugins").get(0)
+                    .sendMessage(builder.build());
+
+                    messages.text("*Plugin posted.*");
+                }catch(IOException e){
+                    e.printStackTrace();
+                    messages.err("Failed to fetch plugin info from URL.");
+                }
             }
         });
 
@@ -445,7 +477,7 @@ public class Commands{
         }
     }
 
-    boolean handleResponse(Response response, boolean logUnknown){
+    boolean handleResponse(CommandResponse response, boolean logUnknown){
         if(response.type == ResponseType.unknownCommand){
             if(logUnknown){
                 messages.err("Unknown command. Type !help for a list of commands.");
