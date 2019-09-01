@@ -86,7 +86,7 @@ public class Commands{
         });
 
         handler.register("postplugin", "<github-url>", "Post a plugin via Github repository URL.", args -> {
-            if(args[0].startsWith("https") || !args[0].contains("github")){
+            if(!args[0].startsWith("https") || !args[0].contains("github")){
                 messages.err("That's not a valid Github URL.");
             }else{
                 try{
