@@ -74,6 +74,7 @@ project(":Mindustry:core"){
 
     dependencies {
         compile project(":Arc:arc-core")
+        compile project(":Arc:extensions:arcnet")
         compile project(":Arc:extensions:freetype")
         compileOnly project(":Mindustry:annotations")
         annotationProcessor project(":Mindustry:annotations")
