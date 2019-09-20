@@ -228,7 +228,7 @@ public class Commands{
 
         adminHandler.register("warn", "<@user> [reason...]", "Warn a user.", args -> {
             String author = args[0].substring(2, args[0].length() - 1);
-            Log.info(args[0]);
+            if(author.startsWith("!")) author = author.substring(1);
             try{
                 long l = Long.parseLong(author);
                 IUser user = messages.client.getUserByID(l);
