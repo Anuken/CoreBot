@@ -248,6 +248,7 @@ public class Commands{
 
         adminHandler.register("warnings", "<@user>", "Get number of warnings a user has.", args -> {
             String author = args[0].substring(2, args[0].length() - 1);
+            if(author.startsWith("!")) author = author.substring(1);
             try{
                 long l = Long.parseLong(author);
                 IUser user = messages.client.getUserByID(l);
@@ -262,6 +263,7 @@ public class Commands{
 
         adminHandler.register("clearwarnings", "<@user>", "Clear number of warnings for a person.", args -> {
             String author = args[0].substring(2, args[0].length() - 1);
+            if(author.startsWith("!")) author = author.substring(1);
             try{
                 long l = Long.parseLong(author);
                 IUser user = messages.client.getUserByID(l);
