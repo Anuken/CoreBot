@@ -180,7 +180,7 @@ public class Commands{
                 messages.text("*Map posted successfully.*");
             }catch(Exception e){
                 e.printStackTrace();
-                messages.err("Error parsing map.\n```{0}```", Strings.parseException(e, true));
+                messages.err("Error parsing map.", Strings.parseException(e, true));
                 messages.deleteMessages();
             }
         });
