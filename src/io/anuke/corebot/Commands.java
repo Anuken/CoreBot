@@ -106,13 +106,43 @@ public class Commands{
 
                     builder.appendField("Downloads", args[0] + (args[0].endsWith("/") ? "" : "/") + "releases", false);
 
-                    messages.channel.getGuild().getChannelsByName("plugins").get(0)
-                    .sendMessage(builder.build());
+                    messages.channel.getGuild().getChannelByID(pluginChannelID).sendMessage(builder.build());
 
                     messages.text("*Plugin posted.*");
                 }catch(IOException e){
                     e.printStackTrace();
                     messages.err("Failed to fetch plugin info from URL.");
+                }
+            }
+        });
+
+        handler.register("postmod", "<github-url>", "Post a plugin via Github repository URL.", args -> {
+            if(!args[0].startsWith("https") || !args[0].contains("github")){
+                messages.err("That's not a valid Github URL.");
+            }else{
+                try{
+                    Document doc = Jsoup.connect(args[0]).get();
+
+                    EmbedBuilder builder = new EmbedBuilder().withColor(messages.normalColor).
+                    withColor(messages.normalColor)
+                    .withAuthorName(messages.lastUser.getName()).withTitle(doc.select("strong[itemprop=name]").text())
+                    .withAuthorIcon(messages.lastUser.getAvatarURL());
+
+                    Elements elem = doc.select("span[itemprop=about]");
+                    if(!elem.isEmpty()){
+                        builder.appendField("About", elem.text(), false);
+                    }
+
+                    builder.appendField("Link", args[0], false);
+
+                    builder.appendField("Downloads", args[0] + (args[0].endsWith("/") ? "" : "/") + "releases", false);
+
+                    messages.channel.getGuild().getChannelByID(modChannelID).sendMessage(builder.build());
+
+                    messages.text("*Mod posted.*");
+                }catch(IOException e){
+                    e.printStackTrace();
+                    messages.err("Failed to fetch mod info from URL.");
                 }
             }
         });
