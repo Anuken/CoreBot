@@ -103,8 +103,14 @@ public class Commands{
                     }
 
                     builder.appendField("Link", args[0], false);
+                    if(!args[0].endsWith("/")){
+                        args[0] += "/";
+                    }
+                    String field = args[0].substring("https://github.com/".length());
+                    field = field.substring(0, field.length()-1);
 
-                    builder.appendField("Downloads", args[0] + (args[0].endsWith("/") ? "" : "/") + "releases", false);
+                    String download = "http://api.github.com/repos/" + field + "/zipball/master";
+                    builder.appendField("Download", download, false);
 
                     messages.channel.getGuild().getChannelByID(pluginChannelID).sendMessage(builder.build());
 
