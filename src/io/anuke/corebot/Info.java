@@ -71,9 +71,10 @@ public enum Info{
     "**Issue:** *<What goes wrong and when. Be specific!>*\n\n" +
     "**Status:**\n" +
     ":white_check_mark: - *fixed*\n" +
-    ":question: - *can't reproduce the bug, additional info needed*\n" +
-    ":x: - *not a bug, intentional behavior or beyond my control*\n" +
-    ":fire: - *please stop reporting this*");
+    ":question: - *I have no idea what you're trying to say*\n" +
+    ":o: - *can't reproduce the bug, additional info needed*\n" +
+    ":x: - *not a bug, intentional behavior or beyond my control*\n" + "" +
+    ":no_entry: - *won't fix; bug outside my control (due to it coming from a plugin) or issue with other software*");
     public final String text;
     public final String title;
 
