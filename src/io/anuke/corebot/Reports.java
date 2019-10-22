@@ -14,6 +14,7 @@ public class Reports{
         try{
             HttpServer server = HttpServer.create(new InetSocketAddress(80), 0);
             server.createContext("/report", t -> {
+                Log.info(t.getRemoteAddress().getAddress().getHostAddress());
                 byte[] bytes = new byte[t.getRequestBody().available()];
                 new DataInputStream(t.getRequestBody()).readFully(bytes);
 
