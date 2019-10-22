@@ -103,14 +103,8 @@ public class Commands{
                     }
 
                     builder.appendField("Link", args[0], false);
-                    if(!args[0].endsWith("/")){
-                        args[0] += "/";
-                    }
-                    String field = args[0].substring("https://github.com/".length());
-                    field = field.substring(0, field.length()-1);
 
-                    String download = "http://api.github.com/repos/" + field + "/zipball/master";
-                    builder.appendField("Download", download, false);
+                    builder.appendField("Downloads", args[0] + (args[0].endsWith("/") ? "" : "/") + "releases", false);
 
                     messages.channel.getGuild().getChannelByID(pluginChannelID).sendMessage(builder.build());
 
@@ -141,8 +135,14 @@ public class Commands{
 
                     builder.appendField("Link", args[0], false);
 
-                    builder.appendField("Downloads", args[0] + (args[0].endsWith("/") ? "" : "/") + "releases", false);
+                    if(!args[0].endsWith("/")){
+                        args[0] += "/";
+                    }
+                    String field = args[0].substring("https://github.com/".length());
+                    field = field.substring(0, field.length()-1);
 
+                    String download = "http://api.github.com/repos/" + field + "/zipball/master";
+                    builder.appendField("Download", download, false);
                     messages.channel.getGuild().getChannelByID(modChannelID).sendMessage(builder.build());
 
                     messages.text("*Mod posted.*");
