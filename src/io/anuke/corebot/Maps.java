@@ -1,4 +1,5 @@
 package io.anuke.corebot;
+
 import io.anuke.arc.collection.*;
 import io.anuke.arc.function.*;
 import io.anuke.arc.graphics.*;
@@ -6,6 +7,7 @@ import io.anuke.arc.util.*;
 import io.anuke.mindustry.*;
 import io.anuke.mindustry.content.*;
 import io.anuke.mindustry.core.*;
+import io.anuke.mindustry.ctype.*;
 import io.anuke.mindustry.game.*;
 import io.anuke.mindustry.io.*;
 import io.anuke.mindustry.type.*;
