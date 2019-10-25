@@ -153,7 +153,6 @@ public class Messages{
         int maxLength = 2000;
         while(true){
             Log.info("//////////");
-
             Log.info("channels: " + client.getGuildByID(CoreBot.guildID).getChannels());
 
             String current = text.substring(0, Math.min(maxLength, text.length()));
