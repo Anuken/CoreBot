@@ -154,11 +154,11 @@ public class Messages{
         while(true){
             Log.info("//////////");
             Log.info(client.getGuildByID(CoreBot.guildID)
-            .getChannelByID(announcementsChannelID));
+            .getChannelsByName("announcements").get(0));
 
             String current = text.substring(0, Math.min(maxLength, text.length()));
             client.getGuildByID(CoreBot.guildID)
-            .getChannelByID(announcementsChannelID)
+            .getChannelsByName("announcements").get(0)
             .sendMessage(new EmbedBuilder()
             .withColor(normalColor).withTitle(info.name)
             .appendDesc(current).build());
