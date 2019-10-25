@@ -22,6 +22,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.*;
 import java.util.concurrent.*;
+import java.util.stream.*;
 
 import static io.anuke.corebot.CoreBot.*;
 
@@ -153,7 +154,7 @@ public class Messages{
         int maxLength = 2000;
         while(true){
             Log.info("//////////");
-            Log.info("channels: " + client.getGuildByID(CoreBot.guildID).getChannels());
+            Log.info("channels: " + client.getGuildByID(CoreBot.guildID).getChannels().stream().map(IChannel::getName).collect(Collectors.toList()));
 
             String current = text.substring(0, Math.min(maxLength, text.length()));
             client.getGuildByID(CoreBot.guildID)
