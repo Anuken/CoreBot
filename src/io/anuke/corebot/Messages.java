@@ -156,6 +156,8 @@ public class Messages{
             Log.info(client.getGuildByID(CoreBot.guildID)
             .getChannelsByName("announcements").get(0));
 
+            Log.info(client.getGuildByID(CoreBot.guildID).getChannels());
+
             String current = text.substring(0, Math.min(maxLength, text.length()));
             client.getGuildByID(CoreBot.guildID)
             .getChannelsByName("announcements").get(0)
