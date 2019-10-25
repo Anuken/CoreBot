@@ -152,6 +152,8 @@ public class Messages{
         String text = info.description;
         int maxLength = 2000;
         while(true){
+            Log.info(client.getGuildByID(CoreBot.guildID)
+            .getChannelByID(announcementsChannelID));
             String current = text.substring(0, Math.min(maxLength, text.length()));
             client.getGuildByID(CoreBot.guildID)
             .getChannelByID(announcementsChannelID)
