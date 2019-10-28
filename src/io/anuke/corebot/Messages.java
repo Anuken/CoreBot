@@ -5,16 +5,13 @@ import io.anuke.arc.util.Strings;
 import io.anuke.arc.util.serialization.JsonValue;
 import io.anuke.corebot.Net.PingResult;
 import io.anuke.corebot.Net.VersionInfo;
-import sx.blah.discord.api.ClientBuilder;
-import sx.blah.discord.api.IDiscordClient;
-import sx.blah.discord.api.events.EventDispatcher;
-import sx.blah.discord.api.events.EventSubscriber;
-import sx.blah.discord.api.internal.json.objects.EmbedObject;
-import sx.blah.discord.handle.impl.events.guild.channel.message.*;
-import sx.blah.discord.handle.impl.events.guild.channel.message.reaction.ReactionAddEvent;
-import sx.blah.discord.handle.impl.events.guild.member.UserJoinEvent;
-import sx.blah.discord.handle.obj.*;
-import sx.blah.discord.util.EmbedBuilder;
+import net.dv8tion.jda.api.*;
+import net.dv8tion.jda.api.entities.*;
+import net.dv8tion.jda.api.events.guild.member.*;
+import net.dv8tion.jda.api.events.message.*;
+import net.dv8tion.jda.api.events.message.guild.*;
+import net.dv8tion.jda.api.events.message.react.*;
+import net.dv8tion.jda.api.hooks.*;
 
 import java.awt.*;
 import java.time.ZonedDateTime;
@@ -26,12 +23,13 @@ import java.util.stream.*;
 
 import static io.anuke.corebot.CoreBot.*;
 
-public class Messages{
-    IDiscordClient client;
-    IChannel channel;
-    IUser lastUser;
-    IMessage lastMessage;
-    IMessage lastSentMessage;
+public class Messages extends ListenerAdapter{
+    JDA jda;
+    TextChannel channel;
+    User lastUser;
+    Message lastMessage;
+    Message lastSentMessage;
+    Guild guild;
     Color normalColor = Color.decode("#FAB462");
     Color errorColor = Color.decode("#ff3838");
 
@@ -39,129 +37,116 @@ public class Messages{
         String token = System.getProperty("token");
         Log.info("Found token: {0}", token);
 
-        ClientBuilder clientBuilder = new ClientBuilder();
-        clientBuilder.set5xxRetryCount(99999999); //retry more or less forever
-        clientBuilder.withToken(token);
+        try{
+            jda = new JDABuilder(token).build();
+            jda.awaitReady();
+            jda.addEventListener(this);
+            guild = jda.getGuildById(guildID);
 
-        client = clientBuilder.login();
+            Log.info("Discord bot up.");
 
-        EventDispatcher event = client.getDispatcher();
-        event.registerListener(this);
+            Executors.newSingleThreadScheduledExecutor().scheduleAtFixedRate(() -> {
+                List<PingResult> results = new CopyOnWriteArrayList<>();
 
-        Log.info("Discord bot up.");
-
-        Executors.newSingleThreadScheduledExecutor().scheduleAtFixedRate(() -> {
-            List<PingResult> results = new CopyOnWriteArrayList<>();
-
-            for(String server : prefs.getArray("servers")){
-                net.pingServer(server, results::add);
-            }
-
-            net.run(Net.timeout, () -> {
-                //not loaded yet
-                if(client.getGuildByID(guildID) == null){
-                    return;
+                for(String server : prefs.getArray("servers")){
+                    net.pingServer(server, results::add);
                 }
 
-                results.sort((a, b) -> a.valid && !b.valid ? 1 : !a.valid && b.valid ? -1 : Integer.compare(Strings.parseInt(a.players), Strings.parseInt(b.players)));
+                net.run(Net.timeout, () -> {
+                    results.sort((a, b) -> a.valid && !b.valid ? 1 : !a.valid && b.valid ? -1 : Integer.compare(Strings.parseInt(a.players), Strings.parseInt(b.players)));
 
-                EmbedBuilder embed = new EmbedBuilder();
-                embed.withColor(normalColor);
+                    EmbedBuilder embed = new EmbedBuilder();
+                    embed.setColor(normalColor);
 
-                //send new messages
-                for(PingResult result : results){
-                    if(!result.valid){
-                        embed.appendField(result.ip, "[offline]\n_\n_\n", false);
-                    }else{
-                        embed.appendField(result.ip,
-                        Strings.format("*{0}*\nPlayers: {1}\nMap: {2}\nWave: {3}\nVersion: {4}\nPing: {5}ms\n_\n_\n",
+                    //send new messages
+                    for(PingResult result : results){
+                        if(!result.valid){
+                            embed.addField(result.ip, "[offline]\n_\n_\n", false);
+                        }else{
+                            embed.addField(result.ip,
+                            Strings.format("*{0}*\nPlayers: {1}\nMap: {2}\nWave: {3}\nVersion: {4}\nPing: {5}ms\n_\n_\n",
                             result.host.replace("\\", "\\\\").replace("_", "\\_").replace("*", "\\*").replace("`", "\\`"), result.players, result.map.replace("\\", "\\\\").replace("_", "\\_").replace("*", "\\*").replace("`", "\\`"), result.wave, result.version, result.ping), false);
+                        }
                     }
+
+
+                    embed.setFooter(Strings.format("Last Updated: {0}", DateTimeFormatter.ofPattern("dd MMM yyyy HH:mm:ss ZZZZ").format(ZonedDateTime.now())));
+
+                    guild.getTextChannelById(serverChannelID).editMessageById(578594853991088148L, embed.build());
+
+                });
+            }, 10, 60, TimeUnit.SECONDS);
+
+            StringBuilder messageBuilder = new StringBuilder();
+
+            server.connect(input -> {
+                if(messageBuilder.length() > 1000){
+                    String text = messageBuilder.toString();
+                    messageBuilder.setLength(0);
+                    guild.getTextChannelById(commandChannelID).sendMessage(text).queue();
+                }else if(messageBuilder.length() == 0){
+                    messageBuilder.append(input);
+                    new Timer().schedule(new TimerTask(){
+                        @Override
+                        public void run(){
+                            if(messageBuilder.length() == 0) return;
+                            String text = messageBuilder.toString();
+                            messageBuilder.setLength(0);
+                            guild.getTextChannelById(commandChannelID).sendMessage(text).queue();
+                        }
+                    }, 60L);
+                }else{
+                    messageBuilder.append("\n").append(input);
                 }
-
-
-                embed.withFooterText(Strings.format("Last Updated: {0}", DateTimeFormatter.ofPattern("dd MMM yyyy HH:mm:ss ZZZZ").format(ZonedDateTime.now())));
-
-                client.getGuildByID(guildID).getChannelByID(serverChannelID).getMessageByID(578594853991088148L).edit(embed.build());
-
             });
-        }, 10, 60, TimeUnit.SECONDS);
-
-        StringBuilder messageBuilder = new StringBuilder();
-
-        server.connect(input -> {
-            if(messageBuilder.length() > 1000){
-                String text = messageBuilder.toString();
-                messageBuilder.setLength(0);
-                client.getGuildByID(CoreBot.guildID).getChannelByID(commandChannelID).sendMessage(text);
-            }else if(messageBuilder.length() == 0){
-                messageBuilder.append(input);
-                new Timer().schedule(new TimerTask(){
-                    @Override
-                    public void run(){
-                        if(messageBuilder.length() == 0) return;
-                        String text = messageBuilder.toString();
-                        messageBuilder.setLength(0);
-                        client.getGuildByID(CoreBot.guildID).getChannelByID(commandChannelID).sendMessage(text);
-                    }
-                }, 60L);
-            }else{
-                messageBuilder.append("\n").append(input);
-            }
-        });
+        }catch(Exception e){
+            throw new RuntimeException(e);
+        }
     }
-
-    @EventSubscriber
-    public void onMessageReceivedEvent(MessageReceivedEvent event){
+    
+    @Override
+    public void onMessageReceived(MessageReceivedEvent event){
         commands.handle(event.getMessage());
     }
 
-    @EventSubscriber
-    public void onMessageEdited(MessageUpdateEvent event){
-        commands.edited(event.getNewMessage(), event.getOldMessage());
+    @Override
+    public void onMessageUpdate(MessageUpdateEvent event){
+        //commands.edited(event.getMessage(), event.getOldMessage());
     }
 
-    @EventSubscriber
-    public void onMessageDeleted(MessageDeleteEvent event){
-        commands.deleted(event.getMessage());
+    @Override
+    public void onGuildMessageDelete(GuildMessageDeleteEvent event){
+        //commands.deleted(event.getMessage());
     }
 
-    @EventSubscriber
-    public void onReaction(ReactionAddEvent event){
+    @Override
+    public void onMessageReactionAdd(MessageReactionAddEvent event){
 
-        if(event.getMessage().getChannel().getLongID() == bugReportChannelID && event.getReaction().getUsers().size() == 1 && commands.isAdmin(event.getReaction().getUsers().get(0))){
+        if(event.getChannel().getIdLong() == bugReportChannelID && commands.isAdmin(event.getUser())){
             commands.handleBugReact(event);
         }
     }
 
-    @EventSubscriber
-    public void onUserJoinEvent(UserJoinEvent event){
-        if(CoreBot.sendWelcomeMessages){
-            event.getGuild().getChannelsByName("general").get(0)
-            .sendMessage("*Welcome* " + event.getUser().mention() + " *to the Mindustry Discord!*", false);
-        }
-
-        event.getUser().getOrCreatePMChannel().sendMessage(
+    @Override
+    public void onGuildMemberJoin(GuildMemberJoinEvent event){
+        event.getUser().openPrivateChannel().complete().sendMessage(
         "**Welcome to the Mindustry Discord.**" +
         "\n\n*Make sure you read #rules and the channel topics before posting.*\n\n" +
         "**For a list of public servers**, see the #servers channel.\n" +
         "**Make sure you check out the #faq channel here:**\n<https://discordapp.com/channels/391020510269669376/611204372592066570/611586644402765828>"
-        );
+        ).queue();
     }
 
     public void sendUpdate(VersionInfo info){
         String text = info.description;
         int maxLength = 2000;
         while(true){
-            Log.info("//////////");
-            Log.info("channels: " + client.getGuildByID(CoreBot.guildID).getChannels().stream().map(IChannel::getName).collect(Collectors.toList()));
-
             String current = text.substring(0, Math.min(maxLength, text.length()));
-            client.getGuildByID(CoreBot.guildID)
-            .getChannelsByName("announcements").get(0)
+            guild
+            .getTextChannelById(announcementsChannelID)
             .sendMessage(new EmbedBuilder()
-            .withColor(normalColor).withTitle(info.name)
-            .appendDesc(current).build());
+            .setColor(normalColor).setTitle(info.name)
+            .setDescription(current).build()).queue();
 
             if(text.length() < maxLength){
                 return;
@@ -172,24 +157,24 @@ public class Messages{
     }
 
     public void deleteMessages(){
-        IMessage last = lastMessage, lastSent = lastSentMessage;
+        Message last = lastMessage, lastSent = lastSentMessage;
 
         new Timer().schedule(new TimerTask(){
             @Override
             public void run(){
-                last.delete();
-                lastSent.delete();
+                last.delete().queue();
+                lastSent.delete().queue();
             }
         }, CoreBot.messageDeleteTime);
     }
 
     public void deleteMessage(){
-        IMessage last = lastSentMessage;
+        Message last = lastSentMessage;
 
         new Timer().schedule(new TimerTask(){
             @Override
             public void run(){
-                last.delete();
+                last.delete().queue();
             }
         }, CoreBot.messageDeleteTime);
     }
@@ -213,21 +198,22 @@ public class Messages{
             builder.append("\n");
             value = value.next;
         }
-        client.getGuildByID(CoreBot.guildID).getChannelByID(CoreBot.crashReportChannelID).sendMessage(builder.toString());
+        guild.getTextChannelById(CoreBot.crashReportChannelID).sendMessage(builder.toString()).queue();
     }
 
     public void logTo(String text, Object... args){
-        client.getGuildByID(guildID).getChannelByID(logChannelID).sendMessage(Strings.format(text, args));
+        guild.getTextChannelById(logChannelID).sendMessage(Strings.format(text, args)).queue();
     }
 
     public void text(String text, Object... args){
-        lastSentMessage = channel.sendMessage(format(text, args), false);
+        lastSentMessage = channel.sendMessage(format(text, args)).complete();
     }
 
     public void info(String title, String text, Object... args){
-        EmbedObject object = new EmbedBuilder()
-        .appendField(title, format(text, args), true).withColor(normalColor).build();
-        lastSentMessage = channel.sendMessage(object);
+        MessageEmbed object = new EmbedBuilder()
+        .addField(title, format(text, args), true).setColor(normalColor).build();
+
+        lastSentMessage = channel.sendMessage(object).complete();
     }
 
     public void err(String text, Object... args){
@@ -235,9 +221,9 @@ public class Messages{
     }
 
     public void err(String title, String text, Object... args){
-        EmbedObject object = new EmbedBuilder()
-        .appendField(title, format(text, args), true).withColor(errorColor).build();
-        lastSentMessage = channel.sendMessage(object);
+        MessageEmbed e = new EmbedBuilder()
+        .addField(title, format(text, args), true).setColor(errorColor).build();
+        lastSentMessage = channel.sendMessage(e).complete();
     }
 
     private String format(String text, Object... args){

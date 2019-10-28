@@ -4,15 +4,15 @@ import io.anuke.arc.collection.*;
 import io.anuke.arc.math.*;
 import io.anuke.arc.util.*;
 import io.anuke.arc.util.CommandHandler.*;
+import io.anuke.arc.util.io.*;
 import io.anuke.corebot.Maps.Map;
-import org.apache.commons.io.*;
+import net.dv8tion.jda.api.*;
+import net.dv8tion.jda.api.entities.*;
+import net.dv8tion.jda.api.entities.Message.*;
+import net.dv8tion.jda.api.events.message.react.*;
 import org.jsoup.*;
 import org.jsoup.nodes.*;
 import org.jsoup.select.*;
-import sx.blah.discord.handle.impl.events.guild.channel.message.reaction.*;
-import sx.blah.discord.handle.obj.*;
-import sx.blah.discord.handle.obj.IMessage.*;
-import sx.blah.discord.util.*;
 
 import javax.imageio.*;
 import java.awt.*;
@@ -92,21 +92,20 @@ public class Commands{
                 try{
                     Document doc = Jsoup.connect(args[0]).get();
 
-                    EmbedBuilder builder = new EmbedBuilder().withColor(messages.normalColor).
-                    withColor(messages.normalColor)
-                    .withAuthorName(messages.lastUser.getName()).withTitle(doc.select("strong[itemprop=name]").text())
-                    .withAuthorIcon(messages.lastUser.getAvatarURL());
+                    EmbedBuilder builder = new EmbedBuilder().setColor(messages.normalColor).
+                    setColor(messages.normalColor)
+                    .setAuthor(messages.lastUser.getName(), messages.lastUser.getAvatarUrl()).setTitle(doc.select("strong[itemprop=name]").text());
 
                     Elements elem = doc.select("span[itemprop=about]");
                     if(!elem.isEmpty()){
-                        builder.appendField("About", elem.text(), false);
+                        builder.addField("About", elem.text(), false);
                     }
 
-                    builder.appendField("Link", args[0], false);
+                    builder.addField("Link", args[0], false);
 
-                    builder.appendField("Downloads", args[0] + (args[0].endsWith("/") ? "" : "/") + "releases", false);
+                    builder.addField("Downloads", args[0] + (args[0].endsWith("/") ? "" : "/") + "releases", false);
 
-                    messages.channel.getGuild().getChannelByID(pluginChannelID).sendMessage(builder.build());
+                    messages.channel.getGuild().getTextChannelById(pluginChannelID).sendMessage(builder.build());
 
                     messages.text("*Plugin posted.*");
                 }catch(IOException e){
@@ -123,17 +122,16 @@ public class Commands{
                 try{
                     Document doc = Jsoup.connect(args[0]).get();
 
-                    EmbedBuilder builder = new EmbedBuilder().withColor(messages.normalColor).
-                    withColor(messages.normalColor)
-                    .withAuthorName(messages.lastUser.getName()).withTitle(doc.select("strong[itemprop=name]").text())
-                    .withAuthorIcon(messages.lastUser.getAvatarURL());
+                    EmbedBuilder builder = new EmbedBuilder().setColor(messages.normalColor).
+                    setColor(messages.normalColor)
+                    .setAuthor(messages.lastUser.getName(), messages.lastUser.getAvatarUrl()).setTitle(doc.select("strong[itemprop=name]").text());
 
                     Elements elem = doc.select("span[itemprop=about]");
                     if(!elem.isEmpty()){
-                        builder.appendField("About", elem.text(), false);
+                        builder.addField("About", elem.text(), false);
                     }
 
-                    builder.appendField("Link", args[0], false);
+                    builder.addField("Link", args[0], false);
 
                     if(!args[0].endsWith("/")){
                         args[0] += "/";
@@ -142,8 +140,8 @@ public class Commands{
                     field = field.substring(0, field.length()-1);
 
                     String download = "http://api.github.com/repos/" + field + "/zipball/master";
-                    builder.appendField("Download", download, false);
-                    messages.channel.getGuild().getChannelByID(modChannelID).sendMessage(builder.build());
+                    builder.addField("Download", download, false);
+                    messages.channel.getGuild().getTextChannelById(modChannelID).sendMessage(builder.build()).queue();
 
                     messages.text("*Mod posted.*");
                 }catch(IOException e){
@@ -154,9 +152,9 @@ public class Commands{
         });
 
         handler.register("postimagemap", "<mapname> [description...]", "Post an image (3.5) map to the #maps channel.", args -> {
-            IMessage message = messages.lastMessage;
+            Message message = messages.lastMessage;
 
-            if(message.getAttachments().size() != 1 || !message.getAttachments().get(0).getFilename().endsWith(".png")){
+            if(message.getAttachments().size() != 1 || !message.getAttachments().get(0).getFileName().endsWith(".png")){
                 messages.err("You must post a .png image in the same message as the command!");
                 messages.deleteMessages();
                 return;
@@ -168,15 +166,12 @@ public class Commands{
             String desc = args.length < 2 ? "" : args[1];
 
             try{
-                EmbedBuilder builder = new EmbedBuilder().withColor(messages.normalColor).withColor(messages.normalColor)
-                .withImage(a.getUrl()).withAuthorName(messages.lastUser.getName()).withTitle(name)
-                .withAuthorIcon(messages.lastUser.getAvatarURL());
+                EmbedBuilder builder = new EmbedBuilder().setColor(messages.normalColor)
+                .setImage(a.getUrl()).setAuthor(messages.lastUser.getName(), messages.lastUser.getAvatarUrl()).setTitle(name);
 
-                if(!desc.isEmpty()) builder.withFooterText(desc);
+                if(!desc.isEmpty()) builder.setFooter(desc);
 
-                messages.channel.getGuild().getChannelsByName("maps").get(0)
-                .sendMessage(builder.build());
-
+                messages.channel.getGuild().getTextChannelById(mapsChannelID).sendMessage(builder.build()).queue();
                 messages.text("*Map posted successfully.*");
             }catch(Exception e){
                 messages.err("Invalid username format.");
@@ -185,9 +180,9 @@ public class Commands{
         });
 
         handler.register("postmap", "Post a .msav file to the #maps channel.", args -> {
-            IMessage message = messages.lastMessage;
+            Message message = messages.lastMessage;
 
-            if(message.getAttachments().size() != 1 || !message.getAttachments().get(0).getFilename().endsWith(".msav")){
+            if(message.getAttachments().size() != 1 || !message.getAttachments().get(0).getFileName().endsWith(".msav")){
                 messages.err("You must have one .msav file in the same message as the command!");
                 messages.deleteMessages();
                 return;
@@ -198,20 +193,19 @@ public class Commands{
             try{
                 Map map = maps.parseMap(net.download(a.getUrl()));
                 new File("maps/").mkdir();
-                File mapFile = new File("maps/" + a.getFilename());
-                File imageFile = new File("maps/image_" + a.getFilename().replace(".msav", ".png"));
-                IOUtils.copy(net.download(a.getUrl()), new FileOutputStream(mapFile));
+                File mapFile = new File("maps/" + a.getFileName());
+                File imageFile = new File("maps/image_" + a.getFileName().replace(".msav", ".png"));
+                Streams.copyStream(net.download(a.getUrl()), new FileOutputStream(mapFile));
                 ImageIO.write(map.image, "png", imageFile);
 
-                EmbedBuilder builder = new EmbedBuilder().withColor(messages.normalColor).withColor(messages.normalColor)
-                .withImage("attachment://" + imageFile.getName())
-                .withAuthorName(messages.lastUser.getName()).withTitle(map.name == null ? a.getFilename().replace(".msav", "") : map.name)
-                .withAuthorIcon(messages.lastUser.getAvatarURL());
+                EmbedBuilder builder = new EmbedBuilder().setColor(messages.normalColor).setColor(messages.normalColor)
+                .setImage("attachment://" + imageFile.getName())
 
-                if(map.description != null) builder.withFooterText(map.description);
+                .setAuthor(messages.lastUser.getName(), messages.lastUser.getAvatarUrl()).setTitle(map.name == null ? a.getFileName().replace(".msav", "") : map.name);
 
-                messages.channel.getGuild().getChannelsByName("maps").get(0)
-                .sendFiles(builder.build(), mapFile, imageFile);
+                if(map.description != null) builder.setFooter(map.description);
+
+                messages.channel.getGuild().getTextChannelById(mapsChannelID).sendFile(mapFile).addFile(imageFile).embed(builder.build()).queue();
 
                 messages.text("*Map posted successfully.*");
             }catch(Exception e){
@@ -232,8 +226,8 @@ public class Commands{
         adminHandler.register("delete", "<amount>", "Delete some messages.", args -> {
             try{
                 int number = Integer.parseInt(args[0]) + 1;
-                MessageHistory hist = messages.channel.getMessageHistory(number);
-                hist.bulkDelete();
+                MessageHistory hist = messages.channel.getHistoryAfter(messages.lastMessage, number).complete();
+                messages.channel.deleteMessages(hist.getRetrievedHistory());
                 Log.info("Deleted {0} messages.", number);
             }catch(NumberFormatException e){
                 messages.err("Invalid number.");
@@ -267,13 +261,13 @@ public class Commands{
             if(author.startsWith("!")) author = author.substring(1);
             try{
                 long l = Long.parseLong(author);
-                IUser user = messages.client.getUserByID(l);
+                User user = messages.jda.getUserById(l);
                 int warnings = prefs.getInt("warnings-" + l, 0) + 1;
-                messages.text("**{0}**, you've been warned *{1}*.", user.mention(), warningStrings[Mathf.clamp(warnings - 1, 0, warningStrings.length - 1)]);
+                messages.text("**{0}**, you've been warned *{1}*.", user.getAsMention(), warningStrings[Mathf.clamp(warnings - 1, 0, warningStrings.length - 1)]);
                 prefs.put("warnings-" + l, warnings + "");
                 if(warnings >= 3){
-                    messages.lastMessage.getGuild().getChannelsByName("moderation").get(0)
-                    .sendMessage("User " + user.mention() + " has been warned 3 or more times!");
+                    messages.lastMessage.getGuild().getTextChannelById(moderationChannelID)
+                    .sendMessage("User " + user.getAsMention() + " has been warned 3 or more times!").queue();
                 }
             }catch(Exception e){
                 e.printStackTrace();
@@ -287,9 +281,9 @@ public class Commands{
             if(author.startsWith("!")) author = author.substring(1);
             try{
                 long l = Long.parseLong(author);
-                IUser user = messages.client.getUserByID(l);
+                User user = messages.jda.getUserById(l);
                 int warnings = prefs.getInt("warnings-" + l, 0);
-                messages.text("User '{0}' has **{1}** {2}.", user.getDisplayName(messages.channel.getGuild()), warnings, warnings == 1 ? "warning" : "warnings");
+                messages.text("User '{0}' has **{1}** {2}.", user.getName(), warnings, warnings == 1 ? "warning" : "warnings");
             }catch(Exception e){
                 e.printStackTrace();
                 messages.err("Incorrect name format.");
@@ -302,9 +296,9 @@ public class Commands{
             if(author.startsWith("!")) author = author.substring(1);
             try{
                 long l = Long.parseLong(author);
-                IUser user = messages.client.getUserByID(l);
+                User user = messages.jda.getUserById(l);
                 prefs.put("warnings-" + l, 0 + "");
-                messages.text("Cleared warnings for user '{0}'.", user.getDisplayName(messages.channel.getGuild()));
+                messages.text("Cleared warnings for user '{0}'.", user.getName());
             }catch(Exception e){
                 e.printStackTrace();
                 messages.err("Incorrect name format.");
@@ -313,21 +307,20 @@ public class Commands{
         });
     }
 
-    boolean isAdmin(IUser user){
+    boolean isAdmin(User user){
         try{
-            return user.getRolesForGuild(messages.client.getGuildByID(guildID)).stream()
-            .anyMatch(role -> role.getName().equals("Developer") || role.getName().equals("Moderator"));
+            return messages.guild.getMember(user).getRoles().stream().anyMatch(role -> role.getName().equals("Developer") || role.getName().equals("Moderator"));
         }catch(Exception e){
             return false; //I don't care enough to fix this
         }
     }
 
-    void sendReportTemplate(IMessage message){
+    void sendReportTemplate(Message message){
         messages.err("**Do not send messages here unless you are reporting an issue!**\nTo report an issue, follow the template provided in **!info bugs**.\nTo report a crash, send the crash report text file.");
         messages.deleteMessages();
     }
 
-    void checkForReport(IMessage message){
+    void checkForReport(Message message){
         if(!message.getAttachments().isEmpty()){
 
             if(emptyText(message)){
@@ -343,8 +336,8 @@ public class Commands{
         }
     }
 
-    void checkForIssue(IMessage message){
-        String text = message.getContent();
+    void checkForIssue(Message message){
+        String text = message.getContentRaw();
         String[] required = {"Platform:", "Build:", "Issue:"};
         String[] split = text.split("\n");
 
@@ -415,98 +408,99 @@ public class Commands{
         messages.deleteMessage();
     }
 
-    boolean emptyText(IMessage message){
-        return message.getContent() == null || message.getContent().isEmpty();
+    boolean emptyText(Message message){
+        return message.getContentRaw() == null || message.getContentRaw().isEmpty();
     }
 
-    boolean checkInvite(IMessage message){
-        if(message.getContent() != null && invitePattern.matcher(message.getContent()).find() && !isAdmin(message.getAuthor())){
+    boolean checkInvite(Message message){
+        if(message.getContentRaw() != null && invitePattern.matcher(message.getContentRaw()).find() && !isAdmin(message.getAuthor())){
             Log.warn("User {0} just sent a discord invite in {1}.", message.getAuthor().getName(), message.getChannel().getName());
-            message.delete();
-            message.getAuthor().getOrCreatePMChannel().sendMessage("Do not send invite links in the Mindustry Discord server! Read the rules.");
+            message.delete().queue();
+            message.getAuthor().openPrivateChannel().complete().sendMessage("Do not send invite links in the Mindustry Discord server! Read the rules.").queue();
             return true;
         }
         return false;
     }
 
-    void edited(IMessage message, IMessage previous){
-        if(message.getAuthor() == null || message.getContent() == null || previous == null) return;
+    void edited(Message message, Message previous){
+        if(message.getAuthor() == null || message.getContentRaw() == null || previous == null) return;
 
-        messages.logTo("------\n**{0}#{1}** just edited a message.\n\n*From*: \"{2}\"\n*To*: \"{3}\"", message.getAuthor().getName(), message.getAuthor().getDiscriminator(), previous.getContent(), message.getContent());
+        messages.logTo("------\n**{0}#{1}** just edited a message.\n\n*From*: \"{2}\"\n*To*: \"{3}\"", message.getAuthor().getName(), message.getAuthor().getDiscriminator(), previous.getContentRaw(), message.getContentRaw());
         checkInvite(message);
     }
 
-    void deleted(IMessage message){
+    void deleted(Message message){
         if(message == null || message.getAuthor() == null) return;
-        messages.logTo("------\n**{0}#{1}** just deleted a message.\n *Text:* \"{2}\"", message.getAuthor().getName(), message.getAuthor().getDiscriminator(), message.getContent());
+        messages.logTo("------\n**{0}#{1}** just deleted a message.\n *Text:* \"{2}\"", message.getAuthor().getName(), message.getAuthor().getDiscriminator(), message.getContentRaw());
     }
 
-    void handleBugReact(ReactionAddEvent event){
-        EmbedBuilder builder = new EmbedBuilder().withColor(messages.normalColor);
+    void handleBugReact(MessageReactionAddEvent event){
+        EmbedBuilder builder = new EmbedBuilder().setColor(messages.normalColor);
         String url = Strings.format("https://discordapp.com/channels/{0}/{1}/{2}",
-            event.getGuild().getStringID(), event.getChannel().getStringID(), event.getMessage().getStringID());
+            event.getGuild().getId(), event.getChannel().getId(), event.getMessageId());
 
-        String emoji = event.getReaction().getEmoji().getName();
+        String emoji = event.getReaction().getReactionEmote().getName();
         Log.info("Recieved react emoji -> {0}, message {1}", emoji, url);
         boolean valid = true;
         if(emoji.equals("✅")){
             Log.info("| Solved.");
-            builder.withColor(Color.decode("#87FF4B"));
-            builder.appendDesc("[Your bug report](" + url + ") in the Mindustry Discord has been marked as solved.");
+            builder.setColor(Color.decode("#87FF4B"));
+            builder.setDescription("[Your bug report](" + url + ") in the Mindustry Discord has been marked as solved.");
         }else if(emoji.equals("❌")){
             Log.info("| Not a bug.");
-            builder.withColor(messages.errorColor);
-            builder.appendDesc("[Your bug report]("+url+") in the Mindustry Discord has been marked as **not a bug** (intentional or unfixable behavior).");
+            builder.setColor(messages.errorColor);
+            builder.setDescription("[Your bug report]("+url+") in the Mindustry Discord has been marked as **not a bug** (intentional or unfixable behavior).");
         }else if(emoji.equals("\uD83C\uDDE9")){
             Log.info("| Duplicate.");
-            builder.withColor(messages.errorColor);
-            builder.appendDesc("Your bug report in the Mindustry Discord has been marked as a **duplicate**: Someone has reported this issue before.\nYour report has been removed to clean up the channel.\n\nReport deleted: ```" + event.getMessage().getContent() + "```");
-            event.getMessage().delete();
+            builder.setColor(messages.errorColor);
+            builder.setDescription("Your bug report in the Mindustry Discord has been marked as a **duplicate**: Someone has reported this issue before.\nYour report has been removed to clean up the channel.\n\nReport deleted: ```" +
+                event.getChannel().retrieveMessageById(event.getMessageId()).complete().getContentStripped() + "```");
+            event.getChannel().deleteMessageById(event.getMessageId());
         }else{
             Log.info("| Invalid.");
             valid = false;
         }
 
         if(valid){
-            event.getMessage().getAuthor().getOrCreatePMChannel()
-            .sendMessage(builder.build());
+            event.getUser().openPrivateChannel().complete()
+            .sendMessage(builder.build()).queue();
         }
     }
 
-    void handle(IMessage message){
+    void handle(Message message){
         if(checkInvite(message)){
             return;
         }
 
-        if(isAdmin(message.getAuthor()) && message.getChannel().getLongID() == commandChannelID){
-            server.send(message.getContent());
+        if(isAdmin(message.getAuthor()) && message.getChannel().getIdLong() == commandChannelID){
+            server.send(message.getContentRaw());
             return;
         }
 
-        if(message.getChannel().getLongID() == bugReportChannelID && !message.isSystemMessage() && !isAdmin(message.getAuthor())){
-            messages.channel = message.getChannel();
+        if(message.getChannel().getIdLong() == bugReportChannelID && !message.isFromGuild() && !isAdmin(message.getAuthor())){
+            messages.channel = message.getTextChannel();
             messages.lastUser = message.getAuthor();
             messages.lastMessage = message;
             checkForReport(message);
             return;
         }
 
-        if(message.getChannel().getLongID() == screenshotsChannelID && message.getAttachments().isEmpty()){
-            message.delete();
+        if(message.getChannel().getIdLong() == screenshotsChannelID && message.getAttachments().isEmpty()){
+            message.delete().queue();
             try{
-                message.getAuthor().getOrCreatePMChannel().sendMessage("Don't send messages without images in the #screenshots channel.");
+                message.getAuthor().openPrivateChannel().complete().sendMessage("Don't send messages without images in the #screenshots channel.").queue();
             }catch(Exception e){
                 e.printStackTrace();
             }
             return;
         }
 
-        if(message.getContent() == null) return;
+        if(message.getContentRaw() == null) return;
 
-        String text = message.getContent();
+        String text = message.getContentRaw();
 
-        if(message.getContent() != null && message.getContent().startsWith(prefix)){
-            messages.channel = message.getChannel();
+        if(message.getContentRaw() != null && message.getContentRaw().startsWith(prefix)){
+            messages.channel = message.getTextChannel();
             messages.lastUser = message.getAuthor();
             messages.lastMessage = message;
         }
