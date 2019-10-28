@@ -102,8 +102,7 @@ project(":Mindustry:annotations"){
 }
 
 dependencies {
-    compile 'net.dv8tion:JDA:4.0.0_54'
-    compile 'com.squareup.okio:okio:1.11.0'
+    implementation 'net.dv8tion:JDA:4.0.0_54'
     compile "org.jsoup:jsoup:1.7.2"
     compile project(":Arc:arc-core")
     compile project(":Mindustry:core")
