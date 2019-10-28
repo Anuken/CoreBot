@@ -3,13 +3,14 @@ package io.anuke.corebot;
 import io.anuke.arc.collection.Array;
 import io.anuke.arc.util.Log;
 import io.anuke.arc.util.Strings;
+import io.anuke.arc.util.io.*;
 import io.anuke.arc.util.serialization.Json;
 import io.anuke.arc.util.serialization.JsonValue;
-import org.apache.commons.io.IOUtils;
 
 import java.io.InputStream;
 import java.net.*;
 import java.nio.ByteBuffer;
+import java.nio.charset.*;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.Executors;
@@ -91,7 +92,7 @@ public class Net{
             InputStream in = con.getInputStream();
             String encoding = con.getContentEncoding();
             encoding = encoding == null ? "UTF-8" : encoding;
-            String body = IOUtils.toString(in, encoding);
+            String body = Streams.copyStreamToString(in, 1000, encoding);
 
             Json j = new Json();
             Array<JsonValue> list = j.fromJson(null, body);
