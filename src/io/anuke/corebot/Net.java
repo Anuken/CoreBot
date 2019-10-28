@@ -43,7 +43,7 @@ public class Net{
     }
 
     public int getLastBuild(){
-        return Integer.parseInt(CoreBot.prefs.get("lastBuild", "33"));
+        return Integer.parseInt(CoreBot.prefs.get("lastBuild", "98"));
     }
 
     public InputStream download(String url){
