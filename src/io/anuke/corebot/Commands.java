@@ -460,8 +460,8 @@ public class Commands{
         }
 
         if(valid){
-            event.getUser().openPrivateChannel().complete()
-            .sendMessage(builder.build()).queue();
+            event.getChannel().retrieveMessageById(event.getMessageId()).complete().getAuthor()
+            .openPrivateChannel().complete().sendMessage(builder.build()).queue();
         }
     }
 
