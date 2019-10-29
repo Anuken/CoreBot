@@ -226,8 +226,8 @@ public class Commands{
         adminHandler.register("delete", "<amount>", "Delete some messages.", args -> {
             try{
                 int number = Integer.parseInt(args[0]) + 1;
-                MessageHistory hist = messages.channel.getHistoryAfter(messages.lastMessage, number).complete();
-                messages.channel.deleteMessages(hist.getRetrievedHistory());
+                MessageHistory hist = messages.channel.getHistoryBefore(messages.lastMessage, number).complete();
+                messages.channel.deleteMessages(hist.getRetrievedHistory()).queue();
                 Log.info("Deleted {0} messages.", number);
             }catch(NumberFormatException e){
                 messages.err("Invalid number.");
