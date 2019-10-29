@@ -453,7 +453,7 @@ public class Commands{
             builder.setColor(messages.errorColor);
             builder.setDescription("Your bug report in the Mindustry Discord has been marked as a **duplicate**: Someone has reported this issue before.\nYour report has been removed to clean up the channel.\n\nReport deleted: ```" +
                 event.getChannel().retrieveMessageById(event.getMessageId()).complete().getContentStripped() + "```");
-            event.getChannel().deleteMessageById(event.getMessageId());
+            event.getChannel().deleteMessageById(event.getMessageId()).queue();
         }else{
             Log.info("| Invalid.");
             valid = false;
