@@ -475,7 +475,7 @@ public class Commands{
             return;
         }
 
-        if(message.getChannel().getIdLong() == bugReportChannelID && !message.isFromGuild() && !isAdmin(message.getAuthor())){
+        if(message.getChannel().getIdLong() == bugReportChannelID && !message.isFromGuild() ){
             messages.channel = message.getTextChannel();
             messages.lastUser = message.getAuthor();
             messages.lastMessage = message;
