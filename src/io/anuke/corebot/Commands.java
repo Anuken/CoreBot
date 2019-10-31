@@ -105,7 +105,7 @@ public class Commands{
 
                     builder.addField("Downloads", args[0] + (args[0].endsWith("/") ? "" : "/") + "releases", false);
 
-                    messages.channel.getGuild().getTextChannelById(pluginChannelID).sendMessage(builder.build());
+                    messages.channel.getGuild().getTextChannelById(pluginChannelID).sendMessage(builder.build()).queue();
 
                     messages.text("*Plugin posted.*");
                 }catch(IOException e){
