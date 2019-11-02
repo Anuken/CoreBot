@@ -72,7 +72,7 @@ public class Messages extends ListenerAdapter{
 
                     embed.setFooter(Strings.format("Last Updated: {0}", DateTimeFormatter.ofPattern("dd MMM yyyy HH:mm:ss ZZZZ").format(ZonedDateTime.now())));
 
-                    guild.getTextChannelById(serverChannelID).editMessageById(578594853991088148L, embed.build());
+                    guild.getTextChannelById(serverChannelID).editMessageById(578594853991088148L, embed.build()).queue();
 
                 });
             }, 10, 60, TimeUnit.SECONDS);
