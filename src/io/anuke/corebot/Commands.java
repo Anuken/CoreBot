@@ -517,7 +517,7 @@ public class Commands{
 
                 EmbedBuilder builder = new EmbedBuilder().setColor(messages.normalColor).setColor(messages.normalColor)
                 .setImage("attachment://" + previewFile.getName())
-                .setAuthor(message.getAuthor().getName(), message.getAuthor().getEffectiveAvatarUrl()).setTitle("Schematic: " + schem.name());
+                .setAuthor(message.getAuthor().getName(), message.getAuthor().getAvatarUrl(), message.getAuthor().getAvatarUrl()).setTitle("Schematic: '" + schem.name() + "'");
 
                 message.getChannel().sendFile(schemFile).addFile(previewFile).embed(builder.build()).queue();
                 message.delete().queue();
