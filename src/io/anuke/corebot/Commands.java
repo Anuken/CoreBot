@@ -527,7 +527,7 @@ public class Commands{
 
                 StringBuilder field = new StringBuilder();
                 for(ItemStack stack : schem.requirements()){
-                    field.append(":").append(stack.item.name.toLowerCase()).append(":").append(stack.amount).append("  ");
+                    field.append(":").append(stack.item.name.toLowerCase()).append(": ").append(stack.amount).append("  ");
                 }
                 builder.addField("Requirements", field.toString(), false);
 
