@@ -524,12 +524,12 @@ public class Commands{
 
                 EmbedBuilder builder = new EmbedBuilder().setColor(messages.normalColor).setColor(messages.normalColor)
                 .setImage("attachment://" + previewFile.getName())
-                .setAuthor(message.getAuthor().getName(), message.getAuthor().getAvatarUrl(), message.getAuthor().getAvatarUrl()).setTitle("Schematic: '" + schem.name() + "'");
+                .setAuthor(message.getAuthor().getName(), message.getAuthor().getAvatarUrl(), message.getAuthor().getAvatarUrl()).setTitle(schem.name());
 
                 StringBuilder field = new StringBuilder();
 
                 for(ItemStack stack : schem.requirements()){
-                    List<Emote> emotes = messages.guild.getEmotesByName(stack.item.name, true);
+                    List<Emote> emotes = messages.guild.getEmotesByName(stack.item.name.replace("-", ""), true);
                     Emote result = emotes.isEmpty() ? messages.guild.getEmotesByName("ohno", true).get(0) : emotes.get(0);
 
                     field.append(result.getAsMention()).append(stack.amount).append("  ");
