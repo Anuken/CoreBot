@@ -1,6 +1,6 @@
 package io.anuke.corebot;
 
-import io.anuke.arc.function.Consumer;
+import io.anuke.arc.func.*;
 import io.anuke.arc.util.Log;
 
 import java.io.*;
@@ -15,7 +15,7 @@ public class ServerBridge{
     private boolean connected;
     private ArrayBlockingQueue<String> queue = new ArrayBlockingQueue<>(32);
 
-    public void connect(Consumer<String> inputHandler){
+    public void connect(Cons<String> inputHandler){
         Thread thread = new Thread(() -> {
             while(true){
                 try(Socket sock = new Socket()){
@@ -29,7 +29,7 @@ public class ServerBridge{
                         try{
                             String line;
                             while((line = in.readLine()) != null){
-                                inputHandler.accept(line);
+                                inputHandler.get(line);
                             }
                         }catch(Exception e){
                             e.printStackTrace();

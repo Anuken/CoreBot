@@ -23,7 +23,7 @@ public class CoreBot{
     public static final long messageDeleteTime = 20000;
 
     public static ServerBridge server = new ServerBridge();
-    public static Maps maps = new Maps();
+    public static ContentHandler contentHandler = new ContentHandler();
     public static Messages messages = new Messages();
     public static Commands commands = new Commands();
     public static Net net = new Net();

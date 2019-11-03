@@ -1,11 +1,14 @@
 package io.anuke.corebot;
 
 import io.anuke.arc.collection.*;
+import io.anuke.arc.files.*;
 import io.anuke.arc.math.*;
 import io.anuke.arc.util.*;
 import io.anuke.arc.util.CommandHandler.*;
 import io.anuke.arc.util.io.*;
-import io.anuke.corebot.Maps.Map;
+import io.anuke.corebot.ContentHandler.Map;
+import io.anuke.mindustry.*;
+import io.anuke.mindustry.game.*;
 import net.dv8tion.jda.api.*;
 import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.entities.Message.*;
@@ -20,6 +23,7 @@ import java.io.*;
 import java.net.*;
 import java.util.*;
 import java.util.regex.*;
+import java.awt.image.*;
 
 import static io.anuke.corebot.CoreBot.*;
 
@@ -191,7 +195,7 @@ public class Commands{
             Attachment a = message.getAttachments().get(0);
 
             try{
-                Map map = maps.parseMap(net.download(a.getUrl()));
+                Map map = contentHandler.parseMap(net.download(a.getUrl()));
                 new File("maps/").mkdir();
                 File mapFile = new File("maps/" + a.getFileName());
                 File imageFile = new File("maps/image_" + a.getFileName().replace(".msav", ".png"));
@@ -493,14 +497,34 @@ public class Commands{
             return;
         }
 
-        if(message.getContentRaw() == null) return;
-
         String text = message.getContentRaw();
 
-        if(message.getContentRaw() != null && message.getContentRaw().startsWith(prefix)){
+        if(message.getContentRaw().startsWith(prefix)){
             messages.channel = message.getTextChannel();
             messages.lastUser = message.getAuthor();
             messages.lastMessage = message;
+        }
+
+        if(message.getContentRaw().startsWith(ContentHandler.schemHeader) && message.getAttachments().isEmpty()){
+            try{
+                Schematic schem = contentHandler.parseSchematic(message.getContentRaw());
+                BufferedImage preview = contentHandler.previewSchematic(schem);
+
+                File previewFile = new File("img_" + UUID.randomUUID().toString() + ".png");
+                File schemFile = new File("schematic_" + message.getId() + Vars.schematicExtension);
+                Schematics.write(schem, new FileHandle(schemFile));
+                ImageIO.write(preview, "png", previewFile);
+
+                EmbedBuilder builder = new EmbedBuilder().setColor(messages.normalColor).setColor(messages.normalColor)
+                .setImage("attachment://" + previewFile.getName())
+                .setAuthor(messages.lastUser.getName(), messages.lastUser.getAvatarUrl()).setTitle("Schematic: " + schem.name());
+
+                messages.channel.getGuild().getTextChannelById(mapsChannelID).sendFile(schemFile).addFile(previewFile).embed(builder.build()).queue();
+                message.delete().queue();
+            }catch(Throwable e){
+                Log.err("Failed to parse schematic, skipping.");
+                Log.err(e);
+            }
         }
 
         if(isAdmin(message.getAuthor())){
