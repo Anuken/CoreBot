@@ -470,6 +470,8 @@ public class Commands{
     }
 
     void handle(Message message){
+        if(message.getAuthor().isBot()) return;
+
         if(checkInvite(message)){
             return;
         }
@@ -506,8 +508,8 @@ public class Commands{
         }
 
         if((message.getContentRaw().startsWith(ContentHandler.schemHeader) && message.getAttachments().isEmpty()) ||
-            message.getAttachments().size() == 1 && message.getAttachments().get(0).getFileExtension() != null &&
-                message.getAttachments().get(0).getFileExtension().equals(Vars.schematicExtension)){
+        (message.getAttachments().size() == 1 && message.getAttachments().get(0).getFileExtension() != null &&
+                message.getAttachments().get(0).getFileExtension().equals(Vars.schematicExtension))){
             try{
                 Schematic schem = message.getAttachments().size() == 1 ? contentHandler.parseSchematicURL(message.getAttachments().get(0).getUrl()) : contentHandler.parseSchematic(message.getContentRaw());
                 BufferedImage preview = contentHandler.previewSchematic(schem);
