@@ -511,8 +511,7 @@ public class Commands{
 
         //schematic preview
         if((message.getContentRaw().startsWith(ContentHandler.schemHeader) && message.getAttachments().isEmpty()) ||
-        (message.getAttachments().size() == 1 && message.getAttachments().get(0).getFileExtension() != null &&
-                message.getAttachments().get(0).getFileExtension().equals(Vars.schematicExtension))){
+        (message.getAttachments().size() == 1 && message.getAttachments().get(0).getFileExtension() != null && message.getAttachments().get(0).getFileExtension().equals(Vars.schematicExtension))){
             try{
                 Schematic schem = message.getAttachments().size() == 1 ? contentHandler.parseSchematicURL(message.getAttachments().get(0).getUrl()) : contentHandler.parseSchematic(message.getContentRaw());
                 BufferedImage preview = contentHandler.previewSchematic(schem);
@@ -539,9 +538,25 @@ public class Commands{
                 message.getChannel().sendFile(schemFile).addFile(previewFile).embed(builder.build()).queue();
                 message.delete().queue();
             }catch(Throwable e){
+                if(message.getTextChannel().getIdLong() == schematicsChannelID){
+                    message.delete().queue();
+                    try{
+                        message.getAuthor().openPrivateChannel().complete().sendMessage("Invalid schematic: " + e.getClass().getSimpleName() + (e.getMessage() == null ? "" : " (" + e.getMessage() + ")")).queue();
+                    }catch(Exception e2){
+                        e2.printStackTrace();
+                    }
+                }
+
                 Log.err("Failed to parse schematic, skipping.");
                 Log.err(e);
             }
+        }else if(message.getTextChannel().getIdLong() == schematicsChannelID){
+            try{
+                message.getAuthor().openPrivateChannel().complete().sendMessage("Only send valid schematics in the #schematics channel. You may either send it as clipboard text or as the schematic file.").queue();
+            }catch(Exception e){
+                e.printStackTrace();
+            }
+            return;
         }
 
         if(isAdmin(message.getAuthor())){
