@@ -18,7 +18,7 @@ public class CoreBot{
     public static final long suggestionsChannelID = 640604827344306207L;
     public static final long mapsChannelID = 416719902641225732L;
     public static final long moderationChannelID = 488049830275579906L;
-    public static final long schematicsChannelID = 488049830275579906L;
+    public static final long schematicsChannelID = 640604827344306207L;
     public static final boolean sendWelcomeMessages = false;
 
     public static final long messageDeleteTime = 20000;
