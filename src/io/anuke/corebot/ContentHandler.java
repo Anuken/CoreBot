@@ -162,6 +162,13 @@ public class ContentHandler{
         String s2 = "bXNjaAB4nGNgZGBiZGDJS8xNZWA0YmTgSM7PK0utzC9iYGBgYoABRgQBAK50BWA";
         String larg1 = "bXNjaAB4nFWQQXLDIAxFBQiws2hP4kWP0iM4LuNkJokzkDST0ycSCE3rhXnz+V8Sgh2MBvAynxP4shzSOcCwbJff9NwyfO7z8WdNkwq7suT5Oj3m0wk+VsLD8Zama06lQChbvqUMIW93PgEm6J/5/7NKTgnV7P+G6mE0azRrJMt3SIxVq1lnydUaMVmloLdRyInPEVmpR7Ve36+vqnnJupagTlgn9aShaJZcvYpvVRCJ2OcMa7UKcv/+/CDvZa3PEmUlTFaWE9UXdfooCYChbaiSUbJKdUPOE/XtDm0WwxSUotIgNEriDVI3IRU=";
         //parseSchematic(larg1);
+
+        try{
+            Schematic schem = Schematics.read(new FileHandle(new File("test.msch")));
+            ImageIO.write(previewSchematic(schem), "png", new File("out.png"));
+        }catch(Exception e){
+            e.printStackTrace();
+        }
     }
 
     private BufferedImage tint(BufferedImage image, Color color){
