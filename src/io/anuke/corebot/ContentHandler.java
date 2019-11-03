@@ -182,6 +182,10 @@ public class ContentHandler{
         return Schematics.read(new ByteArrayInputStream(Base64Coder.decode(text)));
     }
 
+    public Schematic parseSchematicURL(String text) throws Exception{
+        return Schematics.read(CoreBot.net.download(text));
+    }
+
     public BufferedImage previewSchematic(Schematic schem) throws Exception{
         BufferedImage image = new BufferedImage(schem.width * 32, schem.height * 32, BufferedImage.TYPE_INT_ARGB);
 

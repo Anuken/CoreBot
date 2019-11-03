@@ -505,9 +505,11 @@ public class Commands{
             messages.lastMessage = message;
         }
 
-        if(message.getContentRaw().startsWith(ContentHandler.schemHeader) && message.getAttachments().isEmpty()){
+        if((message.getContentRaw().startsWith(ContentHandler.schemHeader) && message.getAttachments().isEmpty()) ||
+            message.getAttachments().size() == 1 && message.getAttachments().get(0).getFileExtension() != null &&
+                message.getAttachments().get(0).getFileExtension().equals(Vars.schematicExtension)){
             try{
-                Schematic schem = contentHandler.parseSchematic(message.getContentRaw());
+                Schematic schem = message.getAttachments().size() == 1 ? contentHandler.parseSchematicURL(message.getAttachments().get(0).getUrl()) : contentHandler.parseSchematic(message.getContentRaw());
                 BufferedImage preview = contentHandler.previewSchematic(schem);
 
                 File previewFile = new File("img_" + UUID.randomUUID().toString() + ".png");
