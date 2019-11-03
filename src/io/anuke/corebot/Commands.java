@@ -98,7 +98,7 @@ public class Commands{
 
                     EmbedBuilder builder = new EmbedBuilder().setColor(messages.normalColor).
                     setColor(messages.normalColor)
-                    .setAuthor(messages.lastUser.getName(), messages.lastUser.getAvatarUrl()).setTitle(doc.select("strong[itemprop=name]").text());
+                    .setAuthor(messages.lastUser.getName(), messages.lastUser.getAvatarUrl(), messages.lastUser.getAvatarUrl()).setTitle(doc.select("strong[itemprop=name]").text());
 
                     Elements elem = doc.select("span[itemprop=about]");
                     if(!elem.isEmpty()){
@@ -128,7 +128,7 @@ public class Commands{
 
                     EmbedBuilder builder = new EmbedBuilder().setColor(messages.normalColor).
                     setColor(messages.normalColor)
-                    .setAuthor(messages.lastUser.getName(), messages.lastUser.getAvatarUrl()).setTitle(doc.select("strong[itemprop=name]").text());
+                    .setAuthor(messages.lastUser.getName(), messages.lastUser.getAvatarUrl(), messages.lastUser.getAvatarUrl()).setTitle(doc.select("strong[itemprop=name]").text());
 
                     Elements elem = doc.select("span[itemprop=about]");
                     if(!elem.isEmpty()){
@@ -171,7 +171,7 @@ public class Commands{
 
             try{
                 EmbedBuilder builder = new EmbedBuilder().setColor(messages.normalColor)
-                .setImage(a.getUrl()).setAuthor(messages.lastUser.getName(), messages.lastUser.getAvatarUrl()).setTitle(name);
+                .setImage(a.getUrl()).setAuthor(messages.lastUser.getName(), messages.lastUser.getAvatarUrl(), messages.lastUser.getAvatarUrl()).setTitle(name);
 
                 if(!desc.isEmpty()) builder.setFooter(desc);
 
@@ -205,7 +205,7 @@ public class Commands{
                 EmbedBuilder builder = new EmbedBuilder().setColor(messages.normalColor).setColor(messages.normalColor)
                 .setImage("attachment://" + imageFile.getName())
 
-                .setAuthor(messages.lastUser.getName(), messages.lastUser.getAvatarUrl()).setTitle(map.name == null ? a.getFileName().replace(".msav", "") : map.name);
+                .setAuthor(messages.lastUser.getName(), messages.lastUser.getAvatarUrl(), messages.lastUser.getAvatarUrl()).setTitle(map.name == null ? a.getFileName().replace(".msav", "") : map.name);
 
                 if(map.description != null) builder.setFooter(map.description);
 
