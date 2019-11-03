@@ -23,6 +23,7 @@ import java.awt.*;
 import java.io.*;
 import java.net.*;
 import java.util.*;
+import java.util.List;
 import java.util.regex.*;
 import java.awt.image.*;
 
@@ -526,8 +527,12 @@ public class Commands{
                 .setAuthor(message.getAuthor().getName(), message.getAuthor().getAvatarUrl(), message.getAuthor().getAvatarUrl()).setTitle("Schematic: '" + schem.name() + "'");
 
                 StringBuilder field = new StringBuilder();
+
                 for(ItemStack stack : schem.requirements()){
-                    field.append(":").append(stack.item.name.toLowerCase()).append(": ").append(stack.amount).append("  ");
+                    List<Emote> emotes = messages.guild.getEmotesByName(stack.item.name, true);
+                    Emote result = emotes.isEmpty() ? messages.guild.getEmotesByName("ohno", true).get(0) : emotes.get(0);
+
+                    field.append(result.getAsMention()).append(stack.amount).append("  ");
                 }
                 builder.addField("Requirements", field.toString(), false);
 
