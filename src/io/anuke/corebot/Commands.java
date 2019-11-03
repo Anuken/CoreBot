@@ -517,9 +517,9 @@ public class Commands{
 
                 EmbedBuilder builder = new EmbedBuilder().setColor(messages.normalColor).setColor(messages.normalColor)
                 .setImage("attachment://" + previewFile.getName())
-                .setAuthor(messages.lastUser.getName(), messages.lastUser.getAvatarUrl()).setTitle("Schematic: " + schem.name());
+                .setAuthor(message.getAuthor().getName(), message.getAuthor().getAvatarUrl()).setTitle("Schematic: " + schem.name());
 
-                messages.channel.getGuild().getTextChannelById(mapsChannelID).sendFile(schemFile).addFile(previewFile).embed(builder.build()).queue();
+                message.getChannel().sendFile(schemFile).addFile(previewFile).embed(builder.build()).queue();
                 message.delete().queue();
             }catch(Throwable e){
                 Log.err("Failed to parse schematic, skipping.");
