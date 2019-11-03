@@ -229,6 +229,43 @@ public class Commands{
             }
         });
 
+        handler.register("addserver", "<IP>", "Add your server to list. Must be online and 24/7.", args -> {
+            Array<String> servers = prefs.getArray("servers");
+            if(servers.contains(args[0])){
+                messages.err("That server is already in the list.");
+            }else{
+                TextChannel channel = messages.channel;
+                Member mem = messages.lastMessage.getMember();
+                net.pingServer(args[0], res -> {
+                    if(res.valid){
+                        servers.add(args[0]);
+                        prefs.putArray("servers", servers);
+                        prefs.put("owner-" + args[0], mem.getId());
+                        channel.sendMessage("*Server added.*").queue();
+                    }else{
+                        channel.sendMessage("*That server is offline or cannot be reached.*").queue();
+                    }
+                });
+            }
+        });
+
+        handler.register("getposter", "<IP>", "Get who posted a server. This may not necessarily be the owner.", args -> {
+            Array<String> servers = prefs.getArray("servers");
+            String key = "owner-" + args[0];
+            if(!servers.contains(args[0])){
+                messages.err("That server doesn't exist.");
+            }else if(prefs.get(key, null) == null){
+                messages.err("That server doesn't have a registered poster or maintainer.");
+            }else{
+                User user = messages.jda.getUserById(prefs.get(key, null));
+                if(user != null){
+                    messages.info("Owner of: " + args[0], "{0}#{1}", user.getName(), user.getDiscriminator());
+                }else{
+                    messages.err("Use lookup failed. Internal error, or the user may have left the server.");
+                }
+            }
+        });
+
         adminHandler.register("delete", "<amount>", "Delete some messages.", args -> {
             try{
                 int number = Integer.parseInt(args[0]) + 1;
@@ -242,13 +279,6 @@ public class Commands{
 
         adminHandler.register("listservers", "List servers pinged automatically.", args -> {
             messages.text("**Servers:** {0}", prefs.getArray("servers").toString().replace("[", "").replace("]", ""));
-        });
-
-        adminHandler.register("addserver", "<IP>", "Add server to list.", args -> {
-            Array<String> servers = prefs.getArray("servers");
-            servers.add(args[0]);
-            prefs.putArray("servers", servers);
-            messages.text("*Server added.*");
         });
 
         adminHandler.register("removeserver", "<IP>", "Remove server from list.", args -> {

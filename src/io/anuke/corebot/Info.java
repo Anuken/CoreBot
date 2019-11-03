@@ -39,6 +39,7 @@ public enum Info{
     "To run the dedicated server .JAR file, you need to use the command prompt or terminal. **Java is required**.\n\n" +
     "Navigate to the file location and type `java -jar <server-file-name>.jar`, which should start the server.\n" +
     "Note that the server does not automatically start hosting. Type `host <map> <gamemode>` to open the server.\n" +
+    "If you have a dedicated server, you can post its IP publically in #servers with `!postserver <ip>`.\n" +
     "Type `help` for a list of all commands.\n"),
     suggested("Suggested Ideas",
     "*The following ideas have been suggested many times before. Please stop.*\n\n" +
