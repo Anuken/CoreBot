@@ -551,6 +551,7 @@ public class Commands{
                 Log.err(e);
             }
         }else if(message.getTextChannel().getIdLong() == schematicsChannelID){
+            message.delete().queue();
             try{
                 message.getAuthor().openPrivateChannel().complete().sendMessage("Only send valid schematics in the #schematics channel. You may either send it as clipboard text or as the schematic file.").queue();
             }catch(Exception e){
