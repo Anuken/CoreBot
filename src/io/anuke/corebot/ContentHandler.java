@@ -30,6 +30,7 @@ import java.awt.*;
 import java.io.*;
 import java.util.*;
 import java.util.zip.*;
+import java.awt.geom.*;
 
 import static io.anuke.mindustry.Vars.*;
 
@@ -103,7 +104,7 @@ public class ContentHandler{
 
                 y = currentImage.getHeight() - (y + height/2f) - height/2f;
                 //height = -height;
-                if(!Mathf.isZero(rotation) && originY >= 0){
+                if(!Mathf.isZero(rotation)){
                     height = -height;
                     y -= height;
                 }
@@ -111,7 +112,17 @@ public class ContentHandler{
                 //x *= 4;
                 //y *= 4;
 
-                AffineTransformOp op = new AffineTransformOp(java.awt.geom.AffineTransform.getRotateInstance(rotation * Mathf.degRad, Math.abs(originX * 4), Math.abs(originY * 4)), AffineTransformOp.TYPE_BILINEAR);
+                if(!Mathf.isZero(rotation) && ((AtlasRegion)region).name.contains("titanium")){
+                    Log.info(originX + " " + originY + " size " + width + " " + height);
+                }
+
+                //AffineTransformOp op = new AffineTransformOp(java.awt.geom.AffineTransform.getRotateInstance(rotation * Mathf.degRad, Math.abs(originX * 4), Math.abs(originY * 4)), AffineTransformOp.TYPE_BILINEAR);
+
+                AffineTransform at = new AffineTransform();
+                at.translate(x, y);
+                at.rotate(-rotation * Mathf.degRad, originX * 4, -originY * 4);
+
+                currentGraphics.setTransform(at);
 
                 //Log.info(x + " " + y + " " + width + " " + height);
                // BufferedImage image = ((ImageData)(region.getTexture().getTextureData())).image;
@@ -124,7 +135,7 @@ public class ContentHandler{
                     image = tint(image, color);
                 }
 
-                currentGraphics.drawImage(Mathf.isZero(rotation) ? image : op.filter(image, null), (int)x, (int)y, (int)width, (int)height, null);
+                currentGraphics.drawImage(image, 0, 0, (int)width, (int)height, null);
             }
         };
 
@@ -163,12 +174,13 @@ public class ContentHandler{
         String larg1 = "bXNjaAB4nFWQQXLDIAxFBQiws2hP4kWP0iM4LuNkJokzkDST0ycSCE3rhXnz+V8Sgh2MBvAynxP4shzSOcCwbJff9NwyfO7z8WdNkwq7suT5Oj3m0wk+VsLD8Zama06lQChbvqUMIW93PgEm6J/5/7NKTgnV7P+G6mE0azRrJMt3SIxVq1lnydUaMVmloLdRyInPEVmpR7Ve36+vqnnJupagTlgn9aShaJZcvYpvVRCJ2OcMa7UKcv/+/CDvZa3PEmUlTFaWE9UXdfooCYChbaiSUbJKdUPOE/XtDm0WwxSUotIgNEriDVI3IRU=";
         //parseSchematic(larg1);
 
+        /*
         try{
             Schematic schem = Schematics.read(new FileHandle(new File("test.msch")));
             ImageIO.write(previewSchematic(schem), "png", new File("out.png"));
         }catch(Exception e){
             e.printStackTrace();
-        }
+        }*/
     }
 
     private BufferedImage tint(BufferedImage image, Color color){
