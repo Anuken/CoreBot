@@ -9,6 +9,7 @@ import io.anuke.arc.util.io.*;
 import io.anuke.corebot.ContentHandler.Map;
 import io.anuke.mindustry.*;
 import io.anuke.mindustry.game.*;
+import io.anuke.mindustry.type.*;
 import net.dv8tion.jda.api.*;
 import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.entities.Message.*;
@@ -507,6 +508,7 @@ public class Commands{
             messages.lastMessage = message;
         }
 
+        //schematic preview
         if((message.getContentRaw().startsWith(ContentHandler.schemHeader) && message.getAttachments().isEmpty()) ||
         (message.getAttachments().size() == 1 && message.getAttachments().get(0).getFileExtension() != null &&
                 message.getAttachments().get(0).getFileExtension().equals(Vars.schematicExtension))){
@@ -522,6 +524,12 @@ public class Commands{
                 EmbedBuilder builder = new EmbedBuilder().setColor(messages.normalColor).setColor(messages.normalColor)
                 .setImage("attachment://" + previewFile.getName())
                 .setAuthor(message.getAuthor().getName(), message.getAuthor().getAvatarUrl(), message.getAuthor().getAvatarUrl()).setTitle("Schematic: '" + schem.name() + "'");
+
+                StringBuilder field = new StringBuilder();
+                for(ItemStack stack : schem.requirements()){
+                    field.append(":").append(stack.item.name.toLowerCase()).append(":").append(stack.amount).append("  ");
+                }
+                builder.addField("Requirements", field.toString(), false);
 
                 message.getChannel().sendFile(schemFile).addFile(previewFile).embed(builder.build()).queue();
                 message.delete().queue();
