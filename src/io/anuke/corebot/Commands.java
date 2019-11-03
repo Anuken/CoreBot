@@ -511,7 +511,7 @@ public class Commands{
                 BufferedImage preview = contentHandler.previewSchematic(schem);
 
                 File previewFile = new File("img_" + UUID.randomUUID().toString() + ".png");
-                File schemFile = new File("schematic_" + message.getId() + Vars.schematicExtension);
+                File schemFile = new File(schem.name() + "." + Vars.schematicExtension);
                 Schematics.write(schem, new FileHandle(schemFile));
                 ImageIO.write(preview, "png", previewFile);
 
