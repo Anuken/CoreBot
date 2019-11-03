@@ -7,5 +7,5 @@ git pull
 cd ../CoreBot
 git pull
 
-./gradlew dist
-java -Dtoken=${CORE_BOT_TOKEN} -jar build/libs/CoreBot-1.0.jar
+./gradlew run -Ptoken=${CORE_BOT_TOKEN}
+
