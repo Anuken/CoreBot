@@ -82,8 +82,6 @@ public class ContentHandler{
                 ImageRegion region = new ImageRegion(reg.name, reg.page.texture, reg.left, reg.top, image);
                 Core.atlas.addRegion(region.name, region);
                 regions.put(region.name, image);
-
-               // ImageIO.write(image, "png", new File("out/" + reg.name + ".png"));
             }catch(Exception e){
                 e.printStackTrace();
             }
@@ -147,16 +145,6 @@ public class ContentHandler{
                 return new Tile(x, y);
             }
         };
-
-        /*
-        try{
-            Schematic schem = Schematics.read(new FileHandle(new File("test.msch")));
-            ImageIO.write(previewSchematic(schem), "png", new File("out.png"));
-        }catch(Exception e){
-            e.printStackTrace();
-        }
-        */
-
     }
 
     private BufferedImage tint(BufferedImage image, Color color){

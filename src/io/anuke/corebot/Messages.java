@@ -106,7 +106,11 @@ public class Messages extends ListenerAdapter{
     
     @Override
     public void onMessageReceived(MessageReceivedEvent event){
-        commands.handle(event.getMessage());
+        try{
+            commands.handle(event.getMessage());
+        }catch(Exception e){
+            e.printStackTrace();
+        }
     }
 
     @Override

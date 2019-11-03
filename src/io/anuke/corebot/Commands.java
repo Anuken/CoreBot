@@ -550,7 +550,7 @@ public class Commands{
                 Log.err("Failed to parse schematic, skipping.");
                 Log.err(e);
             }
-        }else if(message.getTextChannel().getIdLong() == schematicsChannelID){
+        }else if(message.getTextChannel().getIdLong() == schematicsChannelID && !isAdmin(message.getAuthor())){
             message.delete().queue();
             try{
                 message.getAuthor().openPrivateChannel().complete().sendMessage("Only send valid schematics in the #schematics channel. You may send them either as clipboard text or as a schematic file.").queue();
