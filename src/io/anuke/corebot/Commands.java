@@ -254,14 +254,17 @@ public class Commands{
             String key = "owner-" + args[0];
             if(!servers.contains(args[0])){
                 messages.err("That server doesn't exist.");
+                messages.deleteMessages();
             }else if(prefs.get(key, null) == null){
                 messages.err("That server doesn't have a registered poster or maintainer.");
+                messages.deleteMessages();
             }else{
                 User user = messages.jda.getUserById(prefs.get(key, null));
                 if(user != null){
                     messages.info("Owner of: " + args[0], "{0}#{1}", user.getName(), user.getDiscriminator());
                 }else{
                     messages.err("Use lookup failed. Internal error, or the user may have left the server.");
+                    messages.deleteMessages();
                 }
             }
         });
@@ -475,7 +478,7 @@ public class Commands{
 
         String emoji = event.getReaction().getReactionEmote().getName();
         Log.info("Recieved react emoji -> {0}, message {1}", emoji, url);
-        boolean valid = true;
+        boolean valid = true, delete = false;
         if(emoji.equals("✅")){
             Log.info("| Solved.");
             builder.setColor(Color.decode("#87FF4B"));
@@ -489,15 +492,19 @@ public class Commands{
             builder.setColor(messages.errorColor);
             builder.setDescription("Your bug report in the Mindustry Discord has been marked as a **duplicate**: Someone has reported this issue before.\nYour report has been removed to clean up the channel.\n\nReport deleted: ```" +
                 event.getChannel().retrieveMessageById(event.getMessageId()).complete().getContentStripped() + "```");
-            event.getChannel().deleteMessageById(event.getMessageId()).queue();
+            delete = true;
         }else{
-            Log.info("| Invalid.");
+            Log.info("| Unknwo reaction.");
             valid = false;
         }
 
         if(valid){
             event.getChannel().retrieveMessageById(event.getMessageId()).complete().getAuthor()
             .openPrivateChannel().complete().sendMessage(builder.build()).queue();
+        }
+
+        if(delete){
+            event.getChannel().deleteMessageById(event.getMessageId()).queue();
         }
     }
 
