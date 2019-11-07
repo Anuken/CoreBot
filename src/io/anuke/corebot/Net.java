@@ -6,6 +6,7 @@ import io.anuke.arc.util.Strings;
 import io.anuke.arc.util.io.*;
 import io.anuke.arc.util.serialization.Json;
 import io.anuke.arc.util.serialization.JsonValue;
+import io.anuke.mindustry.net.*;
 
 import java.io.InputStream;
 import java.net.*;
@@ -56,7 +57,7 @@ public class Net{
         }
     }
 
-    public void pingServer(String ip, Consumer<PingResult> listener){
+    public void pingServer(String ip, Consumer<Host> listener){
         run(0, () -> {
             try{
                 String resultIP = ip;
@@ -80,7 +81,7 @@ public class Net{
                 listener.accept(readServerData(buffer, ip, System.currentTimeMillis() - start));
                 socket.disconnect();
             }catch(Exception e){
-                listener.accept(new PingResult(ip, "Timed out."));
+                listener.accept(new Host(null, ip, null, 0, 0, 0, null, null, 0));
             }
         });
     }
@@ -142,56 +143,10 @@ public class Net{
         }, delay);
     }
 
-    public PingResult readServerData(ByteBuffer buffer, String ip, long ping){
-        byte hlength = buffer.get();
-        byte[] hb = new byte[hlength];
-        buffer.get(hb);
-
-        byte mlength = buffer.get();
-        byte[] mb = new byte[mlength];
-        buffer.get(mb);
-
-        String host = new String(hb);
-        String map = new String(mb);
-
-        int players = buffer.getInt();
-        int wave = buffer.getInt();
-        int version = buffer.getInt();
-
-        return new PingResult(ip, ping, players + "", host, map, wave + "", version == -1 ? "Custom Build" : (""+version));
-    }
-
-    class PingResult{
-        boolean valid;
-        String players;
-        String host;
-        String error;
-        String wave;
-        String map;
-        String ip;
-        String version;
-        long ping;
-
-        public PingResult(String ip, String error){
-            this.valid = false;
-            this.error = error;
-            this.ip = ip;
-        }
-
-        public PingResult(String error){
-            this.valid = false;
-            this.error = error;
-        }
-
-        public PingResult(String ip, long ping, String players, String host, String map, String wave, String version){
-            this.ping = ping;
-            this.ip = ip;
-            this.valid = true;
-            this.players = players;
-            this.host = host;
-            this.map = map;
-            this.wave = wave;
-            this.version = version;
-        }
+    public Host readServerData(ByteBuffer buffer, String ip, long ping){
+        Host host = NetworkIO.readServerData(ip, buffer);
+        host.ping = (int)ping;
+        return host;
+        //return new PingResult(ip, ping, players + "", host, map, wave + "", version == -1 ? "Custom Build" : (""+version));
     }
 }

@@ -71,11 +71,11 @@ public class Commands{
             }
 
             net.pingServer(args[0], result -> {
-                if(result.valid){
+                if(result.name != null){
                     messages.info("Server Online", "Host: {0}\nPlayers: {1}\nMap: {2}\nWave: {3}\nVersion: {4}\nPing: {5}ms",
-                    result.host, result.players, result.map, result.wave, result.version, result.ping);
+                    result.name, result.players, result.mapname, result.wave, result.version, result.ping);
                 }else{
-                    messages.err("Server Offline", "Reason: {0}", result.error);
+                    messages.err("Server Offline", "Timed out.");
                 }
             });
         });
@@ -237,7 +237,7 @@ public class Commands{
                 TextChannel channel = messages.channel;
                 Member mem = messages.lastMessage.getMember();
                 net.pingServer(args[0], res -> {
-                    if(res.valid){
+                    if(res.name != null){
                         servers.add(args[0]);
                         prefs.putArray("servers", servers);
                         prefs.put("owner-" + args[0], mem.getId());

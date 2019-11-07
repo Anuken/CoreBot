@@ -3,8 +3,8 @@ package io.anuke.corebot;
 import io.anuke.arc.util.Log;
 import io.anuke.arc.util.Strings;
 import io.anuke.arc.util.serialization.JsonValue;
-import io.anuke.corebot.Net.PingResult;
 import io.anuke.corebot.Net.VersionInfo;
+import io.anuke.mindustry.net.*;
 import net.dv8tion.jda.api.*;
 import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.events.guild.member.*;
@@ -46,34 +46,38 @@ public class Messages extends ListenerAdapter{
             Log.info("Discord bot up.");
 
             Executors.newSingleThreadScheduledExecutor().scheduleAtFixedRate(() -> {
-                List<PingResult> results = new CopyOnWriteArrayList<>();
+                List<Host> results = new CopyOnWriteArrayList<>();
 
                 for(String server : prefs.getArray("servers")){
                     net.pingServer(server, results::add);
                 }
 
                 net.run(Net.timeout, () -> {
-                    results.sort((a, b) -> a.valid && !b.valid ? 1 : !a.valid && b.valid ? -1 : Integer.compare(Strings.parseInt(a.players), Strings.parseInt(b.players)));
+                    results.sort((a, b) -> a.name != null && b.name == null ? 1 : a.name == null && b.name != null ? -1 : Integer.compare(a.players, b.players));
 
                     EmbedBuilder embed = new EmbedBuilder();
                     embed.setColor(normalColor);
 
                     //send new messages
-                    for(PingResult result : results){
-                        if(!result.valid){
-                            embed.addField(result.ip, "[offline]\n_\n_\n", false);
+                    for(Host result : results){
+                        if(result.name == null){
+                            embed.addField(result.address, "[offline]\n_\n_\n", false);
                         }else{
-                            embed.addField(result.ip,
-                            Strings.format("*{0}*\nPlayers: {1}\nMap: {2}\nWave: {3}\nVersion: {4}\nPing: {5}ms\n_\n_\n",
-                            result.host.replace("\\", "\\\\").replace("_", "\\_").replace("*", "\\*").replace("`", "\\`"), result.players, result.map.replace("\\", "\\\\").replace("_", "\\_").replace("*", "\\*").replace("`", "\\`").replaceAll("\\[.*?\\]", ""), result.wave, result.version, result.ping), false);
+                            embed.addField(result.address,
+                            Strings.format("*{0}*\nPlayers: {1}\nMap: {2}\nWave: {3}\nVersion: {4}\nMode: {5}\nPing: {6}ms\n_\n_\n",
+                            result.name.replace("\\", "\\\\").replace("_", "\\_").replace("*", "\\*").replace("`", "\\`"),
+                            (result.playerLimit > 0 ? result.players + "/" + result.playerLimit : result.players),
+                            result.mapname.replace("\\", "\\\\").replace("_", "\\_").replace("*", "\\*").replace("`", "\\`").replaceAll("\\[.*?\\]", ""),
+                            result.wave,
+                            result.version,
+                            Strings.capitalize(result.mode.name()),
+                            result.ping), false);
                         }
                     }
-
 
                     embed.setFooter(Strings.format("Last Updated: {0}", DateTimeFormatter.ofPattern("dd MMM yyyy HH:mm:ss ZZZZ").format(ZonedDateTime.now())));
 
                     guild.getTextChannelById(serverChannelID).editMessageById(578594853991088148L, embed.build()).queue();
-
                 });
             }, 10, 60, TimeUnit.SECONDS);
 
