@@ -562,6 +562,7 @@ public class Commands{
                 .setImage("attachment://" + previewFile.getName())
                 .setAuthor(message.getAuthor().getName(), message.getAuthor().getAvatarUrl(), message.getAuthor().getAvatarUrl()).setTitle(schem.name());
 
+                String requirements = "none";
                 if(schem.requirements().size > 0){
                     StringBuilder field = new StringBuilder();
 
@@ -571,8 +572,9 @@ public class Commands{
 
                         field.append(result.getAsMention()).append(stack.amount).append("  ");
                     }
-                    builder.addField("Requirements", field.toString(), false);
+                    requirements = field.toString();
                 }
+                builder.addField("Requirements", requirements, false);
 
                 message.getChannel().sendFile(schemFile).addFile(previewFile).embed(builder.build()).queue();
                 message.delete().queue();
