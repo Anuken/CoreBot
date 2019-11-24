@@ -494,7 +494,7 @@ public class Commands{
                 event.getChannel().retrieveMessageById(event.getMessageId()).complete().getContentStripped() + "```");
             delete = true;
         }else{
-            Log.info("| Unknwo reaction.");
+            Log.info("| Unknown reaction.");
             valid = false;
         }
 
@@ -562,15 +562,17 @@ public class Commands{
                 .setImage("attachment://" + previewFile.getName())
                 .setAuthor(message.getAuthor().getName(), message.getAuthor().getAvatarUrl(), message.getAuthor().getAvatarUrl()).setTitle(schem.name());
 
-                StringBuilder field = new StringBuilder();
+                if(schem.requirements().length > 0){
+                    StringBuilder field = new StringBuilder();
 
-                for(ItemStack stack : schem.requirements()){
-                    List<Emote> emotes = messages.guild.getEmotesByName(stack.item.name.replace("-", ""), true);
-                    Emote result = emotes.isEmpty() ? messages.guild.getEmotesByName("ohno", true).get(0) : emotes.get(0);
+                    for(ItemStack stack : schem.requirements()){
+                        List<Emote> emotes = messages.guild.getEmotesByName(stack.item.name.replace("-", ""), true);
+                        Emote result = emotes.isEmpty() ? messages.guild.getEmotesByName("ohno", true).get(0) : emotes.get(0);
 
-                    field.append(result.getAsMention()).append(stack.amount).append("  ");
+                        field.append(result.getAsMention()).append(stack.amount).append("  ");
+                    }
+                    builder.addField("Requirements", field.toString(), false);
                 }
-                builder.addField("Requirements", field.toString(), false);
 
                 message.getChannel().sendFile(schemFile).addFile(previewFile).embed(builder.build()).queue();
                 message.delete().queue();
