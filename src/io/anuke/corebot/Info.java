@@ -67,7 +67,7 @@ public enum Info{
     "*I also do not accept random friend requests from people I don't know.*"),
     bugs("Bug Reporting Info",
     "**Template:**\n" +
-    "**Platform:** *<Android/iOS/Mac/Windows/Linux/Web>*\n" +
+    "**Platform:** *<windows/linux/mac/osx/android/ios>*\n" +
     "**Build:** *<The build number in the bottom left corner of main menu>*\n" +
     "**Issue:** *<What goes wrong and when. Be specific!>*\n\n" +
     "**Status:**\n" +
