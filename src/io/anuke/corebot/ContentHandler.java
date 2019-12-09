@@ -44,7 +44,7 @@ public class ContentHandler{
     public ContentHandler(){
         Version.enabled = false;
         Vars.content = new ContentLoader();
-        Vars.content.createContent();
+        Vars.content.createBaseContent();
         for(ContentType type : ContentType.values()){
             for(Content content : Vars.content.getBy(type)){
                 try{
