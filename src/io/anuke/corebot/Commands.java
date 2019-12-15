@@ -291,8 +291,11 @@ public class Commands{
             try{
                 new File("mods/").mkdir();
                 File baseFile = new File("mods/" + a.getFileName());
-                FileHandle destFolder = new FileHandle("dest_mod");
+                FileHandle destFolder = new FileHandle("dest_mod" + a.getFileName());
                 FileHandle destFile = new FileHandle("mods/" + new FileHandle(baseFile).nameWithoutExtension() + "-cleaned.zip");
+
+                if(destFolder.exists()) destFolder.deleteDirectory();
+                if(destFile.exists()) destFile.delete();
 
                 Streams.copyStream(net.download(a.getUrl()), new FileOutputStream(baseFile));
                 ZipFileHandle zip = new ZipFileHandle(new FileHandle(baseFile.getPath()));
