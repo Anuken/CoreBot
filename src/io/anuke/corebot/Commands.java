@@ -6,6 +6,8 @@ import io.anuke.arc.math.*;
 import io.anuke.arc.util.*;
 import io.anuke.arc.util.CommandHandler.*;
 import io.anuke.arc.util.io.*;
+import io.anuke.arc.util.serialization.*;
+import io.anuke.arc.util.serialization.Jval.*;
 import io.anuke.corebot.ContentHandler.Map;
 import io.anuke.mindustry.*;
 import io.anuke.mindustry.game.*;
@@ -26,6 +28,7 @@ import java.util.*;
 import java.util.List;
 import java.util.regex.*;
 import java.awt.image.*;
+import java.util.zip.*;
 
 import static io.anuke.corebot.CoreBot.*;
 
@@ -269,6 +272,59 @@ public class Commands{
             }
         });
 
+        handler.register("cleanmod", "Clean up a modded zip archive. Changes json into hjson and formats code.", args -> {
+            Message message = messages.lastMessage;
+
+            if(message.getAttachments().size() != 1 || !message.getAttachments().get(0).getFileName().endsWith(".zip")){
+                messages.err("You must have one .zip file in the same message as the command!");
+                messages.deleteMessages();
+                return;
+            }
+
+            Attachment a = message.getAttachments().get(0);
+
+            if(a.getSize() > 1024 * 1024 * 6){
+                messages.err("Zip files may be no more than 6 MB.");
+                messages.deleteMessages();
+            }
+
+            try{
+                new File("mods/").mkdir();
+                File baseFile = new File("mods/" + a.getFileName());
+                FileHandle destFolder = new FileHandle("dest_mod");
+                FileHandle destFile = new FileHandle("mods/" + a.getFileName() + "out.zip");
+
+                Streams.copyStream(net.download(a.getUrl()), new FileOutputStream(baseFile));
+                ZipFileHandle zip = new ZipFileHandle(new FileHandle(baseFile.getPath()));
+                zip.walk(file -> {
+                    FileHandle output = destFolder.child(file.extension().equals("json") ? file.pathWithoutExtension() + ".hjson" : file.path());
+                    output.parent().mkdirs();
+
+                    if(file.extension().equals("json") || file.extension().equals("hjson")){
+                        output.writeString(fixJval(Jval.read(file.readString())).toString(Jformat.hjson));
+                    }
+                });
+
+                try(OutputStream fos = destFile.write(false, 2048); ZipOutputStream zos = new ZipOutputStream(fos)){
+                    for(FileHandle add : destFolder.findAll(f -> true)){
+                        if(add.isDirectory()) continue;
+                        zos.putNextEntry(new ZipEntry(add.path().substring(destFolder.path().length())));
+                        Streams.copyStream(add.read(), zos);
+                        zos.closeEntry();
+                    }
+
+                }
+
+                messages.channel.sendFile(destFile.file()).queue();
+
+                messages.text("*Mod converted successfully.*");
+            }catch(Exception e){
+                e.printStackTrace();
+                messages.err("Error parsing mod.", Strings.parseException(e, true));
+                messages.deleteMessages();
+            }
+        });
+
         adminHandler.register("delete", "<amount>", "Delete some messages.", args -> {
             try{
                 int number = Integer.parseInt(args[0]) + 1;
@@ -344,6 +400,34 @@ public class Commands{
                 messages.deleteMessages();
             }
         });
+    }
+
+    private Jval fixJval(Jval val){
+        if(val.isArray()){
+            Array<Jval> list = val.asArray().copy();
+            for(Jval child : list){
+                if(child.isObject() && (child.has("item")) && child.has("amount")){
+                    val.asArray().remove(child);
+                    val.asArray().add(Jval.valueOf(child.getString("item", child.getString("liquid", "")) + "/" + child.getInt("amount", 0)));
+                }else{
+                    fixJval(child);
+                }
+            }
+        }else if(val.isObject()){
+            Array<String> keys = val.asObject().keys().toArray();
+
+            for(String key : keys){
+                Jval child = val.get(key);
+                if(child.isObject() && (child.has("item")) && child.has("amount")){
+                    val.remove(key);
+                    val.add(key, Jval.valueOf(child.getString("item", child.getString("liquid", "")) + "/" + child.getInt("amount", 0)));
+                }else{
+                    fixJval(child);
+                }
+            }
+        }
+
+        return val;
     }
 
     boolean isAdmin(User user){
