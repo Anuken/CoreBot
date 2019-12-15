@@ -302,6 +302,8 @@ public class Commands{
 
                     if(file.extension().equals("json") || file.extension().equals("hjson")){
                         output.writeString(fixJval(Jval.read(file.readString())).toString(Jformat.hjson));
+                    }else{
+                        file.copyTo(output);
                     }
                 });
 
