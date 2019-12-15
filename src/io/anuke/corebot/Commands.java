@@ -322,7 +322,7 @@ public class Commands{
                 messages.text("*Mod converted successfully.*");
             }catch(Throwable e){
                 e.printStackTrace();
-                messages.err("Error parsing mod.", Strings.parseException(e, true));
+                messages.err("Error parsing mod.", Strings.parseException(e, false));
                 messages.deleteMessages();
             }
         });
