@@ -320,7 +320,7 @@ public class Commands{
                 messages.channel.sendFile(destFile.file()).queue();
 
                 messages.text("*Mod converted successfully.*");
-            }catch(Exception e){
+            }catch(Throwable e){
                 e.printStackTrace();
                 messages.err("Error parsing mod.", Strings.parseException(e, true));
                 messages.deleteMessages();
