@@ -291,16 +291,16 @@ public class Commands{
             try{
                 new File("mods/").mkdir();
                 File baseFile = new File("mods/" + a.getFileName());
-                FileHandle destFolder = new FileHandle("dest_mod" + a.getFileName());
-                FileHandle destFile = new FileHandle("mods/" + new FileHandle(baseFile).nameWithoutExtension() + "-cleaned.zip");
+                Fi destFolder = new Fi("dest_mod" + a.getFileName());
+                Fi destFile = new Fi("mods/" + new Fi(baseFile).nameWithoutExtension() + "-cleaned.zip");
 
                 if(destFolder.exists()) destFolder.deleteDirectory();
                 if(destFile.exists()) destFile.delete();
 
                 Streams.copyStream(net.download(a.getUrl()), new FileOutputStream(baseFile));
-                ZipFileHandle zip = new ZipFileHandle(new FileHandle(baseFile.getPath()));
+                ZipFi zip = new ZipFi(new Fi(baseFile.getPath()));
                 zip.walk(file -> {
-                    FileHandle output = destFolder.child(file.extension().equals("json") ? file.pathWithoutExtension() + ".hjson" : file.path());
+                    Fi output = destFolder.child(file.extension().equals("json") ? file.pathWithoutExtension() + ".hjson" : file.path());
                     output.parent().mkdirs();
 
                     if(file.extension().equals("json") || file.extension().equals("hjson")){
@@ -311,7 +311,7 @@ public class Commands{
                 });
 
                 try(OutputStream fos = destFile.write(false, 2048); ZipOutputStream zos = new ZipOutputStream(fos)){
-                    for(FileHandle add : destFolder.findAll(f -> true)){
+                    for(Fi add : destFolder.findAll(f -> true)){
                         if(add.isDirectory()) continue;
                         zos.putNextEntry(new ZipEntry(add.path().substring(destFolder.path().length())));
                         Streams.copyStream(add.read(), zos);
@@ -644,7 +644,7 @@ public class Commands{
 
                 File previewFile = new File("img_" + UUID.randomUUID().toString() + ".png");
                 File schemFile = new File(schem.name() + "." + Vars.schematicExtension);
-                Schematics.write(schem, new FileHandle(schemFile));
+                Schematics.write(schem, new Fi(schemFile));
                 ImageIO.write(preview, "png", previewFile);
 
                 EmbedBuilder builder = new EmbedBuilder().setColor(messages.normalColor).setColor(messages.normalColor)

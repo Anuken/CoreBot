@@ -56,7 +56,7 @@ public class ContentHandler{
 
         String assets = "../Mindustry/core/assets/";
 
-        TextureAtlasData data = new TextureAtlasData(new FileHandle(assets + "sprites/sprites.atlas"), new FileHandle(assets + "sprites"), false);
+        TextureAtlasData data = new TextureAtlasData(new Fi(assets + "sprites/sprites.atlas"), new Fi(assets + "sprites"), false);
         Core.atlas = new TextureAtlas();
 
         ObjectMap<Page, BufferedImage> images = new ObjectMap<>();
