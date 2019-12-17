@@ -27,24 +27,22 @@ public class Net{
             try{
                 VersionInfo latest = list.first();
 
-                int lastVersion = getLastBuild();
+                String lastVersion = getLastBuild();
 
-                if(latest.build > lastVersion){
+                if(!latest.build.equals(lastVersion)){
                     Log.info("Posting update!");
 
                     CoreBot.messages.sendUpdate(latest);
-
                     CoreBot.prefs.put("lastBuild", latest.build + "");
                 }
-
             }catch(Exception e){
                 e.printStackTrace();
             }
         }, Log::err), 60, 240, TimeUnit.SECONDS);
     }
 
-    public int getLastBuild(){
-        return Integer.parseInt(CoreBot.prefs.get("lastBuild", "98"));
+    public String getLastBuild(){
+        return CoreBot.prefs.get("lastBuild", "101");
     }
 
     public InputStream download(String url){
@@ -102,7 +100,7 @@ public class Net{
                 String name = value.getString("name");
                 String description = value.getString("body").replace("\r", "");
                 int id = value.getInt("id");
-                int build = Integer.parseInt(value.getString("tag_name").substring(1));
+                String build = value.getString("tag_name").substring(1);
                 out.add(new VersionInfo(name, description, id, build));
             }
             success.accept(out);
@@ -112,10 +110,10 @@ public class Net{
     }
 
     public static class VersionInfo{
-        public final String name, description;
-        public final int id, build;
+        public final String name, description, build;
+        public final int id;
 
-        public VersionInfo(String name, String description, int id, int build){
+        public VersionInfo(String name, String description, int id, String build){
             this.name = name;
             this.description = description;
             this.id = id;
