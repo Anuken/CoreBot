@@ -28,8 +28,8 @@ public class Net{
                 if(!latest.build.equals(lastVersion)){
                     Log.info("Posting update!");
 
-                    corebot.CoreBot.messages.sendUpdate(latest);
-                    corebot.CoreBot.prefs.put("lastBuild", latest.build);
+                    CoreBot.messages.sendUpdate(latest);
+                    CoreBot.prefs.put("lastBuild", latest.build);
                 }
             }catch(Exception e){
                 e.printStackTrace();
@@ -38,7 +38,7 @@ public class Net{
     }
 
     public String getLastBuild(){
-        return corebot.CoreBot.prefs.get("lastBuild", "101");
+        return CoreBot.prefs.get("lastBuild", "101");
     }
 
     public InputStream download(String url){
@@ -82,7 +82,7 @@ public class Net{
 
     public void getChangelog(Consumer<Array<VersionInfo>> success, Consumer<Throwable> fail){
         try{
-            URL url = new URL(corebot.CoreBot.releasesURL);
+            URL url = new URL(CoreBot.releasesURL);
             URLConnection con = url.openConnection();
             InputStream in = con.getInputStream();
             String encoding = con.getContentEncoding();

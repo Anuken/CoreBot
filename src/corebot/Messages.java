@@ -59,9 +59,7 @@ public class Messages extends ListenerAdapter{
 
                     //send new messages
                     for(Host result : results){
-                        if(result.name == null){
-                            embed.addField(result.address, "[offline]\n_\n_\n", false);
-                        }else{
+                        if(result.name != null){
                             embed.addField(result.address,
                             Strings.format("*{0}*\nPlayers: {1}\nMap: {2}\nWave: {3}\nVersion: {4}\nMode: {5}\nPing: {6}ms\n_\n_\n",
                             result.name.replace("\\", "\\\\").replace("_", "\\_").replace("*", "\\*").replace("`", "\\`"),
