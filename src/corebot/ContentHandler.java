@@ -1,38 +1,37 @@
-package io.anuke.corebot;
+package corebot;
 
-import io.anuke.arc.*;
-import io.anuke.arc.collection.*;
-import io.anuke.arc.files.*;
-import io.anuke.arc.func.*;
-import io.anuke.arc.graphics.*;
-import io.anuke.arc.graphics.Color;
-import io.anuke.arc.graphics.Pixmap.*;
-import io.anuke.arc.graphics.g2d.*;
-import io.anuke.arc.graphics.g2d.TextureAtlas.*;
-import io.anuke.arc.graphics.g2d.TextureAtlas.TextureAtlasData.*;
-import io.anuke.arc.math.*;
-import io.anuke.arc.util.*;
-import io.anuke.arc.util.serialization.*;
-import io.anuke.mindustry.*;
-import io.anuke.mindustry.content.*;
-import io.anuke.mindustry.core.*;
-import io.anuke.mindustry.ctype.*;
-import io.anuke.mindustry.entities.traits.BuilderTrait.*;
-import io.anuke.mindustry.game.*;
-import io.anuke.mindustry.io.*;
-import io.anuke.mindustry.type.*;
-import io.anuke.mindustry.world.*;
-import io.anuke.mindustry.world.blocks.*;
+import arc.*;
+import arc.files.*;
+import arc.func.*;
+import arc.graphics.Color;
+import arc.graphics.*;
+import arc.graphics.Pixmap.*;
+import arc.graphics.g2d.*;
+import arc.graphics.g2d.TextureAtlas.*;
+import arc.graphics.g2d.TextureAtlas.TextureAtlasData.*;
+import arc.math.*;
+import arc.struct.*;
+import arc.util.*;
+import arc.util.serialization.*;
+import mindustry.*;
+import mindustry.content.*;
+import mindustry.core.*;
+import mindustry.ctype.*;
+import mindustry.entities.traits.BuilderTrait.*;
+import mindustry.game.*;
+import mindustry.io.*;
+import mindustry.world.*;
+import mindustry.world.blocks.*;
 
 import javax.imageio.*;
-import java.awt.image.*;
 import java.awt.*;
+import java.awt.geom.*;
+import java.awt.image.*;
 import java.io.*;
 import java.util.*;
 import java.util.zip.*;
-import java.awt.geom.*;
 
-import static io.anuke.mindustry.Vars.*;
+import static mindustry.Vars.*;
 
 public class ContentHandler{
     public static final byte[] mapHeader = {77, 83, 65, 86};

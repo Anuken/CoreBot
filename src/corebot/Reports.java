@@ -1,12 +1,11 @@
-package io.anuke.corebot;
+package corebot;
 
-import com.sun.net.httpserver.HttpServer;
-import io.anuke.arc.util.Log;
-import io.anuke.arc.util.serialization.Json;
-import io.anuke.arc.util.serialization.JsonValue;
+import arc.util.*;
+import arc.util.serialization.*;
+import com.sun.net.httpserver.*;
 
-import java.io.DataInputStream;
-import java.net.InetSocketAddress;
+import java.io.*;
+import java.net.*;
 
 public class Reports{
 

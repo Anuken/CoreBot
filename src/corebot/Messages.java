@@ -1,10 +1,9 @@
-package io.anuke.corebot;
+package corebot;
 
-import io.anuke.arc.util.Log;
-import io.anuke.arc.util.Strings;
-import io.anuke.arc.util.serialization.JsonValue;
-import io.anuke.corebot.Net.VersionInfo;
-import io.anuke.mindustry.net.*;
+import arc.util.*;
+import arc.util.serialization.*;
+import corebot.Net.*;
+import mindustry.net.*;
 import net.dv8tion.jda.api.*;
 import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.events.guild.member.*;
@@ -14,14 +13,14 @@ import net.dv8tion.jda.api.events.message.react.*;
 import net.dv8tion.jda.api.hooks.*;
 
 import java.awt.*;
-import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
+import java.time.*;
+import java.time.format.*;
 import java.util.List;
+import java.util.Timer;
 import java.util.*;
 import java.util.concurrent.*;
-import java.util.stream.*;
 
-import static io.anuke.corebot.CoreBot.*;
+import static corebot.CoreBot.*;
 
 public class Messages extends ListenerAdapter{
     JDA jda;

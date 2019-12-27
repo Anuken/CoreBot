@@ -1,17 +1,17 @@
-package io.anuke.corebot;
+package corebot;
 
-import io.anuke.arc.collection.*;
-import io.anuke.arc.files.*;
-import io.anuke.arc.math.*;
-import io.anuke.arc.util.*;
-import io.anuke.arc.util.CommandHandler.*;
-import io.anuke.arc.util.io.*;
-import io.anuke.arc.util.serialization.*;
-import io.anuke.arc.util.serialization.Jval.*;
-import io.anuke.corebot.ContentHandler.Map;
-import io.anuke.mindustry.*;
-import io.anuke.mindustry.game.*;
-import io.anuke.mindustry.type.*;
+import arc.files.*;
+import arc.math.*;
+import arc.struct.*;
+import arc.util.*;
+import arc.util.CommandHandler.*;
+import arc.util.io.*;
+import arc.util.serialization.*;
+import arc.util.serialization.Jval.*;
+import corebot.ContentHandler.Map;
+import mindustry.*;
+import mindustry.game.*;
+import mindustry.type.*;
 import net.dv8tion.jda.api.*;
 import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.entities.Message.*;
@@ -22,15 +22,15 @@ import org.jsoup.select.*;
 
 import javax.imageio.*;
 import java.awt.*;
+import java.awt.image.*;
 import java.io.*;
 import java.net.*;
-import java.util.*;
 import java.util.List;
+import java.util.*;
 import java.util.regex.*;
-import java.awt.image.*;
 import java.util.zip.*;
 
-import static io.anuke.corebot.CoreBot.*;
+import static corebot.CoreBot.*;
 
 public class Commands{
     private final String prefix = "!";

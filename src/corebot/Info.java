@@ -1,4 +1,4 @@
-package io.anuke.corebot;
+package corebot;
 
 public enum Info{
     links("Relevant Links",
@@ -7,13 +7,13 @@ public enum Info{
     "[PC/Web/Android Versions](https://anuke.itch.io/mindustry)\n" +
     "[Itch.io App / Updater](https://itch.io/app)\n" +
     "[iOS version](https://itunes.apple.com/us/app/mindustry/id1385258906?mt=8&ign-mpt=uo%3D8)\n" +
-    "[Google Play Listing](https://play.google.com/store/apps/details?id=io.anuke.mindustry)\n" +
+    "[Google Play Listing](https://play.google.com/store/apps/details?id=mindustry)\n" +
     "[TestFlight Link](https://testflight.apple.com/join/79Azm1hZ)\n" +
     "[3.5 Wiki](http://mindustry.wikia.com/wiki/Mindustry_Wiki)\n"),
     beta("iOS/Android Beta",
     "To join the Android Beta in Google Play Store, just scroll to the bottom of the page and tap 'join beta'.\n" +
     "Betas can take some time to become available after release. Be patient.\n" +
-    "[Direct Link](https://play.google.com/apps/testing/io.anuke.mindustry)\n\n" +
+    "[Direct Link](https://play.google.com/apps/testing/mindustry)\n\n" +
     "To join the iOS beta, click this [TestFlight Link](https://testflight.apple.com/join/79Azm1hZ), then install the Apple TestFlight app to play Mindustry."),
     rules("Rules",
     "**1.** Don't be rude. This should be obvious. No racism/sexism/etc.\n" +

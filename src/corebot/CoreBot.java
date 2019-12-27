@@ -1,4 +1,4 @@
-package io.anuke.corebot;
+package corebot;
 
 import java.io.File;
 

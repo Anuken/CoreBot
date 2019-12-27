@@ -1,22 +1,18 @@
-package io.anuke.corebot;
+package corebot;
 
-import io.anuke.arc.collection.Array;
-import io.anuke.arc.util.Log;
-import io.anuke.arc.util.Strings;
-import io.anuke.arc.util.io.*;
-import io.anuke.arc.util.serialization.Json;
-import io.anuke.arc.util.serialization.JsonValue;
-import io.anuke.mindustry.net.*;
+import arc.struct.*;
+import arc.util.*;
+import arc.util.io.*;
+import arc.util.serialization.*;
+import mindustry.net.*;
 
-import java.io.InputStream;
+import java.io.*;
 import java.net.*;
-import java.nio.ByteBuffer;
-import java.nio.charset.*;
+import java.nio.*;
 import java.util.Timer;
-import java.util.TimerTask;
-import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
-import java.util.function.Consumer;
+import java.util.*;
+import java.util.concurrent.*;
+import java.util.function.*;
 
 public class Net{
     public static final int timeout = 2000;
@@ -32,8 +28,8 @@ public class Net{
                 if(!latest.build.equals(lastVersion)){
                     Log.info("Posting update!");
 
-                    CoreBot.messages.sendUpdate(latest);
-                    CoreBot.prefs.put("lastBuild", latest.build + "");
+                    corebot.CoreBot.messages.sendUpdate(latest);
+                    corebot.CoreBot.prefs.put("lastBuild", latest.build);
                 }
             }catch(Exception e){
                 e.printStackTrace();
@@ -42,7 +38,7 @@ public class Net{
     }
 
     public String getLastBuild(){
-        return CoreBot.prefs.get("lastBuild", "101");
+        return corebot.CoreBot.prefs.get("lastBuild", "101");
     }
 
     public InputStream download(String url){
@@ -86,7 +82,7 @@ public class Net{
 
     public void getChangelog(Consumer<Array<VersionInfo>> success, Consumer<Throwable> fail){
         try{
-            URL url = new URL(CoreBot.releasesURL);
+            URL url = new URL(corebot.CoreBot.releasesURL);
             URLConnection con = url.openConnection();
             InputStream in = con.getInputStream();
             String encoding = con.getContentEncoding();

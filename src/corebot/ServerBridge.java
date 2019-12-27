@@ -1,12 +1,11 @@
-package io.anuke.corebot;
+package corebot;
 
-import io.anuke.arc.func.*;
-import io.anuke.arc.util.Log;
+import arc.func.*;
+import arc.util.*;
 
 import java.io.*;
-import java.net.InetSocketAddress;
-import java.net.Socket;
-import java.util.concurrent.ArrayBlockingQueue;
+import java.net.*;
+import java.util.concurrent.*;
 
 public class ServerBridge{
     private static final int port = 6859;

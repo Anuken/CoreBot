@@ -1,13 +1,10 @@
-package io.anuke.corebot;
+package corebot;
 
-import io.anuke.arc.collection.Array;
-import io.anuke.arc.util.serialization.Json;
+import arc.struct.*;
+import arc.util.serialization.*;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.util.Properties;
+import java.io.*;
+import java.util.*;
 
 public class Prefs{
     private Properties prop;
