@@ -117,7 +117,7 @@ public class Messages extends ListenerAdapter{
                     }
 
                     Array<ModListing> listings = json.fromJson(Array.class, ModListing.class, response.getResultAsString());
-                    listings.removeAll(l -> l.stars == 0);
+                    //listings.removeAll(l -> l.stars == 0);
                     listings.sort(Structs.comparing(list -> Date.from(Instant.parse(list.lastUpdated))));
                     listings.reverse();
                     listings.truncate(25);
