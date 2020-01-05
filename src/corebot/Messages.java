@@ -127,12 +127,12 @@ public class Messages extends ListenerAdapter{
                     embed.setTitle("Last 25 Updated Mods");
                     embed.setFooter(Strings.format("Last Updated: {0}", DateTimeFormatter.ofPattern("dd MMM yyyy HH:mm:ss ZZZZ").format(ZonedDateTime.now())));
                     for(ModListing listing : listings){
-                        embed.addField(listing.repo + "  " + listing.stars + "★",
-                        Strings.format("**[{0}]({1})**\n{2}\n*Updated {3} ago*\n_\n_\n_\n_",
+                        embed.addField(listing.repo + "  " + listing.stars + "★ | "
+                            + "*Updated " + durFormat(Duration.between(Instant.parse(listing.lastUpdated), Instant.now()))+ " ago*",
+                        Strings.format("**[{0}]({1})**\n{2}\n\n_\n_\n_\n_",
                             Strings.stripColors(listing.name),
                             "https://github.com/" + listing.repo,
-                            Strings.stripColors(listing.description),
-                            durFormat(Duration.between(Instant.parse(listing.lastUpdated), Instant.now()))), false);
+                            Strings.stripColors(listing.description)), false);
                     }
 
                     guild.getTextChannelById(modChannelID).editMessageById(663246057660219413L, embed.build()).queue();
