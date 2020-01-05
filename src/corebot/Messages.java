@@ -144,10 +144,9 @@ public class Messages extends ListenerAdapter{
     }
 
     private static String durFormat(Duration duration){
-        if(duration.toDays() > 0){
-            return duration.toDays() + "d";
-        }
-        return duration.toHours() + "h";
+        if(duration.toDays() > 0) return duration.toDays() + "d";
+        if(duration.toHours() > 0) return duration.toHours() + "h";
+        return duration.toMinutes() + "m";
     }
     
     @Override
