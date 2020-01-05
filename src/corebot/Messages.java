@@ -129,7 +129,7 @@ public class Messages extends ListenerAdapter{
                     for(ModListing listing : listings){
                         embed.addField(listing.repo + "  " + listing.stars + "★ | "
                             + "*Updated " + durFormat(Duration.between(Instant.parse(listing.lastUpdated), Instant.now()))+ " ago*",
-                        Strings.format("**[{0}]({1})**\n{2}\n\n_\n_\n_\n_",
+                        Strings.format("**[{0}]({1})**\n{2}\n\n_\n_",
                             Strings.stripColors(listing.name),
                             "https://github.com/" + listing.repo,
                             Strings.stripColors(listing.description)), false);
