@@ -130,8 +130,8 @@ public class Messages extends ListenerAdapter{
                     for(ModListing listing : listings){
                         embed.addField(listing.repo + "  " + listing.stars + "★",
                         Strings.format("**[{0}]({1})**\n*{2}*\n\n*Updated {3} ago*\n_\n_\n_\n_",
-                            "https://github.com/Anuken/" + listing.repo,
                             Strings.stripColors(listing.name),
+                            "https://github.com/Anuken/" + listing.repo,
                             Strings.stripColors(listing.description),
                             durFormat(Duration.between(Instant.parse(listing.lastUpdated), Instant.now()))), false);
                     }
