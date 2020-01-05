@@ -127,7 +127,11 @@ public class Messages extends ListenerAdapter{
                     embed.setTitle("Last 25 Updated Mods");
                     embed.setFooter(Strings.format("Last Updated: {0}", DateTimeFormatter.ofPattern("dd MMM yyyy HH:mm:ss ZZZZ").format(ZonedDateTime.now())));
                     for(ModListing listing : listings){
-                        embed.addField(listing.repo, Strings.format("*{0}*\n\n*Updated: {1} ago*", listing.description, durFormat(Duration.between(Instant.now(), Instant.parse(listing.lastUpdated)))), false);
+                        embed.addField(listing.repo,
+                        Strings.format("**{0}**\n*{1}*\n*Updated: {2} ago*\n\n",
+                            Strings.stripColors(listing.name),
+                            Strings.stripColors(listing.description),
+                            durFormat(Duration.between(Instant.parse(listing.lastUpdated), Instant.now()))), false);
                     }
 
                     guild.getTextChannelById(modChannelID).editMessageById(663246057660219413L, embed.build()).queue();
@@ -142,7 +146,7 @@ public class Messages extends ListenerAdapter{
         return duration.toString()
         .substring(2)
         .replaceAll("(\\d[HMS])(?!$)", "$1 ")
-        .toLowerCase();
+        .toLowerCase().replace("-", "");
     }
     
     @Override
