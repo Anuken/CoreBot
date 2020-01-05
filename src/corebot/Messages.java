@@ -129,7 +129,7 @@ public class Messages extends ListenerAdapter{
                     embed.setFooter(Strings.format("Last Updated: {0}", DateTimeFormatter.ofPattern("dd MMM yyyy HH:mm:ss ZZZZ").format(ZonedDateTime.now())));
                     for(ModListing listing : listings){
                         embed.addField(listing.repo + "  " + listing.stars + "★",
-                        Strings.format("**[{0}]({1})**\n*{2}*\n\n*Updated {3} ago*\n_\n_\n_\n_",
+                        Strings.format("**[{0}]({1})**\n{2}\n*Updated {3} ago*\n_\n_\n_\n_",
                             Strings.stripColors(listing.name),
                             "https://github.com/" + listing.repo,
                             Strings.stripColors(listing.description),
