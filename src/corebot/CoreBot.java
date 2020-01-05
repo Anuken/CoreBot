@@ -7,7 +7,7 @@ public class CoreBot{
     public static final long guildID = 391020510269669376L;
     public static final File prefsFile = new File("prefs.properties");
     public static final long bugReportChannelID = 391073027309305856L;
-    public static final long modChannelID = 633042384808312873L;
+    public static final long modChannelID = 663227511987240980L;
     public static final long pluginChannelID = 617833229973717032L;
     public static final long crashReportChannelID = 467033526018113546L;
     public static final long serverChannelID = 517896556029149214L;
