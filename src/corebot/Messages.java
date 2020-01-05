@@ -142,11 +142,11 @@ public class Messages extends ListenerAdapter{
         }
     }
 
-    private static String durFormat(Duration duration) {
-        return duration.toString()
-        .substring(2)
-        .replaceAll("(\\d[HMS])(?!$)", "$1 ")
-        .toLowerCase().replace("-", "");
+    private static String durFormat(Duration duration){
+        if(duration.toDays() > 0){
+            return duration.toDays() + "d";
+        }
+        return duration.toHours() + "h";
     }
     
     @Override
