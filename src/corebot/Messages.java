@@ -131,7 +131,7 @@ public class Messages extends ListenerAdapter{
                         embed.addField(listing.repo + "  " + listing.stars + "★",
                         Strings.format("**[{0}]({1})**\n*{2}*\n\n*Updated {3} ago*\n_\n_\n_\n_",
                             Strings.stripColors(listing.name),
-                            "https://github.com/Anuken/" + listing.repo,
+                            "https://github.com/" + listing.repo,
                             Strings.stripColors(listing.description),
                             durFormat(Duration.between(Instant.parse(listing.lastUpdated), Instant.now()))), false);
                     }
