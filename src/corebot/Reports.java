@@ -24,7 +24,7 @@ public class Reports{
                 String build = value.getInt("build") + (value.getInt("revision") == 0 ? "" : "." + value.getInt("revision"));
 
                 //custom builds and uninitialized builds (0) are skipped.
-                if(build.equals(CoreBot.net.getLastBuild())){
+                if(build.equals(CoreBot.net.getLastBuild()) || String.valueOf(value.getInt("build")).equals(CoreBot.net.getLastBuild())){
                     CoreBot.messages.sendCrash(value);
                 }else{
                     Log.info("Rejecting report with invalid build: {0}. Current latest build is {1}.", build, CoreBot.net.getLastBuild());
