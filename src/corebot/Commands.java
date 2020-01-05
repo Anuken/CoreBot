@@ -94,6 +94,7 @@ public class Commands{
             }
         });
 
+
         handler.register("postplugin", "<github-url>", "Post a plugin via Github repository URL.", args -> {
             if(!args[0].startsWith("https") || !args[0].contains("github")){
                 messages.err("That's not a valid Github URL.");
@@ -123,6 +124,7 @@ public class Commands{
                 }
             }
         });
+        /*
 
         handler.register("postmod", "<github-url>", "Post a plugin via Github repository URL.", args -> {
             if(!args[0].startsWith("https") || !args[0].contains("github")){
@@ -158,7 +160,7 @@ public class Commands{
                     messages.err("Failed to fetch mod info from URL.");
                 }
             }
-        });
+        });*/
 
         handler.register("postimagemap", "<mapname> [description...]", "Post an image (3.5) map to the #maps channel.", args -> {
             Message message = messages.lastMessage;

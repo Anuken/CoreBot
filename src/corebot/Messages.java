@@ -1,8 +1,12 @@
 package corebot;
 
+import arc.*;
+import arc.Net.*;
+import arc.struct.*;
 import arc.util.*;
 import arc.util.serialization.*;
 import corebot.Net.*;
+import mindustry.mod.*;
 import mindustry.net.*;
 import net.dv8tion.jda.api.*;
 import net.dv8tion.jda.api.entities.*;
@@ -31,6 +35,7 @@ public class Messages extends ListenerAdapter{
     Guild guild;
     Color normalColor = Color.decode("#FAB462");
     Color errorColor = Color.decode("#ff3838");
+    Json json = new Json();
 
     public Messages(){
         String token = System.getProperty("token");
@@ -43,7 +48,9 @@ public class Messages extends ListenerAdapter{
             guild = jda.getGuildById(guildID);
 
             Log.info("Discord bot up.");
+            Core.net = new arc.Net();
 
+            //server updater
             Executors.newSingleThreadScheduledExecutor().scheduleAtFixedRate(() -> {
                 List<Host> results = new CopyOnWriteArrayList<>();
 
@@ -80,6 +87,7 @@ public class Messages extends ListenerAdapter{
 
             StringBuilder messageBuilder = new StringBuilder();
 
+            //server output, if applicable (currently doesn't work)
             server.connect(input -> {
                 if(messageBuilder.length() > 1000){
                     String text = messageBuilder.toString();
@@ -100,9 +108,41 @@ public class Messages extends ListenerAdapter{
                     messageBuilder.append("\n").append(input);
                 }
             });
+
+            //mod list updater
+            Executors.newSingleThreadScheduledExecutor().scheduleAtFixedRate(() -> {
+                Core.net.httpGet("https://raw.githubusercontent.com/Anuken/MindustryMods/master/mods.json", response -> {
+                    if(response.getStatus() != HttpStatus.OK){
+                        return;
+                    }
+
+                    Array<ModListing> listings = json.fromJson(Array.class, ModListing.class, response.getResultAsString());
+                    listings.sort(Structs.comparing(list -> Date.from(Instant.parse(list.lastUpdated))));
+                    listings.reverse();
+                    listings.truncate(25);
+                    listings.reverse();
+
+                    EmbedBuilder embed = new EmbedBuilder();
+                    embed.setColor(normalColor);
+                    embed.setTitle("Last 25 Updated Mods");
+                    embed.setFooter(Strings.format("Last Updated: {0}", DateTimeFormatter.ofPattern("dd MMM yyyy HH:mm:ss ZZZZ").format(ZonedDateTime.now())));
+                    for(ModListing listing : listings){
+                        embed.addField(listing.repo, Strings.format("*{0}*\n\n*Updated: {1} ago*", listing.description, durFormat(Duration.between(Instant.now(), Instant.parse(listing.lastUpdated)))), false);
+                    }
+
+                    guild.getTextChannelById(modChannelID).editMessageById(663246057660219413L, embed.build()).queue();
+                }, Throwable::printStackTrace);
+            }, 5, 20, TimeUnit.MINUTES);
         }catch(Exception e){
             throw new RuntimeException(e);
         }
+    }
+
+    private static String durFormat(Duration duration) {
+        return duration.toString()
+        .substring(2)
+        .replaceAll("(\\d[HMS])(?!$)", "$1 ")
+        .toLowerCase();
     }
     
     @Override
