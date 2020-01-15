@@ -31,7 +31,7 @@ public class Net{
                     CoreBot.messages.sendUpdate(latest);
                     CoreBot.prefs.put("lastBuild", latest.build);
                 }
-            }catch(Exception e){
+            }catch(Throwable e){
                 e.printStackTrace();
             }
         }, Log::err), 60, 240, TimeUnit.SECONDS);
@@ -100,7 +100,7 @@ public class Net{
                 out.add(new VersionInfo(name, description, id, build));
             }
             success.accept(out);
-        }catch(Exception e){
+        }catch(Throwable e){
             fail.accept(e);
         }
     }

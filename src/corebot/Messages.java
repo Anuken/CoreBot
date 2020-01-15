@@ -136,7 +136,7 @@ public class Messages extends ListenerAdapter{
                     }
 
                     guild.getTextChannelById(modChannelID).editMessageById(663246057660219413L, embed.build()).queue();
-                }, Throwable::printStackTrace);
+                }, Log::err);
             }, 0, 20, TimeUnit.MINUTES);
         }catch(Exception e){
             throw new RuntimeException(e);
