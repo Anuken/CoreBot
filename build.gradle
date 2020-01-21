@@ -96,6 +96,7 @@ project(":Mindustry:annotations"){
     compileJava.dependsOn(cleanGen)
 
     dependencies {
+        compile project(":Arc:arc-core")
         compile 'com.squareup:javapoet:1.11.0'
         compile files("${System.getProperty('java.home')}/../lib/tools.jar")
     }

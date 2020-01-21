@@ -69,7 +69,7 @@ public class Messages extends ListenerAdapter{
                         if(result.name != null){
                             embed.addField(result.address,
                             Strings.format("*{0}*\nPlayers: {1}\nMap: {2}\nWave: {3}\nVersion: {4}\nMode: {5}\nPing: {6}ms\n_\n_\n",
-                            result.name.replace("\\", "\\\\").replace("_", "\\_").replace("*", "\\*").replace("`", "\\`"),
+                            result.name.replace("\\", "\\\\").replace("_", "\\_").replace("*", "\\*").replace("`", "\\`") + (result.description != null && result.description.length() > 0 ? "\n" + result.description : ""),
                             (result.playerLimit > 0 ? result.players + "/" + result.playerLimit : result.players),
                             result.mapname.replace("\\", "\\\\").replace("_", "\\_").replace("*", "\\*").replace("`", "\\`").replaceAll("\\[.*?\\]", ""),
                             result.wave,
