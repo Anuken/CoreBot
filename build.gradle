@@ -97,7 +97,7 @@ project(":Mindustry:annotations"){
 
     dependencies {
         compile project(":Arc:arc-core")
-        compile 'com.squareup:javapoet:1.11.0'
+        compile 'com.squareup:javapoet:1.12.1'
         compile files("${System.getProperty('java.home')}/../lib/tools.jar")
     }
 }
