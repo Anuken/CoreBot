@@ -129,7 +129,7 @@ public class ContentHandler{
             BufferedImage image = ImageIO.read(new File("../Mindustry/core/assets/sprites/block_colors.png"));
 
             for(Block block : Vars.content.blocks()){
-                Color.argb8888ToColor(block.color, image.getRGB(block.id, 0));
+                block.color.argb8888(image.getRGB(block.id, 0));
                 if(block instanceof OreBlock){
                     block.color.set(((OreBlock)block).itemDrop.color);
                 }
@@ -152,9 +152,9 @@ public class ContentHandler{
         for(int x = 0; x < copy.getWidth(); x++){
             for(int y = 0; y < copy.getHeight(); y++){
                 int argb = image.getRGB(x, y);
-                Color.argb8888ToColor(tmp, argb);
+                tmp.argb8888(argb);
                 tmp.mul(color);
-                copy.setRGB(x, y, Color.argb8888(tmp));
+                copy.setRGB(x, y, tmp.argb8888());
             }
         }
         return copy;
@@ -235,7 +235,7 @@ public class ContentHandler{
         for(int x = 0; x < img.getWidth(); x++){
             for(int y = 0; y < img.getHeight(); y++){
                 Mtile tile = tiles[x][y];
-                img.setRGB(x, img.getHeight() - 1 - y, Color.argb8888(Tmp.c1.set(MapIO.colorFor(tile.floor, tile.wall, tile.ore, Team.derelict))));
+                img.setRGB(x, img.getHeight() - 1 - y, Tmp.c1.set(MapIO.colorFor(tile.floor, tile.wall, tile.ore, Team.derelict)).argb8888());
             }
         }
 

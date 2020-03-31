@@ -141,7 +141,7 @@ public class Commands{
                 new File("maps/").mkdir();
                 File mapFile = new File("maps/" + a.getFileName());
                 File imageFile = new File("maps/image_" + a.getFileName().replace(".msav", ".png"));
-                Streams.copyStream(net.download(a.getUrl()), new FileOutputStream(mapFile));
+                Streams.copy(net.download(a.getUrl()), new FileOutputStream(mapFile));
                 ImageIO.write(map.image, "png", imageFile);
 
                 EmbedBuilder builder = new EmbedBuilder().setColor(messages.normalColor).setColor(messages.normalColor)
@@ -234,7 +234,7 @@ public class Commands{
                 if(destFolder.exists()) destFolder.deleteDirectory();
                 if(destFile.exists()) destFile.delete();
 
-                Streams.copyStream(net.download(a.getUrl()), new FileOutputStream(baseFile));
+                Streams.copy(net.download(a.getUrl()), new FileOutputStream(baseFile));
                 ZipFi zip = new ZipFi(new Fi(baseFile.getPath()));
                 zip.walk(file -> {
                     Fi output = destFolder.child(file.extension().equals("json") ? file.pathWithoutExtension() + ".hjson" : file.path());
@@ -251,7 +251,7 @@ public class Commands{
                     for(Fi add : destFolder.findAll(f -> true)){
                         if(add.isDirectory()) continue;
                         zos.putNextEntry(new ZipEntry(add.path().substring(destFolder.path().length())));
-                        Streams.copyStream(add.read(), zos);
+                        Streams.copy(add.read(), zos);
                         zos.closeEntry();
                     }
 
@@ -284,7 +284,7 @@ public class Commands{
 
         adminHandler.register("removeserver", "<IP>", "Remove server from list.", args -> {
             Array<String> servers = prefs.getArray("servers");
-            boolean removed = servers.removeValue(args[0], false);
+            boolean removed = servers.remove(args[0], false);
             prefs.putArray("servers", servers);
             if(removed){
                 messages.text("*Server removed.*");
@@ -416,7 +416,7 @@ public class Commands{
         for(String s : split){
             for(String req : required){
                 if(s.toLowerCase().startsWith(req.toLowerCase()) && s.length() > req.length()){
-                    arr.removeValue(req, false);
+                    arr.remove(req, false);
 
                     //special case: don't let people report a build as a version such as 4.0/3.5
                     if(s.toLowerCase().startsWith("build:")){
