@@ -90,7 +90,7 @@ public class Net{
             InputStream in = con.getInputStream();
             String encoding = con.getContentEncoding();
             encoding = encoding == null ? "UTF-8" : encoding;
-            String body = Streams.copyStreamToString(in, 1000, encoding);
+            String body = Streams.copyString(in, 1000, encoding);
 
             Json j = new Json();
             Array<JsonValue> list = j.fromJson(null, body);
