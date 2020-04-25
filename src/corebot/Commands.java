@@ -485,10 +485,8 @@ public class Commands{
         return false;
     }
 
-    void edited(Message message, Message previous){
-        if(message.getAuthor() == null || message.getContentRaw() == null || previous == null) return;
-
-        messages.logTo("------\n**{0}#{1}** just edited a message.\n\n*From*: \"{2}\"\n*To*: \"{3}\"", message.getAuthor().getName(), message.getAuthor().getDiscriminator(), previous.getContentRaw(), message.getContentRaw());
+    void edited(Message message){
+        messages.logTo("------\n**{0}#{1}** just edited a message.\n\n*From*: \"{2}\"\n*To*: \"{3}\"", message.getAuthor().getName(), message.getAuthor().getDiscriminator(), "<broken>", message.getContentRaw());
         checkInvite(message);
     }
 

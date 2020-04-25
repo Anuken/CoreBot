@@ -12,7 +12,6 @@ import net.dv8tion.jda.api.*;
 import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.events.guild.member.*;
 import net.dv8tion.jda.api.events.message.*;
-import net.dv8tion.jda.api.events.message.guild.*;
 import net.dv8tion.jda.api.events.message.react.*;
 import net.dv8tion.jda.api.hooks.*;
 
@@ -160,11 +159,11 @@ public class Messages extends ListenerAdapter{
 
     @Override
     public void onMessageUpdate(MessageUpdateEvent event){
-        //commands.edited(event.getMessage(), event.getOldMessage());
+        commands.edited(event.getMessage());
     }
 
     @Override
-    public void onGuildMessageDelete(GuildMessageDeleteEvent event){
+    public void onMessageDelete(MessageDeleteEvent event){
         //commands.deleted(event.getMessage());
     }
 
