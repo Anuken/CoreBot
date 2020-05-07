@@ -118,12 +118,12 @@ public class Messages extends ListenerAdapter{
                     Array<ModListing> listings = json.fromJson(Array.class, ModListing.class, response.getResultAsString());
                     listings.sort(Structs.comparing(list -> Date.from(Instant.parse(list.lastUpdated))));
                     listings.reverse();
-                    listings.truncate(25);
+                    listings.truncate(20);
                     listings.reverse();
 
                     EmbedBuilder embed = new EmbedBuilder();
                     embed.setColor(normalColor);
-                    embed.setTitle("Last 25 Updated Mods");
+                    embed.setTitle("Last Updated Mods");
                     embed.setFooter(Strings.format("Last Updated: {0}", DateTimeFormatter.ofPattern("dd MMM yyyy HH:mm:ss ZZZZ").format(ZonedDateTime.now())));
                     for(ModListing listing : listings){
                         embed.addField(listing.repo + "  " + listing.stars + "★ | "
