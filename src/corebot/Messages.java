@@ -38,7 +38,7 @@ public class Messages extends ListenerAdapter{
 
     public Messages(){
         String token = System.getProperty("token");
-        Log.info("Found token: @", token);
+        Log.info("Found token: {0}", token);
 
         try{
             jda = new JDABuilder(token).build();
@@ -67,7 +67,7 @@ public class Messages extends ListenerAdapter{
                     for(Host result : results){
                         if(result.name != null){
                             embed.addField(result.address,
-                            Strings.format("*@*\nPlayers: @\nMap: @\nWave: @\nVersion: @\nMode: @\nPing: @ms\n_\n_\n",
+                            Strings.format("*{0}*\nPlayers: {1}\nMap: {2}\nWave: {3}\nVersion: {4}\nMode: {5}\nPing: {6}ms\n_\n_\n",
                             result.name.replace("\\", "\\\\").replace("_", "\\_").replace("*", "\\*").replace("`", "\\`") + (result.description != null && result.description.length() > 0 ? "\n" + result.description : ""),
                             (result.playerLimit > 0 ? result.players + "/" + result.playerLimit : result.players),
                             result.mapname.replace("\\", "\\\\").replace("_", "\\_").replace("*", "\\*").replace("`", "\\`").replaceAll("\\[.*?\\]", ""),
@@ -78,7 +78,7 @@ public class Messages extends ListenerAdapter{
                         }
                     }
 
-                    embed.setFooter(Strings.format("Last Updated: @", DateTimeFormatter.ofPattern("dd MMM yyyy HH:mm:ss ZZZZ").format(ZonedDateTime.now())));
+                    embed.setFooter(Strings.format("Last Updated: {0}", DateTimeFormatter.ofPattern("dd MMM yyyy HH:mm:ss ZZZZ").format(ZonedDateTime.now())));
 
                     guild.getTextChannelById(serverChannelID).editMessageById(578594853991088148L, embed.build()).queue();
                 });
@@ -118,17 +118,17 @@ public class Messages extends ListenerAdapter{
                     Array<ModListing> listings = json.fromJson(Array.class, ModListing.class, response.getResultAsString());
                     listings.sort(Structs.comparing(list -> Date.from(Instant.parse(list.lastUpdated))));
                     listings.reverse();
-                    listings.truncate(20);
+                    listings.truncate(25);
                     listings.reverse();
 
                     EmbedBuilder embed = new EmbedBuilder();
                     embed.setColor(normalColor);
-                    embed.setTitle("Last 20 Updated Mods");
-                    embed.setFooter(Strings.format("Last Updated: @", DateTimeFormatter.ofPattern("dd MMM yyyy HH:mm:ss ZZZZ").format(ZonedDateTime.now())));
+                    embed.setTitle("Last 25 Updated Mods");
+                    embed.setFooter(Strings.format("Last Updated: {0}", DateTimeFormatter.ofPattern("dd MMM yyyy HH:mm:ss ZZZZ").format(ZonedDateTime.now())));
                     for(ModListing listing : listings){
                         embed.addField(listing.repo + "  " + listing.stars + "★ | "
                             + "*Updated " + durFormat(Duration.between(Instant.parse(listing.lastUpdated), Instant.now()))+ " ago*",
-                        Strings.format("**[@](@)**\n@\n\n_\n_",
+                        Strings.format("**[{0}]({1})**\n{2}\n\n_\n_",
                             Strings.stripColors(listing.name),
                             "https://github.com/" + listing.repo,
                             Strings.stripColors(listing.description)), false);
