@@ -40,7 +40,7 @@ public class ServerBridge{
                     String send;
                     while(true){
                         send = queue.take();
-                        Log.info("Sending command: {0}", send);
+                        Log.info("Sending command: @", send);
                         out.println(send);
                     }
                 }catch(Exception ignored){}
