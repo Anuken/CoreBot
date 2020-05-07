@@ -518,7 +518,7 @@ public class Commands{
                 event.getChannel().retrieveMessageById(event.getMessageId()).complete().getContentStripped() + "```");
             delete = true;
         }else{
-            Log.info("| Unknwo reaction.");
+            Log.info("| Unknown reaction.");
             valid = false;
         }
 
