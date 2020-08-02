@@ -37,7 +37,7 @@ public class Commands{
     private CommandHandler handler = new CommandHandler(prefix);
     private CommandHandler adminHandler = new CommandHandler(prefix);
     private String[] warningStrings = {"once", "twice", "thrice", "too many times"};
-    private Pattern invitePattern = Pattern.compile("(discord\\.gg/\\w|discordapp\\.com/invite/\\w)");
+    private Pattern invitePattern = Pattern.compile("(discord\\.gg/\\w|discordapp\\.com/invite/\\w|discord\\.com/invite/\\w)");
 
     Commands(){
         handler.register("help", "Displays all bot commands.", args -> {
