@@ -30,7 +30,9 @@ public class CoreBot{
     public static Commands commands = new Commands();
     public static Net net = new Net();
     public static Prefs prefs = new Prefs(prefsFile);
-    public static Reports reports = new Reports();
+
+    //crash reporting disabled until V6 is out
+    //public static Reports reports = new Reports();
 
     public static void main(String[] args){
         new CoreBot();

@@ -1,12 +1,9 @@
 package corebot;
 
 import arc.*;
-import arc.Net.*;
-import arc.struct.*;
 import arc.util.*;
 import arc.util.serialization.*;
 import corebot.Net.*;
-import mindustry.mod.*;
 import mindustry.net.*;
 import net.dv8tion.jda.api.*;
 import net.dv8tion.jda.api.entities.*;
@@ -108,6 +105,9 @@ public class Messages extends ListenerAdapter{
                 }
             });
 
+            //mod listings are broken until further notice
+            //the format is incompatible and should be enabled with the v6 update
+            /*
             //mod list updater
             Executors.newSingleThreadScheduledExecutor().scheduleAtFixedRate(() -> {
                 Core.net.httpGet("https://raw.githubusercontent.com/Anuken/MindustryMods/master/mods.json", response -> {
@@ -127,16 +127,17 @@ public class Messages extends ListenerAdapter{
                     embed.setFooter(Strings.format("Last Updated: {0}", DateTimeFormatter.ofPattern("dd MMM yyyy HH:mm:ss ZZZZ").format(ZonedDateTime.now())));
                     for(ModListing listing : listings){
                         embed.addField(listing.repo + "  " + listing.stars + "★ | "
-                            + "*Updated " + durFormat(Duration.between(Instant.parse(listing.lastUpdated), Instant.now()))+ " ago*",
+                        + "*Updated " + durFormat(Duration.between(Instant.parse(listing.lastUpdated), Instant.now()))+ " ago*",
                         Strings.format("**[{0}]({1})**\n{2}\n\n_\n_",
-                            Strings.stripColors(listing.name),
-                            "https://github.com/" + listing.repo,
-                            Strings.stripColors(listing.description)), false);
+                        Strings.stripColors(listing.name),
+                        "https://github.com/" + listing.repo,
+                        Strings.stripColors(listing.description)), false);
                     }
 
                     guild.getTextChannelById(modChannelID).editMessageById(663246057660219413L, embed.build()).queue();
                 }, Log::err);
             }, 0, 20, TimeUnit.MINUTES);
+            */
         }catch(Exception e){
             throw new RuntimeException(e);
         }
