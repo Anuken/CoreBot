@@ -37,8 +37,8 @@ public class Messages extends ListenerAdapter{
     Json json = new Json();
 
     public Messages(){
-        String token = System.getProperty("token");
-        Log.info("Found token: {0}", token);
+        String token = System.getenv("CORE_BOT_TOKEN");
+        Log.info("Found token: {0}", token != null);
 
         try{
             jda = new JDABuilder(token).build();

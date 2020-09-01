@@ -599,7 +599,7 @@ public class Commands{
                 message.getChannel().sendFile(schemFile).addFile(previewFile).embed(builder.build()).queue();
                 message.delete().queue();
             }catch(Throwable e){
-                if(message.getTextChannel().getIdLong() == schematicsChannelID){
+                if(message.getTextChannel().getIdLong() == schematicsChannelID || message.getTextChannel().getIdLong() == baseSchematicsChannelID){
                     message.delete().queue();
                     try{
                         message.getAuthor().openPrivateChannel().complete().sendMessage("Invalid schematic: " + e.getClass().getSimpleName() + (e.getMessage() == null ? "" : " (" + e.getMessage() + ")")).queue();
@@ -611,7 +611,7 @@ public class Commands{
                 Log.err("Failed to parse schematic, skipping.");
                 Log.err(e);
             }
-        }else if(message.getTextChannel().getIdLong() == schematicsChannelID && !isAdmin(message.getAuthor())){
+        }else if((message.getTextChannel().getIdLong() == schematicsChannelID || message.getTextChannel().getIdLong() == schematicsChannelID) && !isAdmin(message.getAuthor())){
             message.delete().queue();
             try{
                 message.getAuthor().openPrivateChannel().complete().sendMessage("Only send valid schematics in the #schematics channel. You may send them either as clipboard text or as a schematic file.").queue();
