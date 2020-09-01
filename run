@@ -1,6 +1,0 @@
-#!/usr/bin/env bash
-git pull
-
-./gradlew dist
-java -jar build/libs/CoreBot.jar
-
