@@ -26,7 +26,7 @@ public enum Info{
     "**8.** Do not impersonate other members or intentionally edit your messages to mislead others.\n" +
     "**9.** Do not cross-post the same message to multiple channels.\n" +
     "**10.** Breaking any of these rules in a non-serious way may result in a warning. 3 warnings is a ban.\n" +
-    "*If I don't like your behavior, you're out. Obey the spirit, not the word.*"),,
+    "*If I don't like your behavior, you're out. Obey the spirit, not the word.*"),
     pings("Ping and PM Policy",
     "*Please do not PM or ping me (Anuke) unless it is something important.*\n\n" +
     "'Important' includes things like major unreported game server issues or exploits, " +
