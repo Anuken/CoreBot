@@ -26,36 +26,7 @@ public enum Info{
     "**8.** Do not impersonate other members or intentionally edit your messages to mislead others.\n" +
     "**9.** Do not cross-post the same message to multiple channels.\n" +
     "**10.** Breaking any of these rules in a non-serious way may result in a warning. 3 warnings is a ban.\n" +
-    "*If I don't like your behavior, you're out. Obey the spirit, not the word.*"),
-    multiplayer("Multiplayer",
-    "Multiplayer in Mindustry works just as it does in many other sandbox games.\n" +
-    "To host a server, press *'host'* in the menu while playing.\n" +
-    "Your server's IP can be found by googling `my ip`.\n" +
-    "To join a server, enter their IP in the 'add server' box and click the server.\n" +
-    "Both over-the-internet and LAN play is supported. For someone outside your network to connect to your games, **port forwarding is required.**\n" +
-    "Multiplayer is cross-platform.\n\n" +
-    "*For more info on how to port forward, check the pinned messages in #multiplayer.*\n"),
-    server("Dedicated Server",
-    "To run the dedicated server .JAR file, you need to use the command prompt or terminal. **Java is required**.\n\n" +
-    "Navigate to the file location and type `java -jar <server-file-name>.jar`, which should start the server.\n" +
-    "Note that the server does not automatically start hosting. Type `host <map> <gamemode>` to open the server.\n" +
-    "If you have a dedicated server, you can post its IP publically in #servers with `!postserver <ip>`.\n" +
-    "Type `help` for a list of all commands.\n"),
-    suggested("Suggested Ideas",
-    "*The following ideas have been suggested many times before. Please stop.*\n\n" +
-    "- Steam/switch/console/etc release *(yes, it is planned, check the trello)*\n" +
-    "- Map browser *(coming with steam workshop)*\n" +
-    "- Easier multiplayer *(coming with steam)*\n" +
-    "- Server browser *(possibly coming with steam)*\n" +
-    "- Texture packs *(many reasons)*\n" +
-    "- Online player profiles *(overcomplicated, can be done w/ steam)*\n" +
-    "- Modding support *(see the #mods channel)*\n" +
-    "- Game speed increase *(not technically viable or needed)*\n" +
-    "- Liquid teleporter *(overpowered, use phase conduits)*\n" +
-    "- Power wires or conduits *(as opposed to nodes)*\n" +
-    "- Underground map layer *(unnecessarily complex, use bridges)*\n" +
-    "- Trains ***(no thanks)***\n" +
-    "- \"hey I have a game idea you should make\" *(no comment)*"),
+    "*If I don't like your behavior, you're out. Obey the spirit, not the word.*"),,
     pings("Ping and PM Policy",
     "*Please do not PM or ping me (Anuke) unless it is something important.*\n\n" +
     "'Important' includes things like major unreported game server issues or exploits, " +
@@ -64,18 +35,7 @@ public enum Info{
     "Do *not* PM or ping me when posting normal suggestions or bugs reports. If it's relevant, I'll read it.\nIf you have a question about the game, *ask in #general or #help.*\n" +
     "\n" +
     "I will not respond to PMs with non-personal game-related questions or random messages such as 'hey'. And no, video calling me multiple times in PM doesn't get my attention, it just gets you blocked. *(Believe me, people have tried.)*\n" +
-    "*I also do not accept random friend requests from people I don't know.*"),
-    bugs("Bug Reporting Info",
-    "**Template:**\n" +
-    "**Platform:** *<windows/linux/mac/osx/android/ios>*\n" +
-    "**Build:** *<The build number in the bottom left corner of main menu>*\n" +
-    "**Issue:** *<What goes wrong and when. Be specific!>*\n\n" +
-    "**Status:**\n" +
-    ":white_check_mark: - *fixed*\n" +
-    ":question: - *I have no idea what you're trying to say*\n" +
-    ":o: - *can't reproduce the bug, additional info needed*\n" +
-    ":x: - *not a bug, intentional behavior or beyond my control*\n" + "" +
-    ":no_entry: - *won't fix; bug outside my control (due to it coming from a plugin) or issue with other software*");
+    "*I also do not accept random friend requests from people I don't know.*");
     public final String text;
     public final String title;
 
