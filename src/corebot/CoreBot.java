@@ -15,6 +15,7 @@ public class CoreBot{
     public static final long commandChannelID = 574274730618781706L;
     public static final long announcementsChannelID = 391020997098340352L;
     public static final long screenshotsChannelID = 553071673587400705L;
+    public static final long artChannelID = 754011833928515664L;
     public static final long suggestionsChannelID = 640604827344306207L;
     public static final long mapsChannelID = 416719902641225732L;
     public static final long moderationChannelID = 488049830275579906L;

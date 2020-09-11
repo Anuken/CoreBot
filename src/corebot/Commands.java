@@ -552,10 +552,10 @@ public class Commands{
             return;
         }
 
-        if(message.getChannel().getIdLong() == screenshotsChannelID && message.getAttachments().isEmpty()){
+        if((message.getChannel().getIdLong() == screenshotsChannelID || message.getChannel().getIdLong() == artChannelID) && message.getAttachments().isEmpty()){
             message.delete().queue();
             try{
-                message.getAuthor().openPrivateChannel().complete().sendMessage("Don't send messages without images in the #screenshots channel.").queue();
+                message.getAuthor().openPrivateChannel().complete().sendMessage("Don't send messages without images in that channel.").queue();
             }catch(Exception e){
                 e.printStackTrace();
             }
