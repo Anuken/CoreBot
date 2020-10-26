@@ -17,11 +17,11 @@ import mindustry.*;
 import mindustry.content.*;
 import mindustry.core.*;
 import mindustry.ctype.*;
-import mindustry.entities.traits.BuilderTrait.*;
+import mindustry.entities.units.*;
 import mindustry.game.*;
 import mindustry.io.*;
 import mindustry.world.*;
-import mindustry.world.blocks.*;
+import mindustry.world.blocks.environment.*;
 
 import javax.imageio.*;
 import java.awt.*;
@@ -88,7 +88,7 @@ public class ContentHandler{
 
         Core.atlas.setErrorRegion("error");
         Draw.scl = 1f / 4f;
-        Core.batch = new SpriteBatch(null){
+        Core.batch = new SpriteBatch(0){
             @Override
             protected void draw(TextureRegion region, float x, float y, float originX, float originY, float width, float height, float rotation){
                 x += 4;
@@ -129,9 +129,9 @@ public class ContentHandler{
             BufferedImage image = ImageIO.read(new File("../Mindustry/core/assets/sprites/block_colors.png"));
 
             for(Block block : Vars.content.blocks()){
-                block.color.argb8888(image.getRGB(block.id, 0));
+                block.mapColor.argb8888(image.getRGB(block.id, 0));
                 if(block instanceof OreBlock){
-                    block.color.set(((OreBlock)block).itemDrop.color);
+                    block.mapColor.set(((OreBlock)block).itemDrop.color);
                 }
             }
         }catch(Exception e){
@@ -171,7 +171,7 @@ public class ContentHandler{
     public BufferedImage previewSchematic(Schematic schem) throws Exception{
         BufferedImage image = new BufferedImage(schem.width * 32, schem.height * 32, BufferedImage.TYPE_INT_ARGB);
 
-        Array<BuildRequest> requests = schem.tiles.map(t -> new BuildRequest(t.x, t.y, t.rotation, t.block).configure(t.config));
+        Seq<BuildPlan> requests = schem.tiles.map(t -> new BuildPlan(t.x, t.y, t.rotation, t.block, t.config));
         currentGraphics = image.createGraphics();
         currentImage = image;
         requests.each(req -> {
@@ -276,7 +276,7 @@ public class ContentHandler{
             Mtile tile = tiles[x][y];
             tile.wall = block;
 
-            if(block.hasEntity()){
+            if(block.hasBuilding()){
                 int length = stream.readUnsignedShort();
                 stream.skipBytes(length);
             }else{
@@ -376,7 +376,7 @@ public class ContentHandler{
 
         @Override
         public Format getFormat(){
-            return Format.RGBA8888;
+            return Format.rgba8888;
         }
 
         @Override

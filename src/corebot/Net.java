@@ -59,7 +59,7 @@ public class Net{
             try{
                 String resultIP = ip;
                 int port = 6567;
-                if(ip.contains(":") && Strings.canParsePostiveInt(ip.split(":")[1])){
+                if(ip.contains(":") && Strings.canParsePositiveInt(ip.split(":")[1])){
                     resultIP = ip.split(":")[0];
                     port = Strings.parseInt(ip.split(":")[1]);
                 }
@@ -75,15 +75,15 @@ public class Net{
                 socket.receive(packet);
 
                 ByteBuffer buffer = ByteBuffer.wrap(packet.getData());
-                listener.accept(readServerData(buffer, ip, System.currentTimeMillis() - start));
+                listener.accept(readServerData(buffer, ip, (int)(System.currentTimeMillis() - start)));
                 socket.disconnect();
             }catch(Exception e){
-                listener.accept(new Host(null, ip, null, 0, 0, 0, null, null, 0, null));
+                listener.accept(new Host(0, null, ip, null, 0, 0, 0, null, null, 0, null, null));
             }
         });
     }
 
-    public void getChangelog(Consumer<Array<VersionInfo>> success, Consumer<Throwable> fail){
+    public void getChangelog(Consumer<Seq<VersionInfo>> success, Consumer<Throwable> fail){
         try{
             URL url = new URL(CoreBot.releasesURL);
             URLConnection con = url.openConnection();
@@ -93,8 +93,8 @@ public class Net{
             String body = Streams.copyString(in, 1000, encoding);
 
             Json j = new Json();
-            Array<JsonValue> list = j.fromJson(null, body);
-            Array<VersionInfo> out = new Array<>();
+            Seq<JsonValue> list = j.fromJson(null, body);
+            Seq<VersionInfo> out = new Seq<>();
             for(JsonValue value : list){
                 String name = value.getString("name");
                 String description = value.getString("body").replace("\r", "");
@@ -140,8 +140,8 @@ public class Net{
         }, delay);
     }
 
-    public Host readServerData(ByteBuffer buffer, String ip, long ping){
-        Host host = NetworkIO.readServerData(ip, buffer);
+    public Host readServerData(ByteBuffer buffer, String ip, int ping){
+        Host host = NetworkIO.readServerData((int)ping, ip, buffer);
         host.ping = (int)ping;
         return host;
         //return new PingResult(ip, ping, players + "", host, map, wave + "", version == -1 ? "Custom Build" : (""+version));

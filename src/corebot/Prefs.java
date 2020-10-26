@@ -23,12 +23,12 @@ public class Prefs{
     }
 
     @SuppressWarnings("unchecked")
-    public Array<String> getArray(String property){
+    public Seq<String> getArray(String property){
         String value = prop.getProperty(property, "[]");
-        return json.fromJson(Array.class, value);
+        return json.fromJson(Seq.class, value);
     }
 
-    public void putArray(String property, Array<String> arr){
+    public void putArray(String property, Seq<String> arr){
         prop.put(property, json.toJson(arr));
         save();
     }

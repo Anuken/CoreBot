@@ -27,7 +27,7 @@ public class Reports{
                 if(build.equals(CoreBot.net.getLastBuild()) || String.valueOf(value.getInt("build")).equals(CoreBot.net.getLastBuild())){
                     CoreBot.messages.sendCrash(value);
                 }else{
-                    Log.info("Rejecting report with invalid build: {0}. Current latest build is {1}.", build, CoreBot.net.getLastBuild());
+                    Log.info("Rejecting report with invalid build: @. Current latest build is @.", build, CoreBot.net.getLastBuild());
                 }
 
                 Log.info("Recieved crash report.");

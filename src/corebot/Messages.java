@@ -11,6 +11,7 @@ import net.dv8tion.jda.api.events.guild.member.*;
 import net.dv8tion.jda.api.events.message.*;
 import net.dv8tion.jda.api.events.message.react.*;
 import net.dv8tion.jda.api.hooks.*;
+import net.dv8tion.jda.api.requests.*;
 
 import java.awt.*;
 import java.time.*;
@@ -31,14 +32,13 @@ public class Messages extends ListenerAdapter{
     Guild guild;
     Color normalColor = Color.decode("#FAB462");
     Color errorColor = Color.decode("#ff3838");
-    Json json = new Json();
 
     public Messages(){
         String token = System.getenv("CORE_BOT_TOKEN");
-        Log.info("Found token: {0}", token != null);
+        Log.info("Found token: @", token != null);
 
         try{
-            jda = new JDABuilder(token).build();
+            jda = JDABuilder.create(token, GatewayIntent.DIRECT_MESSAGES, GatewayIntent.GUILD_MESSAGES, GatewayIntent.GUILD_MESSAGE_REACTIONS, GatewayIntent.GUILD_EMOJIS).build();
             jda.awaitReady();
             jda.addEventListener(this);
             guild = jda.getGuildById(guildID);
@@ -64,7 +64,7 @@ public class Messages extends ListenerAdapter{
                     for(Host result : results){
                         if(result.name != null && result.players > 0){
                             embed.addField(result.address,
-                            Strings.format("*{0}*\nPlayers: {1}\nMap: {2}\nWave: {3}\nVersion: {4}\nMode: {5}\nPing: {6}ms\n_\n_\n",
+                            Strings.format("*@*\nPlayers: @\nMap: @\nWave: @\nVersion: @\nMode: @\nPing: @ms\n_\n_\n",
                             result.name.replace("\\", "\\\\").replace("_", "\\_").replace("*", "\\*").replace("`", "\\`") + (result.description != null && result.description.length() > 0 ? "\n" + result.description : ""),
                             (result.playerLimit > 0 ? result.players + "/" + result.playerLimit : result.players),
                             result.mapname.replace("\\", "\\\\").replace("_", "\\_").replace("*", "\\*").replace("`", "\\`").replaceAll("\\[.*?\\]", ""),
@@ -75,7 +75,7 @@ public class Messages extends ListenerAdapter{
                         }
                     }
 
-                    embed.setFooter(Strings.format("Last Updated: {0}", DateTimeFormatter.ofPattern("dd MMM yyyy HH:mm:ss ZZZZ").format(ZonedDateTime.now())));
+                    embed.setFooter(Strings.format("Last Updated: @", DateTimeFormatter.ofPattern("dd MMM yyyy HH:mm:ss ZZZZ").format(ZonedDateTime.now())));
 
                     guild.getTextChannelById(serverChannelID).editMessageById(578594853991088148L, embed.build()).queue();
                 });
@@ -115,7 +115,7 @@ public class Messages extends ListenerAdapter{
                         return;
                     }
 
-                    Array<ModListing> listings = json.fromJson(Array.class, ModListing.class, response.getResultAsString());
+                    Seq<ModListing> listings = json.fromJson(Array.class, ModListing.class, response.getResultAsString());
                     listings.sort(Structs.comparing(list -> Date.from(Instant.parse(list.lastUpdated))));
                     listings.reverse();
                     listings.truncate(20);
@@ -124,11 +124,11 @@ public class Messages extends ListenerAdapter{
                     EmbedBuilder embed = new EmbedBuilder();
                     embed.setColor(normalColor);
                     embed.setTitle("Last Updated Mods");
-                    embed.setFooter(Strings.format("Last Updated: {0}", DateTimeFormatter.ofPattern("dd MMM yyyy HH:mm:ss ZZZZ").format(ZonedDateTime.now())));
+                    embed.setFooter(Strings.format("Last Updated: @", DateTimeFormatter.ofPattern("dd MMM yyyy HH:mm:ss ZZZZ").format(ZonedDateTime.now())));
                     for(ModListing listing : listings){
                         embed.addField(listing.repo + "  " + listing.stars + "★ | "
                         + "*Updated " + durFormat(Duration.between(Instant.parse(listing.lastUpdated), Instant.now()))+ " ago*",
-                        Strings.format("**[{0}]({1})**\n{2}\n\n_\n_",
+                        Strings.format("**[@](@)**\n@\n\n_\n_",
                         Strings.stripColors(listing.name),
                         "https://github.com/" + listing.repo,
                         Strings.stripColors(listing.description)), false);

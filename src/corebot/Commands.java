@@ -75,7 +75,7 @@ public class Commands{
 
             net.pingServer(args[0], result -> {
                 if(result.name != null){
-                    messages.info("Server Online", "Host: {0}\nPlayers: {1}\nMap: {2}\nWave: {3}\nVersion: {4}\nPing: {5}ms",
+                    messages.info("Server Online", "Host: @\nPlayers: @\nMap: @\nWave: @\nVersion: @\nPing: @ms",
                     result.name, result.players, result.mapname, result.wave, result.version, result.ping);
                 }else{
                     messages.err("Server Offline", "Timed out.");
@@ -89,7 +89,7 @@ public class Commands{
                 messages.info(info.title, info.text);
             }catch(IllegalArgumentException e){
                 e.printStackTrace();
-                messages.err("Error", "Invalid topic '{0}'.\nValid topics: *{1}*", args[0], Arrays.toString(Info.values()));
+                messages.err("Error", "Invalid topic '@'.\nValid topics: *@*", args[0], Arrays.toString(Info.values()));
                 messages.deleteMessages();
             }
         });
@@ -156,21 +156,21 @@ public class Commands{
                 messages.text("*Map posted successfully.*");
             }catch(Exception e){
                 e.printStackTrace();
-                messages.err("Error parsing map.", Strings.parseException(e, true));
+                messages.err("Error parsing map.", Strings.neatError(e, true));
                 messages.deleteMessages();
             }
         });
 
         handler.register("google", "<phrase...>", "Let me google that for you.", args -> {
             try{
-                messages.text("http://lmgtfy.com/?q={0}", URLEncoder.encode(args[0], "UTF-8"));
+                messages.text("http://lmgtfy.com/?q=@", URLEncoder.encode(args[0], "UTF-8"));
             }catch(UnsupportedEncodingException e){
                 e.printStackTrace();
             }
         });
 
         handler.register("addserver", "<IP>", "Add your server to list. Must be online and 24/7.", args -> {
-            Array<String> servers = prefs.getArray("servers");
+            Seq<String> servers = prefs.getArray("servers");
             if(servers.contains(args[0])){
                 messages.err("That server is already in the list.");
             }else{
@@ -190,7 +190,7 @@ public class Commands{
         });
 
         handler.register("getposter", "<IP>", "Get who posted a server. This may not necessarily be the owner.", args -> {
-            Array<String> servers = prefs.getArray("servers");
+            Seq<String> servers = prefs.getArray("servers");
             String key = "owner-" + args[0];
             if(!servers.contains(args[0])){
                 messages.err("That server doesn't exist.");
@@ -201,7 +201,7 @@ public class Commands{
             }else{
                 User user = messages.jda.getUserById(prefs.get(key, null));
                 if(user != null){
-                    messages.info("Owner of: " + args[0], "{0}#{1}", user.getName(), user.getDiscriminator());
+                    messages.info("Owner of: " + args[0], "@#@", user.getName(), user.getDiscriminator());
                 }else{
                     messages.err("Use lookup failed. Internal error, or the user may have left the server.");
                     messages.deleteMessages();
@@ -262,7 +262,7 @@ public class Commands{
                 messages.text("*Mod converted successfully.*");
             }catch(Throwable e){
                 e.printStackTrace();
-                messages.err("Error parsing mod.", Strings.parseException(e, false));
+                messages.err("Error parsing mod.", Strings.neatError(e, false));
                 messages.deleteMessages();
             }
         });
@@ -272,18 +272,18 @@ public class Commands{
                 int number = Integer.parseInt(args[0]) + 1;
                 MessageHistory hist = messages.channel.getHistoryBefore(messages.lastMessage, number).complete();
                 messages.channel.deleteMessages(hist.getRetrievedHistory()).queue();
-                Log.info("Deleted {0} messages.", number);
+                Log.info("Deleted @ messages.", number);
             }catch(NumberFormatException e){
                 messages.err("Invalid number.");
             }
         });
 
         adminHandler.register("listservers", "List servers pinged automatically.", args -> {
-            messages.text("**Servers:** {0}", prefs.getArray("servers").toString().replace("[", "").replace("]", ""));
+            messages.text("**Servers:** @", prefs.getArray("servers").toString().replace("[", "").replace("]", ""));
         });
 
         adminHandler.register("removeserver", "<IP>", "Remove server from list.", args -> {
-            Array<String> servers = prefs.getArray("servers");
+            Seq<String> servers = prefs.getArray("servers");
             boolean removed = servers.remove(args[0], false);
             prefs.putArray("servers", servers);
             if(removed){
@@ -300,7 +300,7 @@ public class Commands{
                 long l = Long.parseLong(author);
                 User user = messages.jda.getUserById(l);
                 int warnings = prefs.getInt("warnings-" + l, 0) + 1;
-                messages.text("**{0}**, you've been warned *{1}*.", user.getAsMention(), warningStrings[Mathf.clamp(warnings - 1, 0, warningStrings.length - 1)]);
+                messages.text("**@**, you've been warned *@*.", user.getAsMention(), warningStrings[Mathf.clamp(warnings - 1, 0, warningStrings.length - 1)]);
                 prefs.put("warnings-" + l, warnings + "");
                 if(warnings >= 3){
                     messages.lastMessage.getGuild().getTextChannelById(moderationChannelID)
@@ -320,7 +320,7 @@ public class Commands{
                 long l = Long.parseLong(author);
                 User user = messages.jda.getUserById(l);
                 int warnings = prefs.getInt("warnings-" + l, 0);
-                messages.text("User '{0}' has **{1}** {2}.", user.getName(), warnings, warnings == 1 ? "warning" : "warnings");
+                messages.text("User '@' has **@** @.", user.getName(), warnings, warnings == 1 ? "warning" : "warnings");
             }catch(Exception e){
                 e.printStackTrace();
                 messages.err("Incorrect name format.");
@@ -335,7 +335,7 @@ public class Commands{
                 long l = Long.parseLong(author);
                 User user = messages.jda.getUserById(l);
                 prefs.put("warnings-" + l, 0 + "");
-                messages.text("Cleared warnings for user '{0}'.", user.getName());
+                messages.text("Cleared warnings for user '@'.", user.getName());
             }catch(Exception e){
                 e.printStackTrace();
                 messages.err("Incorrect name format.");
@@ -346,7 +346,7 @@ public class Commands{
 
     private Jval fixJval(Jval val){
         if(val.isArray()){
-            Array<Jval> list = val.asArray().copy();
+            Seq<Jval> list = val.asArray().copy();
             for(Jval child : list){
                 if(child.isObject() && (child.has("item")) && child.has("amount")){
                     val.asArray().remove(child);
@@ -356,7 +356,7 @@ public class Commands{
                 }
             }
         }else if(val.isObject()){
-            Array<String> keys = val.asObject().keys().toArray();
+            Seq<String> keys = val.asObject().keys().toArray();
 
             for(String key : keys){
                 Jval child = val.get(key);
@@ -412,7 +412,7 @@ public class Commands{
         }
 
         //get used entries
-        Array<String> arr = Array.with(required);
+        Seq<String> arr = Seq.with(required);
         for(String s : split){
             for(String req : required){
                 if(s.toLowerCase().startsWith(req.toLowerCase()) && s.length() > req.length()){
@@ -454,7 +454,7 @@ public class Commands{
 
         //validate all entries present
         if(arr.size != 0){
-            messages.err("Error", "Your issue report is incomplete. You have not provided: *{0}*.\n*Copy and re-send your message with a corrected report.*", arr.toString());
+            messages.err("Error", "Your issue report is incomplete. You have not provided: *@*.\n*Copy and re-send your message with a corrected report.*", arr.toString());
             messages.deleteMessages();
             return;
         }
@@ -477,7 +477,7 @@ public class Commands{
 
     boolean checkInvite(Message message){
         if(message.getContentRaw() != null && invitePattern.matcher(message.getContentRaw()).find() && !isAdmin(message.getAuthor())){
-            Log.warn("User {0} just sent a discord invite in {1}.", message.getAuthor().getName(), message.getChannel().getName());
+            Log.warn("User @ just sent a discord invite in @.", message.getAuthor().getName(), message.getChannel().getName());
             message.delete().queue();
             message.getAuthor().openPrivateChannel().complete().sendMessage("Do not send invite links in the Mindustry Discord server! Read the rules.").queue();
             return true;
@@ -486,22 +486,22 @@ public class Commands{
     }
 
     void edited(Message message){
-        messages.logTo("------\n**{0}#{1}** just edited a message.\n\n*From*: \"{2}\"\n*To*: \"{3}\"", message.getAuthor().getName(), message.getAuthor().getDiscriminator(), "<broken>", message.getContentRaw());
+        messages.logTo("------\n**@#@** just edited a message.\n\n*From*: \"@\"\n*To*: \"@\"", message.getAuthor().getName(), message.getAuthor().getDiscriminator(), "<broken>", message.getContentRaw());
         checkInvite(message);
     }
 
     void deleted(Message message){
         if(message == null || message.getAuthor() == null) return;
-        messages.logTo("------\n**{0}#{1}** just deleted a message.\n *Text:* \"{2}\"", message.getAuthor().getName(), message.getAuthor().getDiscriminator(), message.getContentRaw());
+        messages.logTo("------\n**@#@** just deleted a message.\n *Text:* \"@\"", message.getAuthor().getName(), message.getAuthor().getDiscriminator(), message.getContentRaw());
     }
 
     void handleBugReact(MessageReactionAddEvent event){
         EmbedBuilder builder = new EmbedBuilder().setColor(messages.normalColor);
-        String url = Strings.format("https://discordapp.com/channels/{0}/{1}/{2}",
+        String url = Strings.format("https://discordapp.com/channels/@/@/@",
             event.getGuild().getId(), event.getChannel().getId(), event.getMessageId());
 
         String emoji = event.getReaction().getReactionEmote().getName();
-        Log.info("Recieved react emoji -> {0}, message {1}", emoji, url);
+        Log.info("Recieved react emoji -> @, message @", emoji, url);
         boolean valid = true, delete = false;
         if(emoji.equals("✅")){
             Log.info("| Solved.");
@@ -638,10 +638,10 @@ public class Commands{
             return false;
         }else if(response.type == ResponseType.manyArguments || response.type == ResponseType.fewArguments){
             if(response.command.params.length == 0){
-                messages.err("Invalid arguments.", "Usage: {0}{1}", prefix, response.command.text);
+                messages.err("Invalid arguments.", "Usage: @@", prefix, response.command.text);
                 messages.deleteMessages();
             }else{
-                messages.err("Invalid arguments.", "Usage: {0}{1} *{2}*", prefix, response.command.text, response.command.paramText);
+                messages.err("Invalid arguments.", "Usage: @@ *@*", prefix, response.command.text, response.command.paramText);
                 messages.deleteMessages();
             }
             return false;
