@@ -43,6 +43,6 @@ task dist(type: Jar){
 dependencies{
     compile 'net.dv8tion:JDA:4.2.0_211'
     compile "org.jsoup:jsoup:1.7.2"
-    compile "com.github.Anuken.Arc:arc-core:83cae56974fabfec535ae7d53a1f83a5f795d28b"
-    compile "com.github.Anuken.Mindustry:core:479cad3d0c6f4ee90c6c74ab1304994e81d9749a"
+    compile "com.github.Anuken.Arc:arc-core:b99073959675a037f3a722a7ca08d28c21e10038"
+    compile "com.github.Anuken.Mindustry:core:99d32b9903babbd99b64e7aecd69d671cdd6f71c"
 }
