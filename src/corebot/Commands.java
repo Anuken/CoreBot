@@ -15,17 +15,14 @@ import mindustry.type.*;
 import net.dv8tion.jda.api.*;
 import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.entities.Message.*;
-import net.dv8tion.jda.api.events.message.react.*;
 import org.jsoup.*;
 import org.jsoup.nodes.*;
 import org.jsoup.select.*;
 
 import javax.imageio.*;
-import java.awt.*;
 import java.awt.image.*;
 import java.io.*;
 import java.net.*;
-import java.util.List;
 import java.util.*;
 import java.util.regex.*;
 import java.util.zip.*;
@@ -137,21 +134,22 @@ public class Commands{
             Attachment a = message.getAttachments().get(0);
 
             try{
-                Map map = contentHandler.parseMap(net.download(a.getUrl()));
-                new File("maps/").mkdir();
-                File mapFile = new File("maps/" + a.getFileName());
-                File imageFile = new File("maps/image_" + a.getFileName().replace(".msav", ".png"));
+                Map map = contentHandler.readMap(net.download(a.getUrl()));
+                new File("cache/").mkdir();
+                File mapFile = new File("cache/" + a.getFileName());
+                Fi imageFile = Fi.get("cache/image_" + a.getFileName().replace(".msav", ".png"));
                 Streams.copy(net.download(a.getUrl()), new FileOutputStream(mapFile));
-                ImageIO.write(map.image, "png", imageFile);
+                imageFile.writePNG(map.image);
+                map.image.dispose();
 
                 EmbedBuilder builder = new EmbedBuilder().setColor(messages.normalColor).setColor(messages.normalColor)
-                .setImage("attachment://" + imageFile.getName())
+                .setImage("attachment://" + imageFile.name())
 
                 .setAuthor(messages.lastUser.getName(), messages.lastUser.getAvatarUrl(), messages.lastUser.getAvatarUrl()).setTitle(map.name == null ? a.getFileName().replace(".msav", "") : map.name);
 
                 if(map.description != null) builder.setFooter(map.description);
 
-                messages.channel.getGuild().getTextChannelById(mapsChannelID).sendFile(mapFile).addFile(imageFile).embed(builder.build()).queue();
+                messages.channel.getGuild().getTextChannelById(mapsChannelID).sendFile(mapFile).addFile(imageFile.file()).embed(builder.build()).queue();
 
                 messages.text("*Map posted successfully.*");
             }catch(Exception e){
@@ -166,46 +164,6 @@ public class Commands{
                 messages.text("http://lmgtfy.com/?q=@", URLEncoder.encode(args[0], "UTF-8"));
             }catch(UnsupportedEncodingException e){
                 e.printStackTrace();
-            }
-        });
-
-        handler.register("addserver", "<IP>", "Add your server to list. Must be online and 24/7.", args -> {
-            Seq<String> servers = prefs.getArray("servers");
-            if(servers.contains(args[0])){
-                messages.err("That server is already in the list.");
-            }else{
-                TextChannel channel = messages.channel;
-                Member mem = messages.lastMessage.getMember();
-                net.pingServer(args[0], res -> {
-                    if(res.name != null){
-                        servers.add(args[0]);
-                        prefs.putArray("servers", servers);
-                        prefs.put("owner-" + args[0], mem.getId());
-                        channel.sendMessage("*Server added.*").queue();
-                    }else{
-                        channel.sendMessage("*That server is offline or cannot be reached.*").queue();
-                    }
-                });
-            }
-        });
-
-        handler.register("getposter", "<IP>", "Get who posted a server. This may not necessarily be the owner.", args -> {
-            Seq<String> servers = prefs.getArray("servers");
-            String key = "owner-" + args[0];
-            if(!servers.contains(args[0])){
-                messages.err("That server doesn't exist.");
-                messages.deleteMessages();
-            }else if(prefs.get(key, null) == null){
-                messages.err("That server doesn't have a registered poster or maintainer.");
-                messages.deleteMessages();
-            }else{
-                User user = messages.jda.getUserById(prefs.get(key, null));
-                if(user != null){
-                    messages.info("Owner of: " + args[0], "@#@", user.getName(), user.getDiscriminator());
-                }else{
-                    messages.err("Use lookup failed. Internal error, or the user may have left the server.");
-                    messages.deleteMessages();
-                }
             }
         });
 
@@ -226,10 +184,10 @@ public class Commands{
             }
 
             try{
-                new File("mods/").mkdir();
-                File baseFile = new File("mods/" + a.getFileName());
+                new File("cache/").mkdir();
+                File baseFile = new File("cache/" + a.getFileName());
                 Fi destFolder = new Fi("dest_mod" + a.getFileName());
-                Fi destFile = new Fi("mods/" + new Fi(baseFile).nameWithoutExtension() + "-cleaned.zip");
+                Fi destFile = new Fi("cache/" + new Fi(baseFile).nameWithoutExtension() + "-cleaned.zip");
 
                 if(destFolder.exists()) destFolder.deleteDirectory();
                 if(destFile.exists()) destFile.delete();
@@ -275,21 +233,6 @@ public class Commands{
                 Log.info("Deleted @ messages.", number);
             }catch(NumberFormatException e){
                 messages.err("Invalid number.");
-            }
-        });
-
-        adminHandler.register("listservers", "List servers pinged automatically.", args -> {
-            messages.text("**Servers:** @", prefs.getArray("servers").toString().replace("[", "").replace("]", ""));
-        });
-
-        adminHandler.register("removeserver", "<IP>", "Remove server from list.", args -> {
-            Seq<String> servers = prefs.getArray("servers");
-            boolean removed = servers.remove(args[0], false);
-            prefs.putArray("servers", servers);
-            if(removed){
-                messages.text("*Server removed.*");
-            }else{
-                messages.err("Server not found!");
             }
         });
 
@@ -380,103 +323,8 @@ public class Commands{
         }
     }
 
-    void sendReportTemplate(Message message){
-        messages.err("**Do not send messages here unless you are reporting an issue!**\nTo report an issue, follow the template provided in **!info bugs**.\nTo report a crash, send the crash report text file.");
-        messages.deleteMessages();
-    }
-
-    void checkForReport(Message message){
-        if(!message.getAttachments().isEmpty()){
-
-            if(emptyText(message)){
-                messages.err("Please do not send images or other unrelated files in this channel.");
-                messages.deleteMessages();
-            }else{
-                checkForIssue(message);
-            }
-        }else if(emptyText(message)){
-            sendReportTemplate(message);
-        }else{
-            checkForIssue(message);
-        }
-    }
-
-    void checkForIssue(Message message){
-        String text = message.getContentRaw();
-        String[] required = {"Platform:", "Build:", "Issue:"};
-        String[] split = text.split("\n");
-
-        if(split.length == 0){
-            sendReportTemplate(message);
-            return;
-        }
-
-        //get used entries
-        Seq<String> arr = Seq.with(required);
-        for(String s : split){
-            for(String req : required){
-                if(s.toLowerCase().startsWith(req.toLowerCase()) && s.length() > req.length()){
-                    arr.remove(req, false);
-
-                    //special case: don't let people report a build as a version such as 4.0/3.5
-                    if(s.toLowerCase().startsWith("build:")){
-                        String buildText = s.substring("Build:".length());
-                        String test = buildText.toLowerCase().trim();
-                        String errormessage = null;
-                        if(buildText.contains("4.") || buildText.contains("3.") || buildText.toLowerCase().contains("latest")){
-                            errormessage = "The build you specified is incorrect!\nWrite **only the build/commit number in the bottom left corner of the menu**, not the version. *(for example, build 47, not 4.0)*.\n*Copy and re-send your message with a corrected report.*";
-                        }else if(test.equals("be") || test.equals("bleeding edge") || test.equals("bleedingedge")){
-                            errormessage = "Invalid bleeding edge version!\n**Only write the bleeding edge commit number displayed in the bottom left corner of the menu (or the or Jenkins build number).**\n*Copy and re-send your message with a corrected report.*";
-                        }
-
-                        if(errormessage != null){
-                            messages.err(errormessage);
-                            messages.deleteMessages();
-                            return;
-                        }
-                    }else if(s.toLowerCase().startsWith("platform:")){
-                        String platformText = s.substring("Platform:".length()).toLowerCase().trim();
-                        if(!(platformText.contains("windows") || platformText.contains("mac") || platformText.contains("osx") || platformText.contains("linux") || platformText.contains("android") || platformText.contains("ios") || platformText.contains("iphone"))){
-                            messages.err("**Invalid platform: '" + platformText + "'**.\nPlatform must be one of the following: `windows/linux/mac/osx/android/ios`.\n*Copy and re-send your message with a corrected report.*");
-                            messages.deleteMessages();
-                            return;
-                        }
-                    }
-                }
-            }
-        }
-
-        //validate entries
-        if(arr.size == required.length){
-            sendReportTemplate(message);
-            return;
-        }
-
-        //validate all entries present
-        if(arr.size != 0){
-            messages.err("Error", "Your issue report is incomplete. You have not provided: *@*.\n*Copy and re-send your message with a corrected report.*", arr.toString());
-            messages.deleteMessages();
-            return;
-        }
-
-        //validate template text
-        if(text.contains("<Android/iOS/Mac/Windows/Linux>") || text.contains("<Post the build number in the bottom left corner of main menu>")
-        || text.contains("<What goes wrong. Be specific!>") || text.contains("<Provide details on what you were doing when this bug occurred, as well as any other helpful information.>")){
-            messages.err("You have not filled in your issue report! Make sure you've replaced all template text properly.\n*Copy and re-send your message with a corrected report.*");
-            messages.deleteMessages();
-            return;
-        }
-
-        messages.text("*Issue reported successfully.*");
-        messages.deleteMessage();
-    }
-
-    boolean emptyText(Message message){
-        return message.getContentRaw() == null || message.getContentRaw().isEmpty();
-    }
-
     boolean checkInvite(Message message){
-        if(message.getContentRaw() != null && invitePattern.matcher(message.getContentRaw()).find() && !isAdmin(message.getAuthor())){
+        if(invitePattern.matcher(message.getContentRaw()).find() && !isAdmin(message.getAuthor()) && message.getChannel().getType() != ChannelType.PRIVATE){
             Log.warn("User @ just sent a discord invite in @.", message.getAuthor().getName(), message.getChannel().getName());
             message.delete().queue();
             message.getAuthor().openPrivateChannel().complete().sendMessage("Do not send invite links in the Mindustry Discord server! Read the rules.").queue();
@@ -485,70 +333,10 @@ public class Commands{
         return false;
     }
 
-    void edited(Message message){
-        messages.logTo("------\n**@#@** just edited a message.\n\n*From*: \"@\"\n*To*: \"@\"", message.getAuthor().getName(), message.getAuthor().getDiscriminator(), "<broken>", message.getContentRaw());
-        checkInvite(message);
-    }
-
-    void deleted(Message message){
-        if(message == null || message.getAuthor() == null) return;
-        messages.logTo("------\n**@#@** just deleted a message.\n *Text:* \"@\"", message.getAuthor().getName(), message.getAuthor().getDiscriminator(), message.getContentRaw());
-    }
-
-    void handleBugReact(MessageReactionAddEvent event){
-        EmbedBuilder builder = new EmbedBuilder().setColor(messages.normalColor);
-        String url = Strings.format("https://discordapp.com/channels/@/@/@",
-            event.getGuild().getId(), event.getChannel().getId(), event.getMessageId());
-
-        String emoji = event.getReaction().getReactionEmote().getName();
-        Log.info("Recieved react emoji -> @, message @", emoji, url);
-        boolean valid = true, delete = false;
-        if(emoji.equals("✅")){
-            Log.info("| Solved.");
-            builder.setColor(Color.decode("#87FF4B"));
-            builder.setDescription("[Your bug report](" + url + ") in the Mindustry Discord has been marked as solved.");
-        }else if(emoji.equals("❌")){
-            Log.info("| Not a bug.");
-            builder.setColor(messages.errorColor);
-            builder.setDescription("[Your bug report]("+url+") in the Mindustry Discord has been marked as **not a bug** (intentional or unfixable behavior).");
-        }else if(emoji.equals("\uD83C\uDDE9")){
-            Log.info("| Duplicate.");
-            builder.setColor(messages.errorColor);
-            builder.setDescription("Your bug report in the Mindustry Discord has been marked as a **duplicate**: Someone has reported this issue before.\nYour report has been removed to clean up the channel.\n\nReport deleted: ```" +
-                event.getChannel().retrieveMessageById(event.getMessageId()).complete().getContentStripped() + "```");
-            delete = true;
-        }else{
-            Log.info("| Unknown reaction.");
-            valid = false;
-        }
-
-        if(valid){
-            event.getChannel().retrieveMessageById(event.getMessageId()).complete().getAuthor()
-            .openPrivateChannel().complete().sendMessage(builder.build()).queue();
-        }
-
-        if(delete){
-            event.getChannel().deleteMessageById(event.getMessageId()).queue();
-        }
-    }
-
     void handle(Message message){
         if(message.getAuthor().isBot()) return;
 
         if(checkInvite(message)){
-            return;
-        }
-
-        if(isAdmin(message.getAuthor()) && message.getChannel().getIdLong() == commandChannelID){
-            server.send(message.getContentRaw());
-            return;
-        }
-
-        if(message.getChannel().getIdLong() == bugReportChannelID && !message.getAuthor().isBot() && !isAdmin(message.getAuthor())){
-            messages.channel = message.getTextChannel();
-            messages.lastUser = message.getAuthor();
-            messages.lastMessage = message;
-            checkForReport(message);
             return;
         }
 
@@ -577,7 +365,8 @@ public class Commands{
                 Schematic schem = message.getAttachments().size() == 1 ? contentHandler.parseSchematicURL(message.getAttachments().get(0).getUrl()) : contentHandler.parseSchematic(message.getContentRaw());
                 BufferedImage preview = contentHandler.previewSchematic(schem);
 
-                File previewFile = new File("img_" + UUID.randomUUID().toString() + ".png");
+                new File("cache").mkdir();
+                File previewFile = new File("cache/img_" + UUID.randomUUID().toString() + ".png");
                 File schemFile = new File(schem.name() + "." + Vars.schematicExtension);
                 Schematics.write(schem, new Fi(schemFile));
                 ImageIO.write(preview, "png", previewFile);
@@ -621,11 +410,13 @@ public class Commands{
             return;
         }
 
-        if(isAdmin(message.getAuthor())){
-            boolean unknown = handleResponse(adminHandler.handleMessage(text), false);
-            handleResponse(handler.handleMessage(text), !unknown);
-        }else{
-            handleResponse(handler.handleMessage(text), true);
+        if(!text.trim().equals("!")){
+            if(isAdmin(message.getAuthor())){
+                boolean unknown = handleResponse(adminHandler.handleMessage(text), false);
+                handleResponse(handler.handleMessage(text), !unknown);
+            }else{
+                handleResponse(handler.handleMessage(text), true);
+            }
         }
     }
 

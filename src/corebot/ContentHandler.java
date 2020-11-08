@@ -2,7 +2,6 @@ package corebot;
 
 import arc.*;
 import arc.files.*;
-import arc.func.*;
 import arc.graphics.Color;
 import arc.graphics.*;
 import arc.graphics.Pixmap.*;
@@ -11,7 +10,7 @@ import arc.graphics.g2d.TextureAtlas.*;
 import arc.graphics.g2d.TextureAtlas.TextureAtlasData.*;
 import arc.math.*;
 import arc.struct.*;
-import arc.util.*;
+import arc.util.io.*;
 import arc.util.serialization.*;
 import mindustry.*;
 import mindustry.content.*;
@@ -28,8 +27,6 @@ import java.awt.*;
 import java.awt.geom.*;
 import java.awt.image.*;
 import java.io.*;
-import java.util.*;
-import java.util.zip.*;
 
 import static mindustry.Vars.*;
 
@@ -139,7 +136,6 @@ public class ContentHandler{
         }
 
         world = new World(){
-
             public Tile tile(int x, int y){
                 return new Tile(x, y);
             }
@@ -186,145 +182,105 @@ public class ContentHandler{
         return image;
     }
 
-    public Map parseMap(InputStream in) throws IOException{
-        Map out = new Map();
-        try(InflaterInputStream inf = new InflaterInputStream(in); DataInputStream stream = new DataInputStream(inf)){
-            readHeader(stream);
-            out.version = stream.readInt();
-            readMap(stream, out);
-        }
-        return out;
-    }
+    public Map readMap(InputStream is) throws IOException{
+        try(CounterInputStream counter = new CounterInputStream(is); DataInputStream stream = new DataInputStream(counter)){
+            Map out = new Map();
 
-    void readMap(DataInputStream stream, Map out) throws IOException{
-        //meta
-        region(stream);
-        StringMap map = new StringMap();
-        short size = stream.readShort();
-        for(int i = 0; i < size; i++){
-            map.put(stream.readUTF(), stream.readUTF());
-        }
+            SaveIO.readHeader(stream);
+            int version = stream.readInt();
+            SaveVersion ver = SaveIO.getSaveWriter(version);
+            StringMap[] metaOut = {null};
+            ver.region("meta", stream, counter, in -> metaOut[0] = ver.readStringMap(in));
 
-        out.name = map.get("name", "Unknown");
-        out.author = map.get("author");
-        out.description = map.get("description");
-        out.tags = map;
+            StringMap meta = metaOut[0];
 
-        //content
-        region(stream);
-        byte mapped = stream.readByte();
+            out.name = meta.get("name", "Unknown");
+            out.author = meta.get("author");
+            out.description = meta.get("description");
+            out.tags = meta;
 
-        MappableContent[][] cmap = new MappableContent[ContentType.values().length][0];
+            int width = meta.getInt("width"), height = meta.getInt("height");
 
-        for(int i = 0; i < mapped; i++){
-            ContentType type = ContentType.values()[stream.readByte()];
-            short total = stream.readShort();
-            cmap[type.ordinal()] = new MappableContent[total];
+            Pixmap floors = new Pixmap(width, height);
+            Pixmap walls = new Pixmap(width, height);
+            int black = 255;
+            int shade = Color.rgba8888(0f, 0f, 0f, 0.5f);
+            CachedTile tile = new CachedTile(){
+                @Override
+                public void setBlock(Block type){
+                    super.setBlock(type);
 
-            for(int j = 0; j < total; j++){
-                String name = stream.readUTF();
-                cmap[type.ordinal()][j] = content.getByName(type, name);
-            }
-        }
+                    int c = MapIO.colorFor(block(), Blocks.air, Blocks.air, team());
+                    if(c != black){
+                        walls.draw(x, floors.getHeight() - 1 - y, c);
+                        floors.draw(x, floors.getHeight() - 1 - y + 1, shade);
+                    }
+                }
+            };
 
-        //map
-        region(stream);
-        Mtile[][] tiles = readMapData(stream, cmap);
-
-        BufferedImage img = new BufferedImage(tiles.length, tiles[0].length, BufferedImage.TYPE_INT_ARGB);
-        for(int x = 0; x < img.getWidth(); x++){
-            for(int y = 0; y < img.getHeight(); y++){
-                Mtile tile = tiles[x][y];
-                img.setRGB(x, img.getHeight() - 1 - y, Tmp.c1.set(MapIO.colorFor(tile.floor, tile.wall, tile.ore, Team.derelict)).argb8888());
-            }
-        }
-
-        out.image = img;
-    }
-
-    Mtile[][] readMapData(DataInputStream stream, MappableContent[][] cmap) throws IOException{
-        int width = stream.readUnsignedShort();
-        int height = stream.readUnsignedShort();
-
-        Func<Short, Block> mapper = i -> (Block)cmap[ContentType.block.ordinal()][i];
-
-        if(width * height > 800 * 800) throw new IllegalArgumentException("Map too large (800 * 800 tiles).");
-
-        Mtile[][] tiles = new Mtile[width][height];
-
-        //read floor and create tiles first
-        for(int i = 0; i < width * height; i++){
-            int x = i % width, y = i / width;
-            short floorid = stream.readShort();
-            short oreid = stream.readShort();
-            int consecutives = stream.readUnsignedByte();
-
-            tiles[x][y] = new Mtile(mapper.get(floorid), mapper.get(oreid), Blocks.air);
-
-            for(int j = i + 1; j < i + 1 + consecutives; j++){
-                int newx = j % width, newy = j / width;
-                tiles[newx][newy] = new Mtile(mapper.get(floorid), mapper.get(oreid), Blocks.air);
-            }
-
-            i += consecutives;
-        }
-
-        //read blocks
-        for(int i = 0; i < width * height; i++){
-            int x = i % width, y = i / width;
-            Block block = mapper.get(stream.readShort());
-            Mtile tile = tiles[x][y];
-            tile.wall = block;
-
-            if(block.hasBuilding()){
-                int length = stream.readUnsignedShort();
-                stream.skipBytes(length);
-            }else{
-                int consecutives = stream.readUnsignedByte();
-
-                for(int j = i + 1; j < i + 1 + consecutives; j++){
-                    int newx = j % width, newy = j / width;
-                    tiles[newx][newy].wall = block;
+            ver.region("content", stream, counter, ver::readContentHeader);
+            ver.region("preview_map", stream, counter, in -> ver.readMap(in, new WorldContext(){
+                @Override public void resize(int width, int height){}
+                @Override public boolean isGenerating(){return false;}
+                @Override public void begin(){
+                    world.setGenerating(true);
+                }
+                @Override public void end(){
+                    world.setGenerating(false);
                 }
 
-                i += consecutives;
-            }
-        }
+                @Override
+                public void onReadBuilding(){
+                    //read team colors
+                    if(tile.build != null){
+                        int c = tile.build.team.color.rgba8888();
+                        int size = tile.block().size;
+                        int offsetx = -(size - 1) / 2;
+                        int offsety = -(size - 1) / 2;
+                        for(int dx = 0; dx < size; dx++){
+                            for(int dy = 0; dy < size; dy++){
+                                int drawx = tile.x + dx + offsetx, drawy = tile.y + dy + offsety;
+                                walls.draw(drawx, floors.getHeight() - 1 - drawy, c);
+                            }
+                        }
+                    }
+                }
 
-        return tiles;
-    }
+                @Override
+                public Tile tile(int index){
+                    tile.x = (short)(index % width);
+                    tile.y = (short)(index / width);
+                    return tile;
+                }
 
-    protected void region(DataInput stream) throws IOException{
-        readChunk(stream, false);
-    }
+                @Override
+                public Tile create(int x, int y, int floorID, int overlayID, int wallID){
+                    if(overlayID != 0){
+                        floors.draw(x, floors.getHeight() - 1 - y, MapIO.colorFor(Blocks.air, Blocks.air, content.block(overlayID), Team.derelict));
+                    }else{
+                        floors.draw(x, floors.getHeight() - 1 - y, MapIO.colorFor(Blocks.air, content.block(floorID), Blocks.air, Team.derelict));
+                    }
+                    return tile;
+                }
+            }));
 
-    protected int readChunk(DataInput input, boolean isByte) throws IOException{
-        return isByte ? input.readUnsignedShort() : input.readInt();
-    }
+            floors.drawPixmap(walls, 0, 0);
+            walls.dispose();
 
-    public static void readHeader(DataInput input) throws IOException{
-        byte[] bytes = new byte[mapHeader.length];
-        input.readFully(bytes);
-        if(!Arrays.equals(bytes, mapHeader)){
-            throw new IOException("Incorrect header! Expecting: " + Arrays.toString(mapHeader) + "; Actual: " + Arrays.toString(bytes));
+            out.image = floors;
+
+            return out;
+
+        }finally{
+            content.setTemporaryMapper(null);
         }
     }
 
     public static class Map{
         public String name, author, description;
         public ObjectMap<String, String> tags = new ObjectMap<>();
-        public BufferedImage image;
+        public Pixmap image;
         public int version;
-    }
-
-    protected static class Mtile{
-        Block floor, ore, wall;
-
-        public Mtile(Block floor, Block ore, Block wall){
-            this.floor = floor;
-            this.ore = ore;
-            this.wall = wall;
-        }
     }
 
     static class ImageData implements TextureData{

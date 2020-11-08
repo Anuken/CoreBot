@@ -4,22 +4,17 @@ import arc.*;
 import arc.util.*;
 import arc.util.serialization.*;
 import corebot.Net.*;
-import mindustry.net.*;
 import net.dv8tion.jda.api.*;
 import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.events.guild.member.*;
 import net.dv8tion.jda.api.events.message.*;
-import net.dv8tion.jda.api.events.message.react.*;
 import net.dv8tion.jda.api.hooks.*;
 import net.dv8tion.jda.api.requests.*;
 
 import java.awt.*;
 import java.time.*;
-import java.time.format.*;
-import java.util.List;
 import java.util.Timer;
 import java.util.*;
-import java.util.concurrent.*;
 
 import static corebot.CoreBot.*;
 
@@ -38,72 +33,13 @@ public class Messages extends ListenerAdapter{
         Log.info("Found token: @", token != null);
 
         try{
-            jda = JDABuilder.create(token, GatewayIntent.DIRECT_MESSAGES, GatewayIntent.GUILD_MESSAGES, GatewayIntent.GUILD_MESSAGE_REACTIONS, GatewayIntent.GUILD_EMOJIS).build();
+            jda = JDABuilder.create(token, GatewayIntent.DIRECT_MESSAGES, GatewayIntent.GUILD_MESSAGES).build();
             jda.awaitReady();
             jda.addEventListener(this);
             guild = jda.getGuildById(guildID);
 
             Log.info("Discord bot up.");
             Core.net = new arc.Net();
-
-            //server updater
-            Executors.newSingleThreadScheduledExecutor().scheduleAtFixedRate(() -> {
-                List<Host> results = new CopyOnWriteArrayList<>();
-
-                for(String server : prefs.getArray("servers")){
-                    net.pingServer(server, results::add);
-                }
-
-                net.run(Net.timeout, () -> {
-                    results.sort((a, b) -> a.name != null && b.name == null ? 1 : a.name == null && b.name != null ? -1 : Integer.compare(a.players, b.players));
-
-                    EmbedBuilder embed = new EmbedBuilder();
-                    embed.setColor(normalColor);
-
-                    //send new messages
-                    for(Host result : results){
-                        if(result.name != null && result.players > 0){
-                            embed.addField(result.address,
-                            Strings.format("*@*\nPlayers: @\nMap: @\nWave: @\nVersion: @\nMode: @\nPing: @ms\n_\n_\n",
-                            result.name.replace("\\", "\\\\").replace("_", "\\_").replace("*", "\\*").replace("`", "\\`") + (result.description != null && result.description.length() > 0 ? "\n" + result.description : ""),
-                            (result.playerLimit > 0 ? result.players + "/" + result.playerLimit : result.players),
-                            result.mapname.replace("\\", "\\\\").replace("_", "\\_").replace("*", "\\*").replace("`", "\\`").replaceAll("\\[.*?\\]", ""),
-                            result.wave,
-                            result.version,
-                            Strings.capitalize(result.mode.name()),
-                            result.ping), false);
-                        }
-                    }
-
-                    embed.setFooter(Strings.format("Last Updated: @", DateTimeFormatter.ofPattern("dd MMM yyyy HH:mm:ss ZZZZ").format(ZonedDateTime.now())));
-
-                    guild.getTextChannelById(serverChannelID).editMessageById(578594853991088148L, embed.build()).queue();
-                });
-            }, 10, 60, TimeUnit.SECONDS);
-
-            StringBuilder messageBuilder = new StringBuilder();
-
-            //server output, if applicable (currently doesn't work)
-            server.connect(input -> {
-                if(messageBuilder.length() > 1000){
-                    String text = messageBuilder.toString();
-                    messageBuilder.setLength(0);
-                    guild.getTextChannelById(commandChannelID).sendMessage(text).queue();
-                }else if(messageBuilder.length() == 0){
-                    messageBuilder.append(input);
-                    new Timer().schedule(new TimerTask(){
-                        @Override
-                        public void run(){
-                            if(messageBuilder.length() == 0) return;
-                            String text = messageBuilder.toString();
-                            messageBuilder.setLength(0);
-                            guild.getTextChannelById(commandChannelID).sendMessage(text).queue();
-                        }
-                    }, 60L);
-                }else{
-                    messageBuilder.append("\n").append(input);
-                }
-            });
 
             //mod listings are broken until further notice
             //the format is incompatible and should be enabled with the v6 update
@@ -155,24 +91,6 @@ public class Messages extends ListenerAdapter{
             commands.handle(event.getMessage());
         }catch(Exception e){
             e.printStackTrace();
-        }
-    }
-
-    @Override
-    public void onMessageUpdate(MessageUpdateEvent event){
-        commands.edited(event.getMessage());
-    }
-
-    @Override
-    public void onMessageDelete(MessageDeleteEvent event){
-        //commands.deleted(event.getMessage());
-    }
-
-    @Override
-    public void onMessageReactionAdd(MessageReactionAddEvent event){
-
-        if(event.getChannel().getIdLong() == bugReportChannelID && commands.isAdmin(event.getUser())){
-            commands.handleBugReact(event);
         }
     }
 
@@ -248,10 +166,6 @@ public class Messages extends ListenerAdapter{
             value = value.next;
         }
         guild.getTextChannelById(CoreBot.crashReportChannelID).sendMessage(builder.toString()).queue();
-    }
-
-    public void logTo(String text, Object... args){
-        guild.getTextChannelById(logChannelID).sendMessage(Strings.format(text, args)).queue();
     }
 
     public void text(String text, Object... args){
