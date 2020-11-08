@@ -32,7 +32,7 @@ public enum Info{
     "'Important' includes things like major unreported game server issues or exploits, " +
     "problems with the Discord server (e.g. spammers), or Github pull request related issues." +
     "\n" +
-    "Do *not* PM or ping me when posting normal suggestions or bugs reports. If it's relevant, I'll read it.\nIf you have a question about the game, *ask in #general or #help.*\n" +
+    "Do *not* PM or ping me when posting normal suggestions or bugs reports. If it's relevant, I'll read it.\nIf you have a question about the game, *ask in #mindustry or #help.*\n" +
     "\n" +
     "I will not respond to PMs with non-personal game-related questions or random messages such as 'hey'. And no, video calling me multiple times in PM doesn't get my attention, it just gets you blocked. *(Believe me, people have tried.)*\n" +
     "*I also do not accept random friend requests from people I don't know.*");
