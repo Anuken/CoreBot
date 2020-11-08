@@ -27,7 +27,7 @@ public class CoreBot{
     public static Prefs prefs = new Prefs(prefsFile);
 
     //crash reporting disabled until V6 is out
-    public static Reports reports = new Reports();
+    //public static Reports reports = new Reports();
 
     public static void main(String[] args){
         new CoreBot();

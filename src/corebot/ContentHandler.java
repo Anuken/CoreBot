@@ -116,8 +116,7 @@ public class ContentHandler{
             for(Content content : Vars.content.getBy(type)){
                 try{
                     content.load();
-                }catch(Throwable e){
-                    e.printStackTrace();
+                }catch(Throwable ignored){
                 }
             }
         }
