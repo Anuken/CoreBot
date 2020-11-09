@@ -33,7 +33,7 @@ public class Messages extends ListenerAdapter{
         Log.info("Found token: @", token != null);
 
         try{
-            jda = JDABuilder.create(token, GatewayIntent.DIRECT_MESSAGES, GatewayIntent.GUILD_MESSAGES).build();
+            jda = JDABuilder.createDefault(token, GatewayIntent.GUILD_MESSAGES).build();
             jda.awaitReady();
             jda.addEventListener(this);
             guild = jda.getGuildById(guildID);
