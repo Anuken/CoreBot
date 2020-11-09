@@ -27,6 +27,7 @@ import java.awt.*;
 import java.awt.geom.*;
 import java.awt.image.*;
 import java.io.*;
+import java.util.zip.*;
 
 import static mindustry.Vars.*;
 
@@ -182,7 +183,7 @@ public class ContentHandler{
     }
 
     public Map readMap(InputStream is) throws IOException{
-        try(CounterInputStream counter = new CounterInputStream(is); DataInputStream stream = new DataInputStream(counter)){
+        try(InputStream ifs = new InflaterInputStream(is); CounterInputStream counter = new CounterInputStream(ifs); DataInputStream stream = new DataInputStream(counter)){
             Map out = new Map();
 
             SaveIO.readHeader(stream);

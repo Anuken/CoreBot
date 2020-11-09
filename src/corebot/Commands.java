@@ -85,7 +85,6 @@ public class Commands{
                 Info info = Info.valueOf(args[0]);
                 messages.info(info.title, info.text);
             }catch(IllegalArgumentException e){
-                e.printStackTrace();
                 messages.err("Error", "Invalid topic '@'.\nValid topics: *@*", args[0], Arrays.toString(Info.values()));
                 messages.deleteMessages();
             }
@@ -334,7 +333,7 @@ public class Commands{
     }
 
     void handle(Message message){
-        if(message.getAuthor().isBot()) return;
+        if(message.getAuthor().isBot() || message.getChannel().getType() != ChannelType.TEXT) return;
 
         if(checkInvite(message)){
             return;
@@ -400,7 +399,7 @@ public class Commands{
                 Log.err("Failed to parse schematic, skipping.");
                 Log.err(e);
             }
-        }else if(message.getChannel().getType() == ChannelType.TEXT && (message.getTextChannel().getIdLong() == schematicsChannelID || message.getTextChannel().getIdLong() == schematicsChannelID) && !isAdmin(message.getAuthor())){
+        }else if((message.getTextChannel().getIdLong() == schematicsChannelID || message.getTextChannel().getIdLong() == schematicsChannelID) && !isAdmin(message.getAuthor())){
             message.delete().queue();
             try{
                 message.getAuthor().openPrivateChannel().complete().sendMessage("Only send valid schematics in the #schematics channel. You may send them either as clipboard text or as a schematic file.").queue();
