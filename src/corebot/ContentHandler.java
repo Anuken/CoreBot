@@ -84,6 +84,7 @@ public class ContentHandler{
             }
         });
 
+        Lines.useLegacyLine = true;
         Core.atlas.setErrorRegion("error");
         Draw.scl = 1f / 4f;
         Core.batch = new SpriteBatch(0){
@@ -110,6 +111,11 @@ public class ContentHandler{
                 }
 
                 currentGraphics.drawImage(image, 0, 0, (int)width, (int)height, null);
+            }
+
+            @Override
+            protected void draw(Texture texture, float[] spriteVertices, int offset, int count){
+                //do nothing
             }
         };
 
