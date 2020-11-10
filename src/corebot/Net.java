@@ -15,7 +15,6 @@ import java.util.concurrent.*;
 import java.util.function.*;
 
 public class Net{
-    public static final int timeout = 2000;
 
     public Net(){
         Executors.newSingleThreadScheduledExecutor().scheduleAtFixedRate(() ->
@@ -37,7 +36,7 @@ public class Net{
             }catch(Throwable e){
                 e.printStackTrace();
             }
-        }, Log::err), 60, 240, TimeUnit.SECONDS);
+        }, e -> {}), 60, 240, TimeUnit.SECONDS);
     }
 
     public String getLastBuild(){
