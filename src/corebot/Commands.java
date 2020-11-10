@@ -373,6 +373,8 @@ public class Commands{
                 .setImage("attachment://" + previewFile.getName())
                 .setAuthor(message.getAuthor().getName(), message.getAuthor().getAvatarUrl(), message.getAuthor().getAvatarUrl()).setTitle(schem.name());
 
+                if(!schem.description().isEmpty()) builder.setFooter(schem.description());
+
                 StringBuilder field = new StringBuilder();
 
                 for(ItemStack stack : schem.requirements()){
