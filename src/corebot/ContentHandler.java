@@ -35,6 +35,7 @@ public class ContentHandler{
     public static final byte[] mapHeader = {77, 83, 65, 86};
     public static final String schemHeader = "bXNjaAB";
 
+    Color co = new Color();
     Graphics2D currentGraphics;
     BufferedImage currentImage;
 
@@ -207,19 +208,21 @@ public class ContentHandler{
 
             int width = meta.getInt("width"), height = meta.getInt("height");
 
-            Pixmap floors = new Pixmap(width, height);
-            Pixmap walls = new Pixmap(width, height);
+            var floors = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+            var walls = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+            var fgraphics = floors.createGraphics();
+            var jcolor = new java.awt.Color(0, 0, 0, 64);
             int black = 255;
-            int shade = Color.rgba8888(0f, 0f, 0f, 0.5f);
             CachedTile tile = new CachedTile(){
                 @Override
                 public void setBlock(Block type){
                     super.setBlock(type);
 
                     int c = MapIO.colorFor(block(), Blocks.air, Blocks.air, team());
-                    if(c != black){
-                        walls.draw(x, floors.getHeight() - 1 - y, c);
-                        floors.draw(x, floors.getHeight() - 1 - y + 1, shade);
+                    if(c != black && c != 0){
+                        walls.setRGB(x, floors.getHeight() - 1 - y, conv(c));
+                        fgraphics.setColor(jcolor);
+                        fgraphics.drawRect(x, floors.getHeight() - 1 - y + 1, 1, 1);
                     }
                 }
             };
@@ -239,14 +242,14 @@ public class ContentHandler{
                 public void onReadBuilding(){
                     //read team colors
                     if(tile.build != null){
-                        int c = tile.build.team.color.rgba8888();
+                        int c = tile.build.team.color.argb8888();
                         int size = tile.block().size;
                         int offsetx = -(size - 1) / 2;
                         int offsety = -(size - 1) / 2;
                         for(int dx = 0; dx < size; dx++){
                             for(int dy = 0; dy < size; dy++){
                                 int drawx = tile.x + dx + offsetx, drawy = tile.y + dy + offsety;
-                                walls.draw(drawx, floors.getHeight() - 1 - drawy, c);
+                                walls.setRGB(drawx, floors.getHeight() - 1 - drawy, c);
                             }
                         }
                     }
@@ -262,16 +265,16 @@ public class ContentHandler{
                 @Override
                 public Tile create(int x, int y, int floorID, int overlayID, int wallID){
                     if(overlayID != 0){
-                        floors.draw(x, floors.getHeight() - 1 - y, MapIO.colorFor(Blocks.air, Blocks.air, content.block(overlayID), Team.derelict));
+                        floors.setRGB(x, floors.getHeight() - 1 - y, conv(MapIO.colorFor(Blocks.air, Blocks.air, content.block(overlayID), Team.derelict)));
                     }else{
-                        floors.draw(x, floors.getHeight() - 1 - y, MapIO.colorFor(Blocks.air, content.block(floorID), Blocks.air, Team.derelict));
+                        floors.setRGB(x, floors.getHeight() - 1 - y, conv(MapIO.colorFor(Blocks.air, content.block(floorID), Blocks.air, Team.derelict)));
                     }
                     return tile;
                 }
             }));
 
-            floors.drawPixmap(walls, 0, 0);
-            walls.dispose();
+            fgraphics.drawImage(walls, 0, 0, null);
+            fgraphics.dispose();
 
             out.image = floors;
 
@@ -282,11 +285,14 @@ public class ContentHandler{
         }
     }
 
+    int conv(int rgba){
+        return co.set(rgba).argb8888();
+    }
+
     public static class Map{
         public String name, author, description;
         public ObjectMap<String, String> tags = new ObjectMap<>();
-        public Pixmap image;
-        public int version;
+        public BufferedImage image;
     }
 
     static class ImageData implements TextureData{

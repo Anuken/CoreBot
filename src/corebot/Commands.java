@@ -138,8 +138,7 @@ public class Commands{
                 File mapFile = new File("cache/" + a.getFileName());
                 Fi imageFile = Fi.get("cache/image_" + a.getFileName().replace(".msav", ".png"));
                 Streams.copy(net.download(a.getUrl()), new FileOutputStream(mapFile));
-                imageFile.writePNG(map.image);
-                map.image.dispose();
+                ImageIO.write(map.image, "png", imageFile.file());
 
                 EmbedBuilder builder = new EmbedBuilder().setColor(messages.normalColor).setColor(messages.normalColor)
                 .setImage("attachment://" + imageFile.name())
