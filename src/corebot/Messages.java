@@ -10,6 +10,7 @@ import net.dv8tion.jda.api.events.guild.member.*;
 import net.dv8tion.jda.api.events.message.*;
 import net.dv8tion.jda.api.hooks.*;
 import net.dv8tion.jda.api.requests.*;
+import net.dv8tion.jda.api.utils.cache.*;
 
 import java.awt.*;
 import java.time.*;
@@ -33,7 +34,7 @@ public class Messages extends ListenerAdapter{
         Log.info("Found token: @", token != null);
 
         try{
-            jda = JDABuilder.createDefault(token, GatewayIntent.GUILD_MESSAGES, GatewayIntent.GUILD_EMOJIS).build();
+            jda = JDABuilder.createDefault(token, GatewayIntent.GUILD_MESSAGES, GatewayIntent.GUILD_EMOJIS).disableCache(CacheFlag.VOICE_STATE).build();
             jda.awaitReady();
             jda.addEventListener(this);
             guild = jda.getGuildById(guildID);
@@ -190,10 +191,6 @@ public class Messages extends ListenerAdapter{
     }
 
     private String format(String text, Object... args){
-        for(int i = 0; i < args.length; i++){
-            text = text.replace("{" + i + "}", String.valueOf(args[i]));
-        }
-
-        return text;
+        return Strings.format(text, args);
     }
 }

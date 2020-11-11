@@ -17,8 +17,7 @@ import java.util.function.*;
 public class Net{
 
     public Net(){
-        Executors.newSingleThreadScheduledExecutor().scheduleAtFixedRate(() ->
-        getChangelog(list -> {
+        Executors.newSingleThreadScheduledExecutor().scheduleAtFixedRate(() -> getChangelog(list -> {
             try{
                 VersionInfo latest = list.first();
 
