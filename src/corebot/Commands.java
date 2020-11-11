@@ -315,7 +315,6 @@ public class Commands{
 
     boolean isAdmin(User user){
         var member = messages.guild.getMember(user);
-        if(member == null) Log.info("Member @ does not exist.", user.getName());
         return member != null && member.getRoles().stream().anyMatch(role -> role.getName().equals("Developer") || role.getName().equals("Moderator"));
     }
 

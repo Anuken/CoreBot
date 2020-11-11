@@ -36,7 +36,7 @@ public class Messages extends ListenerAdapter{
 
         try{
             jda = JDABuilder.createDefault(token, GatewayIntent.GUILD_MESSAGES, GatewayIntent.GUILD_EMOJIS, GatewayIntent.GUILD_MEMBERS, GatewayIntent.GUILD_PRESENCES)
-                .setMemberCachePolicy(MemberCachePolicy.ONLINE).disableCache(CacheFlag.VOICE_STATE).build();
+                .setMemberCachePolicy(MemberCachePolicy.ALL).disableCache(CacheFlag.VOICE_STATE).build();
             jda.awaitReady();
             jda.addEventListener(this);
             guild = jda.getGuildById(guildID);
