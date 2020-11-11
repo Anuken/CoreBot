@@ -53,7 +53,7 @@ public class ContentHandler{
         }
 
         String assets = "../Mindustry/core/assets/";
-        state = new GameState();
+        Vars.state = new GameState();
 
         TextureAtlasData data = new TextureAtlasData(new Fi(assets + "sprites/sprites.atlas"), new Fi(assets + "sprites"), false);
         Core.atlas = new TextureAtlas();
