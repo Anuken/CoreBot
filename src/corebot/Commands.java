@@ -314,13 +314,8 @@ public class Commands{
     }
 
     boolean isAdmin(User user){
-        try{
-            Log.info("Roles of @: @", user.getName(), messages.guild.getMember(user).getRoles());
-            return messages.guild.getMember(user).getRoles().stream().anyMatch(role -> role.getName().equals("Developer") || role.getName().equals("Moderator"));
-        }catch(Exception e){
-            e.printStackTrace();
-            return false; //I don't care enough to fix this
-        }
+        var member = messages.guild.getMember(user);
+        return member != null && member.getRoles().stream().anyMatch(role -> role.getName().equals("Developer") || role.getName().equals("Moderator"));
     }
 
     boolean checkInvite(Message message){
