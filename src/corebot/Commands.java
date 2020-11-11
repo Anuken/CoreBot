@@ -318,6 +318,7 @@ public class Commands{
             Log.info("Roles of @: @", user.getName(), messages.guild.getMember(user).getRoles());
             return messages.guild.getMember(user).getRoles().stream().anyMatch(role -> role.getName().equals("Developer") || role.getName().equals("Moderator"));
         }catch(Exception e){
+            e.printStackTrace();
             return false; //I don't care enough to fix this
         }
     }
