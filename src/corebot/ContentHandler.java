@@ -148,13 +148,6 @@ public class ContentHandler{
                 return new Tile(x, y);
             }
         };
-
-        try{
-            CoreBot.net = new corebot.Net();
-            ImageIO.write(previewSchematic(parseSchematicURL("https://cdn.discordapp.com/attachments/640604827344306207/775910451392282654/SCRAPIMPACT.msch")), "png", new File("/home/anuke/schem.png"));
-        }catch(Exception e){
-            e.printStackTrace();
-        }
     }
 
     private BufferedImage tint(BufferedImage image, Color color){
