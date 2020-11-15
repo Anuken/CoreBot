@@ -100,7 +100,7 @@ public class Commands{
 
                     EmbedBuilder builder = new EmbedBuilder().setColor(messages.normalColor).
                     setColor(messages.normalColor)
-                    .setAuthor(messages.lastUser.getName(), messages.lastUser.getAvatarUrl(), messages.lastUser.getAvatarUrl()).setTitle(doc.select("strong[itemprop=name]").text());
+                    .setAuthor(messages.lastUser.getName(), messages.lastUser.getEffectiveAvatarUrl(), messages.lastUser.getEffectiveAvatarUrl()).setTitle(doc.select("strong[itemprop=name]").text());
 
                     Elements elem = doc.select("span[itemprop=about]");
                     if(!elem.isEmpty()){
@@ -140,10 +140,10 @@ public class Commands{
                 Streams.copy(net.download(a.getUrl()), new FileOutputStream(mapFile));
                 ImageIO.write(map.image, "png", imageFile.file());
 
-                EmbedBuilder builder = new EmbedBuilder().setColor(messages.normalColor).setColor(messages.normalColor)
+                EmbedBuilder builder = new EmbedBuilder().setColor(messages.normalColor)
                 .setImage("attachment://" + imageFile.name())
 
-                .setAuthor(messages.lastUser.getName(), messages.lastUser.getAvatarUrl(), messages.lastUser.getAvatarUrl()).setTitle(map.name == null ? a.getFileName().replace(".msav", "") : map.name);
+                .setAuthor(messages.lastUser.getName(), messages.lastUser.getEffectiveAvatarUrl(), messages.lastUser.getEffectiveAvatarUrl()).setTitle(map.name == null ? a.getFileName().replace(".msav", "") : map.name);
 
                 if(map.description != null) builder.setFooter(map.description);
 
@@ -368,7 +368,7 @@ public class Commands{
 
                 EmbedBuilder builder = new EmbedBuilder().setColor(messages.normalColor).setColor(messages.normalColor)
                 .setImage("attachment://" + previewFile.getName())
-                .setAuthor(message.getAuthor().getName(), message.getAuthor().getAvatarUrl(), message.getAuthor().getEffectiveAvatarUrl())
+                .setAuthor(message.getAuthor().getName(), message.getAuthor().getEffectiveAvatarUrl(), message.getAuthor().getEffectiveAvatarUrl())
                 .setTitle(schem.name());
 
                 if(!schem.description().isEmpty()) builder.setFooter(schem.description());
@@ -428,11 +428,10 @@ public class Commands{
         }else if(response.type == ResponseType.manyArguments || response.type == ResponseType.fewArguments){
             if(response.command.params.length == 0){
                 messages.err("Invalid arguments.", "Usage: @@", prefix, response.command.text);
-                messages.deleteMessages();
             }else{
                 messages.err("Invalid arguments.", "Usage: @@ *@*", prefix, response.command.text, response.command.paramText);
-                messages.deleteMessages();
             }
+            messages.deleteMessages();
             return false;
         }
         return true;
