@@ -87,7 +87,7 @@ public class Messages extends ListenerAdapter{
         if(duration.toHours() > 0) return duration.toHours() + "h";
         return duration.toMinutes() + "m";
     }
-    
+
     @Override
     public void onMessageReceived(MessageReceivedEvent event){
         try{
@@ -172,13 +172,12 @@ public class Messages extends ListenerAdapter{
     }
 
     public void text(String text, Object... args){
-        lastSentMessage = channel.sendMessage(format(text, args)).complete();
+        lastSentMessage = channel.sendMessage(Strings.format(text, args)).complete();
     }
 
     public void info(String title, String text, Object... args){
         MessageEmbed object = new EmbedBuilder()
-        .addField(title, format(text, args), true).setColor(normalColor).build();
-
+        .setTitle(title).setDescription(Strings.format(text, args)).setColor(normalColor).build();
         lastSentMessage = channel.sendMessage(object).complete();
     }
 
@@ -188,11 +187,7 @@ public class Messages extends ListenerAdapter{
 
     public void err(String title, String text, Object... args){
         MessageEmbed e = new EmbedBuilder()
-        .addField(title, format(text, args), true).setColor(errorColor).build();
+        .setTitle(title).setDescription(Strings.format(text, args)).setColor(errorColor).build();
         lastSentMessage = channel.sendMessage(e).complete();
-    }
-
-    private String format(String text, Object... args){
-        return Strings.format(text, args);
     }
 }

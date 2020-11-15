@@ -111,7 +111,7 @@ public class Commands{
 
                     builder.addField("Downloads", args[0] + (args[0].endsWith("/") ? "" : "/") + "releases", false);
 
-                    messages.channel.getGuild().getTextChannelById(pluginChannelID).sendMessage(builder.build()).queue();
+                    messages.guild.getTextChannelById(pluginChannelID).sendMessage(builder.build()).queue();
 
                     messages.text("*Plugin posted.*");
                 }catch(IOException e){
@@ -147,7 +147,7 @@ public class Commands{
 
                 if(map.description != null) builder.setFooter(map.description);
 
-                messages.channel.getGuild().getTextChannelById(mapsChannelID).sendFile(mapFile).addFile(imageFile.file()).embed(builder.build()).queue();
+                messages.guild.getTextChannelById(mapsChannelID).sendFile(mapFile).addFile(imageFile.file()).embed(builder.build()).queue();
 
                 messages.text("*Map posted successfully.*");
             }catch(Exception e){
@@ -244,7 +244,7 @@ public class Commands{
                 messages.text("**@**, you've been warned *@*.", user.getAsMention(), warningStrings[Mathf.clamp(warnings - 1, 0, warningStrings.length - 1)]);
                 prefs.put("warnings-" + l, warnings + "");
                 if(warnings >= 3){
-                    messages.lastMessage.getGuild().getTextChannelById(moderationChannelID)
+                    messages.guild.getTextChannelById(moderationChannelID)
                     .sendMessage("User " + user.getAsMention() + " has been warned 3 or more times!").queue();
                 }
             }catch(Exception e){
@@ -368,7 +368,8 @@ public class Commands{
 
                 EmbedBuilder builder = new EmbedBuilder().setColor(messages.normalColor).setColor(messages.normalColor)
                 .setImage("attachment://" + previewFile.getName())
-                .setAuthor(message.getAuthor().getName(), message.getAuthor().getAvatarUrl(), message.getAuthor().getAvatarUrl()).setTitle(schem.name());
+                .setAuthor(message.getAuthor().getName(), message.getAuthor().getAvatarUrl(), message.getAuthor().getEffectiveAvatarUrl())
+                .setTitle(schem.name());
 
                 if(!schem.description().isEmpty()) builder.setFooter(schem.description());
 
