@@ -168,7 +168,7 @@ public class Messages extends ListenerAdapter{
             builder.append("\n");
             value = value.next;
         }
-        guild.getTextChannelById(CoreBot.crashReportChannelID).sendMessage(builder.toString()).queue();
+        guild.getTextChannelById(crashReportChannelID).sendMessage(builder.toString()).queue();
     }
 
     public void text(String text, Object... args){

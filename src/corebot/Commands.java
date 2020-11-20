@@ -142,8 +142,8 @@ public class Commands{
 
                 EmbedBuilder builder = new EmbedBuilder().setColor(messages.normalColor)
                 .setImage("attachment://" + imageFile.name())
-
-                .setAuthor(messages.lastUser.getName(), messages.lastUser.getEffectiveAvatarUrl(), messages.lastUser.getEffectiveAvatarUrl()).setTitle(map.name == null ? a.getFileName().replace(".msav", "") : map.name);
+                .setAuthor(messages.lastUser.getName(), messages.lastUser.getEffectiveAvatarUrl(), messages.lastUser.getEffectiveAvatarUrl())
+                .setTitle(map.name == null ? a.getFileName().replace(".msav", "") : map.name);
 
                 if(map.description != null) builder.setFooter(map.description);
 
@@ -210,7 +210,6 @@ public class Commands{
                         Streams.copy(add.read(), zos);
                         zos.closeEntry();
                     }
-
                 }
 
                 messages.channel.sendFile(destFile.file()).queue();
