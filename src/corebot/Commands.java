@@ -85,7 +85,7 @@ public class Commands{
                 Info info = Info.valueOf(args[0]);
                 messages.info(info.title, info.text);
             }catch(IllegalArgumentException e){
-                messages.err("Error", "Invalid topic '@'.\nValid topics: *@*", args[0], Arrays.toString(Info.values()));
+                messages.err("Invalid topic '@'.\nValid topics: *@*", args[0], Arrays.toString(Info.values()));
                 messages.deleteMessages();
             }
         });
@@ -98,9 +98,9 @@ public class Commands{
                 try{
                     Document doc = Jsoup.connect(args[0]).get();
 
-                    EmbedBuilder builder = new EmbedBuilder().setColor(messages.normalColor).
-                    setColor(messages.normalColor)
-                    .setAuthor(messages.lastUser.getName(), messages.lastUser.getEffectiveAvatarUrl(), messages.lastUser.getEffectiveAvatarUrl()).setTitle(doc.select("strong[itemprop=name]").text());
+                    EmbedBuilder builder = new EmbedBuilder().setColor(messages.normalColor)
+                    .setAuthor(messages.lastUser.getName(), messages.lastUser.getEffectiveAvatarUrl(), messages.lastUser.getEffectiveAvatarUrl())
+                    .setTitle(doc.select("strong[itemprop=name]").text());
 
                     Elements elem = doc.select("span[itemprop=about]");
                     if(!elem.isEmpty()){
