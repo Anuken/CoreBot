@@ -103,8 +103,7 @@ public class Messages extends ListenerAdapter{
             event.getUser().openPrivateChannel().complete().sendMessage(
             "**Welcome to the Mindustry Discord.**" +
             "\n\n*Make sure you read #rules and the channel topics before posting.*\n\n" +
-            "**For a list of public servers**, see the #servers channel.\n" +
-            "**Make sure you check out the #faq channel here:**\n<https://discordapp.com/channels/391020510269669376/611204372592066570/611586644402765828>"
+            "**View a list of all frequently answered questions here:**\n<https://discordapp.com/channels/391020510269669376/611204372592066570/611586644402765828>"
             ).queue();
         }catch(Exception ignored){
             //may not be able to send messages to this user, ignore
