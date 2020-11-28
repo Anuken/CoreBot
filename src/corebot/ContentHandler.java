@@ -33,7 +33,7 @@ import static mindustry.Vars.*;
 
 public class ContentHandler{
     public static final byte[] mapHeader = {77, 83, 65, 86};
-    public static final String schemHeader = "bXNjaAB";
+    public static final String schemHeader = schematicBaseStart;
 
     Color co = new Color();
     Graphics2D currentGraphics;
