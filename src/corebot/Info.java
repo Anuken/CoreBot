@@ -9,7 +9,7 @@ public enum Info{
     "[iOS version](https://itunes.apple.com/us/app/mindustry/id1385258906?mt=8&ign-mpt=uo%3D8)\n" +
     "[Google Play Listing](https://play.google.com/store/apps/details?id=mindustry)\n" +
     "[TestFlight Link](https://testflight.apple.com/join/79Azm1hZ)\n" +
-    "[3.5 Wiki](http://mindustry.wikia.com/wiki/Mindustry_Wiki)\n"),
+    "[Unofficial Matrix](https://matrix.to/#/!bjBcJCYyWfNVdAAWZt:matrix.org)"),
     beta("iOS/Android Beta",
     "To join the Android Beta in Google Play Store, just scroll to the bottom of the page and tap 'join beta'.\n" +
     "Betas can take some time to become available after release. Be patient.\n" +

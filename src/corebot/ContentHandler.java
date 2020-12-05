@@ -32,7 +32,6 @@ import java.util.zip.*;
 import static mindustry.Vars.*;
 
 public class ContentHandler{
-    public static final byte[] mapHeader = {77, 83, 65, 86};
     public static final String schemHeader = schematicBaseStart;
 
     Color co = new Color();
@@ -175,6 +174,7 @@ public class ContentHandler{
     public BufferedImage previewSchematic(Schematic schem) throws Exception{
         BufferedImage image = new BufferedImage(schem.width * 32, schem.height * 32, BufferedImage.TYPE_INT_ARGB);
 
+        Draw.reset();
         Seq<BuildPlan> requests = schem.tiles.map(t -> new BuildPlan(t.x, t.y, t.rotation, t.block, t.config));
         currentGraphics = image.createGraphics();
         currentImage = image;
