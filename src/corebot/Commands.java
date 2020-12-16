@@ -23,6 +23,8 @@ import javax.imageio.*;
 import java.awt.image.*;
 import java.io.*;
 import java.net.*;
+import java.text.*;
+import java.time.*;
 import java.util.*;
 import java.util.regex.*;
 import java.util.stream.*;
@@ -32,6 +34,7 @@ import static corebot.CoreBot.*;
 
 public class Commands{
     private final String prefix = "!";
+    private static final SimpleDateFormat fmt = new SimpleDateFormat("yyyy-MM-dd");
     private CommandHandler handler = new CommandHandler(prefix);
     private CommandHandler adminHandler = new CommandHandler(prefix);
     private String[] warningStrings = {"once", "twice", "thrice", "too many times"};
@@ -230,8 +233,9 @@ public class Commands{
             try{
                 long l = Long.parseLong(author);
                 User user = messages.jda.getUserById(l);
-                int warnings = prefs.getInt("warnings-" + l, 0);
-                messages.text("User '@' has **@** @.", user.getName(), warnings, warnings == 1 ? "warning" : "warnings");
+                var list = getWarnings(user);
+                messages.text("User '@' has **@** @.\n@", user.getName(), list.size, list.size == 1 ? "warning" : "warnings",
+                    list.map(s -> "- `" + fmt.format(new Date(Long.parseLong(s))) + "`: Expires in " + (30-Duration.ofMillis((System.currentTimeMillis() - Long.parseLong(s))).toDays()) + " days").toString("\n"));
             }catch(Exception e){
                 e.printStackTrace();
                 messages.err("Incorrect name format.");
@@ -285,10 +289,11 @@ public class Commands{
             try{
                 long l = Long.parseLong(author);
                 User user = messages.jda.getUserById(l);
-                int warnings = prefs.getInt("warnings-" + l, 0) + 1;
-                messages.text("**@**, you've been warned *@*.", user.getAsMention(), warningStrings[Mathf.clamp(warnings - 1, 0, warningStrings.length - 1)]);
-                prefs.put("warnings-" + l, warnings + "");
-                if(warnings >= 3){
+                var list = getWarnings(user);
+                list.add(System.currentTimeMillis() + "");
+                messages.text("**@**, you've been warned *@*.", user.getAsMention(), warningStrings[Mathf.clamp(list.size, 0, warningStrings.length - 1)]);
+                prefs.putArray("warnings-list-" + user.getIdLong(), list);
+                if(list.size >= 3){
                     messages.lastMessage.getGuild().getTextChannelById(moderationChannelID)
                     .sendMessage("User " + user.getAsMention() + " has been warned 3 or more times!").queue();
                 }
@@ -313,6 +318,14 @@ public class Commands{
                 messages.deleteMessages();
             }
         });
+    }
+
+    private Seq<String> getWarnings(User user){
+        var list = prefs.getArray("warning-list-" + user.getIdLong());
+        //remove invalid warnings
+        list.removeAll(s -> Duration.ofMillis((System.currentTimeMillis() - Long.parseLong(s))).toDays() >= 30);
+
+        return list;
     }
 
     private Jval fixJval(Jval val){
