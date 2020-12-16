@@ -291,8 +291,8 @@ public class Commands{
                 User user = messages.jda.getUserById(l);
                 var list = getWarnings(user);
                 list.add(System.currentTimeMillis() + "");
-                messages.text("**@**, you've been warned *@*.", user.getAsMention(), warningStrings[Mathf.clamp(list.size, 0, warningStrings.length - 1)]);
-                prefs.putArray("warnings-list-" + user.getIdLong(), list);
+                messages.text("**@**, you've been warned *@*.", user.getAsMention(), warningStrings[Mathf.clamp(list.size - 1, 0, warningStrings.length - 1)]);
+                prefs.putArray("warning-list-" + user.getIdLong(), list);
                 if(list.size >= 3){
                     messages.lastMessage.getGuild().getTextChannelById(moderationChannelID)
                     .sendMessage("User " + user.getAsMention() + " has been warned 3 or more times!").queue();
