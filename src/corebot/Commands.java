@@ -25,6 +25,7 @@ import java.io.*;
 import java.net.*;
 import java.util.*;
 import java.util.regex.*;
+import java.util.stream.*;
 import java.util.zip.*;
 
 import static corebot.CoreBot.*;
@@ -223,6 +224,49 @@ public class Commands{
             }
         });
 
+        handler.register("warnings", "<@user>", "Get number of warnings a user has.", args -> {
+            String author = args[0].substring(2, args[0].length() - 1);
+            if(author.startsWith("!")) author = author.substring(1);
+            try{
+                long l = Long.parseLong(author);
+                User user = messages.jda.getUserById(l);
+                int warnings = prefs.getInt("warnings-" + l, 0);
+                messages.text("User '@' has **@** @.", user.getName(), warnings, warnings == 1 ? "warning" : "warnings");
+            }catch(Exception e){
+                e.printStackTrace();
+                messages.err("Incorrect name format.");
+                messages.deleteMessages();
+            }
+        });
+
+        adminHandler.register("info", "<@user>", "Get user info.", args -> {
+            String author = args[0].substring(2, args[0].length() - 1);
+            if(author.startsWith("!")) author = author.substring(1);
+            try{
+                long l = Long.parseLong(author);
+                User user = messages.jda.getUserById(l);
+                Member member = messages.guild.getMember(user);
+
+                if(member == null){
+                    messages.err("That user is null. How did this happen?");
+                }else{
+                    messages.info("Info for " + member.getNickname(),
+                        "Nick: @\nID: @\nStatus: @\nRoles: @\nIs Admin: @\nTime Joined:@",
+                        member.getEffectiveName(),
+                        member.getIdLong(),
+                        member.getOnlineStatus(),
+                        member.getRoles().stream().map(Role::getName).collect(Collectors.toList()),
+                        isAdmin(user),
+                        member.getTimeJoined()
+                    );
+                }
+            }catch(Exception e){
+                e.printStackTrace();
+                messages.err("Incorrect name format or missing user.");
+                messages.deleteMessages();
+            }
+        });
+
         adminHandler.register("delete", "<amount>", "Delete some messages.", args -> {
             try{
                 int number = Integer.parseInt(args[0]) + 1;
@@ -247,21 +291,6 @@ public class Commands{
                     messages.lastMessage.getGuild().getTextChannelById(moderationChannelID)
                     .sendMessage("User " + user.getAsMention() + " has been warned 3 or more times!").queue();
                 }
-            }catch(Exception e){
-                e.printStackTrace();
-                messages.err("Incorrect name format.");
-                messages.deleteMessages();
-            }
-        });
-
-        adminHandler.register("warnings", "<@user>", "Get number of warnings a user has.", args -> {
-            String author = args[0].substring(2, args[0].length() - 1);
-            if(author.startsWith("!")) author = author.substring(1);
-            try{
-                long l = Long.parseLong(author);
-                User user = messages.jda.getUserById(l);
-                int warnings = prefs.getInt("warnings-" + l, 0);
-                messages.text("User '@' has **@** @.", user.getName(), warnings, warnings == 1 ? "warning" : "warnings");
             }catch(Exception e){
                 e.printStackTrace();
                 messages.err("Incorrect name format.");
@@ -315,7 +344,7 @@ public class Commands{
 
     boolean isAdmin(User user){
         var member = messages.guild.getMember(user);
-        return member != null && member.getRoles().stream().anyMatch(role -> role.getName().equals("Developer") || role.getName().equals("Moderator"));
+        return member != null && member.getRoles().stream().anyMatch(role -> role.getName().equals("Developer") || role.getName().equals("Moderator") || role.getName().equals("\uD83D\uDD28 \uD83D\uDD75️\u200D♂️"));
     }
 
     boolean checkInvite(Message message){
