@@ -251,7 +251,7 @@ public class Commands{
                     messages.err("That user is null. How did this happen?");
                 }else{
                     messages.info("Info for " + member.getEffectiveName(),
-                        "Nickname: @\nUsername: @\nID: @\nStatus: @\nRoles: @\nIs Admin: @\nTime Joined:@",
+                        "Nickname: @\nUsername: @\nID: @\nStatus: @\nRoles: @\nIs Admin: @\nTime Joined: @",
                         member.getNickname(),
                         user.getName(),
                         member.getIdLong(),
