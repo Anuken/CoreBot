@@ -239,7 +239,7 @@ public class Commands{
             }
         });
 
-        adminHandler.register("info", "<@user>", "Get user info.", args -> {
+        adminHandler.register("userinfo", "<@user>", "Get user info.", args -> {
             String author = args[0].substring(2, args[0].length() - 1);
             if(author.startsWith("!")) author = author.substring(1);
             try{
@@ -250,9 +250,10 @@ public class Commands{
                 if(member == null){
                     messages.err("That user is null. How did this happen?");
                 }else{
-                    messages.info("Info for " + member.getNickname(),
-                        "Nick: @\nID: @\nStatus: @\nRoles: @\nIs Admin: @\nTime Joined:@",
-                        member.getEffectiveName(),
+                    messages.info("Info for " + member.getEffectiveName(),
+                        "Nickname: @\nUsername: @\nID: @\nStatus: @\nRoles: @\nIs Admin: @\nTime Joined:@",
+                        member.getNickname(),
+                        user.getName(),
                         member.getIdLong(),
                         member.getOnlineStatus(),
                         member.getRoles().stream().map(Role::getName).collect(Collectors.toList()),
