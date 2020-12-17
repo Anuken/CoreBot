@@ -269,8 +269,8 @@ public class Commands{
                     long time = Long.parseLong(split[0]);
                     String warner = split.length > 1 ? split[1] : null, reason = split.length > 2 ? split[2] : null;
                     return "- `" + fmt.format(new Date(time)) + "`: Expires in " + (30-Duration.ofMillis((System.currentTimeMillis() - time)).toDays()) + " days" +
-                    (warner == null ? null : "\n   From: " + warner) +
-                    (reason == null ? null : "\n   Reason: " + reason);
+                    (warner == null ? "" : "\n   From: " + warner) +
+                    (reason == null ? "" : "\n   Reason: " + reason);
                 }).toString("\n"));
             }catch(Exception e){
                 e.printStackTrace();
