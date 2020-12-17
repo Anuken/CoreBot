@@ -227,22 +227,6 @@ public class Commands{
             }
         });
 
-        handler.register("warnings", "<@user>", "Get number of warnings a user has.", args -> {
-            String author = args[0].substring(2, args[0].length() - 1);
-            if(author.startsWith("!")) author = author.substring(1);
-            try{
-                long l = Long.parseLong(author);
-                User user = messages.jda.getUserById(l);
-                var list = getWarnings(user);
-                messages.text("User '@' has **@** @.\n@", user.getName(), list.size, list.size == 1 ? "warning" : "warnings",
-                    list.map(s -> "- `" + fmt.format(new Date(Long.parseLong(s))) + "`: Expires in " + (30-Duration.ofMillis((System.currentTimeMillis() - Long.parseLong(s))).toDays()) + " days").toString("\n"));
-            }catch(Exception e){
-                e.printStackTrace();
-                messages.err("Incorrect name format.");
-                messages.deleteMessages();
-            }
-        });
-
         adminHandler.register("userinfo", "<@user>", "Get user info.", args -> {
             String author = args[0].substring(2, args[0].length() - 1);
             if(author.startsWith("!")) author = author.substring(1);
@@ -272,6 +256,29 @@ public class Commands{
             }
         });
 
+        adminHandler.register("warnings", "<@user>", "Get number of warnings a user has.", args -> {
+            String author = args[0].substring(2, args[0].length() - 1);
+            if(author.startsWith("!")) author = author.substring(1);
+            try{
+                long l = Long.parseLong(author);
+                User user = messages.jda.getUserById(l);
+                var list = getWarnings(user);
+                messages.text("User '@' has **@** @.\n@", user.getName(), list.size, list.size == 1 ? "warning" : "warnings",
+                list.map(s -> {
+                    String[] split = s.split(":::");
+                    long time = Long.parseLong(split[0]);
+                    String warner = split.length > 1 ? split[1] : null, reason = split.length > 2 ? split[2] : null;
+                    return "- `" + fmt.format(new Date(time)) + "`: Expires in " + (30-Duration.ofMillis((System.currentTimeMillis() - time)).toDays()) + " days" +
+                    (warner == null ? null : "\n   From: " + warner) +
+                    (reason == null ? null : "\n   Reason: " + reason);
+                }).toString("\n"));
+            }catch(Exception e){
+                e.printStackTrace();
+                messages.err("Incorrect name format.");
+                messages.deleteMessages();
+            }
+        });
+
         adminHandler.register("delete", "<amount>", "Delete some messages.", args -> {
             try{
                 int number = Integer.parseInt(args[0]) + 1;
@@ -290,7 +297,7 @@ public class Commands{
                 long l = Long.parseLong(author);
                 User user = messages.jda.getUserById(l);
                 var list = getWarnings(user);
-                list.add(System.currentTimeMillis() + "");
+                list.add(System.currentTimeMillis() + ":::" + messages.lastUser.getName() + (args.length > 1 ? ":::" + args[1] : ""));
                 messages.text("**@**, you've been warned *@*.", user.getAsMention(), warningStrings[Mathf.clamp(list.size - 1, 0, warningStrings.length - 1)]);
                 prefs.putArray("warning-list-" + user.getIdLong(), list);
                 if(list.size >= 3){
@@ -323,7 +330,10 @@ public class Commands{
     private Seq<String> getWarnings(User user){
         var list = prefs.getArray("warning-list-" + user.getIdLong());
         //remove invalid warnings
-        list.removeAll(s -> Duration.ofMillis((System.currentTimeMillis() - Long.parseLong(s))).toDays() >= 30);
+        list.removeAll(s -> {
+            String[] split = s.split(":::");
+            return Duration.ofMillis((System.currentTimeMillis() - Long.parseLong(split[0]))).toDays() >= 30;
+        });
 
         return list;
     }
