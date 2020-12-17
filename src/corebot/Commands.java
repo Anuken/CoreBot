@@ -317,7 +317,7 @@ public class Commands{
             try{
                 long l = Long.parseLong(author);
                 User user = messages.jda.getUserById(l);
-                prefs.put("warnings-" + l, 0 + "");
+                prefs.putArray("warning-list-" + user.getIdLong(), new Seq<>());
                 messages.text("Cleared warnings for user '@'.", user.getName());
             }catch(Exception e){
                 e.printStackTrace();
