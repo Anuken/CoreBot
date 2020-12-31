@@ -18,7 +18,7 @@ allprojects{
 }
 
 ext{
-    mindustryVersion = 'v113'
+    mindustryVersion = 'v122'
 }
 
 task run(dependsOn: classes, type: JavaExec){
