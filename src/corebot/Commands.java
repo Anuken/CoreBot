@@ -188,7 +188,7 @@ public class Commands{
             try{
                 new File("cache/").mkdir();
                 File baseFile = new File("cache/" + a.getFileName());
-                Fi destFolder = new Fi("dest_mod" + a.getFileName());
+                Fi destFolder = new Fi("cache/dest_mod" + a.getFileName());
                 Fi destFile = new Fi("cache/" + new Fi(baseFile).nameWithoutExtension() + "-cleaned.zip");
 
                 if(destFolder.exists()) destFolder.deleteDirectory();
@@ -416,7 +416,7 @@ public class Commands{
 
                 new File("cache").mkdir();
                 File previewFile = new File("cache/img_" + UUID.randomUUID().toString() + ".png");
-                File schemFile = new File(schem.name() + "." + Vars.schematicExtension);
+                File schemFile = new File("cache/" + schem.name() + "." + Vars.schematicExtension);
                 Schematics.write(schem, new Fi(schemFile));
                 ImageIO.write(preview, "png", previewFile);
 
