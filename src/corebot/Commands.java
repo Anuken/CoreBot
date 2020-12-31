@@ -232,10 +232,10 @@ public class Commands{
             if(author.startsWith("!")) author = author.substring(1);
             try{
                 long l = Long.parseLong(author);
-                User user = messages.jda.getUserById(l);
+                User user = messages.jda.retrieveUserById(l).complete();
 
                 if(user == null){
-                    messages.err("That user (@) is null. How did this happen?", l);
+                    messages.err("That user (ID @) is not in the cache. How did this happen?", l);
                 }else{
                     Member member = messages.guild.getMember(user);
 
@@ -262,7 +262,7 @@ public class Commands{
             if(author.startsWith("!")) author = author.substring(1);
             try{
                 long l = Long.parseLong(author);
-                User user = messages.jda.getUserById(l);
+                User user = messages.jda.retrieveUserById(l).complete();
                 var list = getWarnings(user);
                 messages.text("User '@' has **@** @.\n@", user.getName(), list.size, list.size == 1 ? "warning" : "warnings",
                 list.map(s -> {
@@ -296,7 +296,7 @@ public class Commands{
             if(author.startsWith("!")) author = author.substring(1);
             try{
                 long l = Long.parseLong(author);
-                User user = messages.jda.getUserById(l);
+                User user = messages.jda.retrieveUserById(l).complete();
                 var list = getWarnings(user);
                 list.add(System.currentTimeMillis() + ":::" + messages.lastUser.getName() + (args.length > 1 ? ":::" + args[1] : ""));
                 messages.text("**@**, you've been warned *@*.", user.getAsMention(), warningStrings[Mathf.clamp(list.size - 1, 0, warningStrings.length - 1)]);
@@ -317,7 +317,7 @@ public class Commands{
             if(author.startsWith("!")) author = author.substring(1);
             try{
                 long l = Long.parseLong(author);
-                User user = messages.jda.getUserById(l);
+                User user = messages.jda.retrieveUserById(l).complete();
                 prefs.putArray("warning-list-" + user.getIdLong(), new Seq<>());
                 messages.text("Cleared warnings for user '@'.", user.getName());
             }catch(Exception e){
