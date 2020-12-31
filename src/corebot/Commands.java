@@ -237,7 +237,7 @@ public class Commands{
                 if(user == null){
                     messages.err("That user (ID @) is not in the cache. How did this happen?", l);
                 }else{
-                    Member member = messages.guild.getMember(user);
+                    Member member = messages.guild.retrieveMember(user).complete();
 
                     messages.info("Info for " + member.getEffectiveName(),
                         "Nickname: @\nUsername: @\nID: @\nStatus: @\nRoles: @\nIs Admin: @\nTime Joined: @",
@@ -368,7 +368,7 @@ public class Commands{
     }
 
     boolean isAdmin(User user){
-        var member = messages.guild.getMember(user);
+        var member = messages.guild.retrieveMember(user).complete();
         return member != null && member.getRoles().stream().anyMatch(role -> role.getName().equals("Developer") || role.getName().equals("Moderator") || role.getName().equals("\uD83D\uDD28 \uD83D\uDD75️\u200D♂️"));
     }
 
