@@ -233,11 +233,12 @@ public class Commands{
             try{
                 long l = Long.parseLong(author);
                 User user = messages.jda.getUserById(l);
-                Member member = messages.guild.getMember(user);
 
-                if(member == null){
-                    messages.err("That user is null. How did this happen?");
+                if(user == null){
+                    messages.err("That user (@) is null. How did this happen?", l);
                 }else{
+                    Member member = messages.guild.getMember(user);
+
                     messages.info("Info for " + member.getEffectiveName(),
                         "Nickname: @\nUsername: @\nID: @\nStatus: @\nRoles: @\nIs Admin: @\nTime Joined: @",
                         member.getNickname(),

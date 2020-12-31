@@ -18,9 +18,9 @@ public enum Info{
     rules("Rules",
     "**1.** Don't be rude. This should be obvious. No racism/sexism/etc.\n" +
     "**2.** No spamming or advertising. Discord links are automatically deleted by the bot; if you want to invite someone to a server, do so in PM.\n" +
-    "**3.** No NSFW content or politics. This includes NSFW conversations. Take it elsewhere.\n" +
-    "**4.** Keep content to the aproppriate text channels.\n" +
-    "**5.** Please keep memes to a minimum; don't dump memes. Mindustry-related memes are fine.\n" +
+    "**3.** No NSFW, sensitive or political content. This includes NSFW conversations. Take it elsewhere.\n" +
+    "**4.** Keep content to the appropriate text channels.\n" +
+    "**5.** Please keep memes to a minimum; don't post memes without discussion. Any offensive or edgy memes will not be tolerated.\n" +
     "**6.** Please do not post invite links to this server in public places without context.\n" +
     "**7.** Do not ask for roles. If I need a moderator and I think you fit the position, I will ask you personally.\n" +
     "**8.** Do not impersonate other members or intentionally edit your messages to mislead others.\n" +
