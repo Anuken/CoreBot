@@ -14,7 +14,6 @@ import net.dv8tion.jda.api.utils.*;
 import net.dv8tion.jda.api.utils.cache.*;
 
 import java.awt.*;
-import java.time.*;
 import java.util.Timer;
 import java.util.*;
 
@@ -48,12 +47,6 @@ public class Messages extends ListenerAdapter{
         }
     }
 
-    private static String durFormat(Duration duration){
-        if(duration.toDays() > 0) return duration.toDays() + "d";
-        if(duration.toHours() > 0) return duration.toHours() + "h";
-        return duration.toMinutes() + "m";
-    }
-    
     @Override
     public void onMessageReceived(MessageReceivedEvent event){
         try{
