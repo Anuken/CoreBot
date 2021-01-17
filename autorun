@@ -4,7 +4,7 @@ while true; do
 #auto-restart until ctrl-c or exit 0
 
 git pull
-./gradlew dist
+./gradlew -Dorg.gradle.daemon=false dist
 java -jar build/libs/CoreBot.jar
 
 excode=$?
