@@ -155,8 +155,10 @@ public class Commands{
 
                 messages.text("*Map posted successfully.*");
             }catch(Exception e){
+                String err = Strings.neatError(e, true);
+                int max = 900;
                 e.printStackTrace();
-                messages.err("Error parsing map.", Strings.neatError(e, true));
+                messages.err("Error parsing map.", err.length() < max ? err : err.substring(0, max));
                 messages.deleteMessages();
             }
         });
