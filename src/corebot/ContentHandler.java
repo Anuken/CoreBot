@@ -39,6 +39,9 @@ public class ContentHandler{
     BufferedImage currentImage;
 
     public ContentHandler(){
+        //clear cache
+        new Fi("cache").deleteDirectory();
+
         Version.enabled = false;
         Vars.content = new ContentLoader();
         Vars.content.createBaseContent();
@@ -186,7 +189,6 @@ public class ContentHandler{
         });
 
         requests.each(req -> req.block.drawRequestConfigTop(req, requests::each));
-        ImageIO.write(image, "png", new File("out.png"));
 
         return image;
     }

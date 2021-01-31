@@ -18,7 +18,7 @@ allprojects{
 }
 
 ext{
-    mindustryVersion = 'v113'
+    mindustryVersion = 'v123'
 }
 
 task run(dependsOn: classes, type: JavaExec){
@@ -41,8 +41,8 @@ task dist(type: Jar){
 }
 
 dependencies{
-    compile 'net.dv8tion:JDA:4.2.0_214'
+    compile 'net.dv8tion:JDA:4.2.0_227'
     compile "org.jsoup:jsoup:1.7.2"
-    compile "com.github.Anuken.Arc:arc-core:7e9d4252f8ab586d4911fbb4167c4c88cb523234"
-    compile "com.github.Anuken.Mindustry:core:112b91469b187b287cac4afd51d29285dc7ed244"
+    compile "com.github.Anuken.Arc:arc-core:$mindustryVersion"
+    compile "com.github.Anuken.Mindustry:core:$mindustryVersion"
 }

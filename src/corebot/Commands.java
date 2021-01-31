@@ -155,8 +155,10 @@ public class Commands{
 
                 messages.text("*Map posted successfully.*");
             }catch(Exception e){
+                String err = Strings.neatError(e, true);
+                int max = 900;
                 e.printStackTrace();
-                messages.err("Error parsing map.", Strings.neatError(e, true));
+                messages.err("Error parsing map.", err.length() < max ? err : err.substring(0, max));
                 messages.deleteMessages();
             }
         });
@@ -188,7 +190,7 @@ public class Commands{
             try{
                 new File("cache/").mkdir();
                 File baseFile = new File("cache/" + a.getFileName());
-                Fi destFolder = new Fi("dest_mod" + a.getFileName());
+                Fi destFolder = new Fi("cache/dest_mod" + a.getFileName());
                 Fi destFile = new Fi("cache/" + new Fi(baseFile).nameWithoutExtension() + "-cleaned.zip");
 
                 if(destFolder.exists()) destFolder.deleteDirectory();
@@ -231,12 +233,13 @@ public class Commands{
             if(author.startsWith("!")) author = author.substring(1);
             try{
                 long l = Long.parseLong(author);
-                User user = messages.jda.getUserById(l);
-                Member member = messages.guild.getMember(user);
+                User user = messages.jda.retrieveUserById(l).complete();
 
-                if(member == null){
-                    messages.err("That user is null. How did this happen?");
+                if(user == null){
+                    messages.err("That user (ID @) is not in the cache. How did this happen?", l);
                 }else{
+                    Member member = messages.guild.retrieveMember(user).complete();
+
                     messages.info("Info for " + member.getEffectiveName(),
                         "Nickname: @\nUsername: @\nID: @\nStatus: @\nRoles: @\nIs Admin: @\nTime Joined: @",
                         member.getNickname(),
@@ -260,7 +263,7 @@ public class Commands{
             if(author.startsWith("!")) author = author.substring(1);
             try{
                 long l = Long.parseLong(author);
-                User user = messages.jda.getUserById(l);
+                User user = messages.jda.retrieveUserById(l).complete();
                 var list = getWarnings(user);
                 messages.text("User '@' has **@** @.\n@", user.getName(), list.size, list.size == 1 ? "warning" : "warnings",
                 list.map(s -> {
@@ -294,7 +297,7 @@ public class Commands{
             if(author.startsWith("!")) author = author.substring(1);
             try{
                 long l = Long.parseLong(author);
-                User user = messages.jda.getUserById(l);
+                User user = messages.jda.retrieveUserById(l).complete();
                 var list = getWarnings(user);
                 list.add(System.currentTimeMillis() + ":::" + messages.lastUser.getName() + (args.length > 1 ? ":::" + args[1] : ""));
                 messages.text("**@**, you've been warned *@*.", user.getAsMention(), warningStrings[Mathf.clamp(list.size - 1, 0, warningStrings.length - 1)]);
@@ -315,7 +318,7 @@ public class Commands{
             if(author.startsWith("!")) author = author.substring(1);
             try{
                 long l = Long.parseLong(author);
-                User user = messages.jda.getUserById(l);
+                User user = messages.jda.retrieveUserById(l).complete();
                 prefs.putArray("warning-list-" + user.getIdLong(), new Seq<>());
                 messages.text("Cleared warnings for user '@'.", user.getName());
             }catch(Exception e){
@@ -366,7 +369,7 @@ public class Commands{
     }
 
     boolean isAdmin(User user){
-        var member = messages.guild.getMember(user);
+        var member = messages.guild.retrieveMember(user).complete();
         return member != null && member.getRoles().stream().anyMatch(role -> role.getName().equals("Developer") || role.getName().equals("Moderator") || role.getName().equals("\uD83D\uDD28 \uD83D\uDD75️\u200D♂️"));
     }
 
@@ -414,7 +417,7 @@ public class Commands{
 
                 new File("cache").mkdir();
                 File previewFile = new File("cache/img_" + UUID.randomUUID().toString() + ".png");
-                File schemFile = new File(schem.name() + "." + Vars.schematicExtension);
+                File schemFile = new File("cache/" + schem.name() + "." + Vars.schematicExtension);
                 Schematics.write(schem, new Fi(schemFile));
                 ImageIO.write(preview, "png", previewFile);
 
