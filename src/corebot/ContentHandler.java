@@ -9,6 +9,7 @@ import arc.graphics.g2d.*;
 import arc.graphics.g2d.TextureAtlas.*;
 import arc.graphics.g2d.TextureAtlas.TextureAtlasData.*;
 import arc.math.*;
+import arc.math.geom.*;
 import arc.struct.*;
 import arc.util.io.*;
 import arc.util.serialization.*;
@@ -18,9 +19,11 @@ import mindustry.core.*;
 import mindustry.ctype.*;
 import mindustry.entities.units.*;
 import mindustry.game.*;
+import mindustry.game.Schematic.*;
 import mindustry.io.*;
 import mindustry.world.*;
 import mindustry.world.blocks.environment.*;
+import mindustry.world.blocks.legacy.*;
 
 import javax.imageio.*;
 import java.awt.*;
@@ -174,7 +177,53 @@ public class ContentHandler{
         return Schematics.read(CoreBot.net.download(text));
     }
 
+    static Schematic read(InputStream input) throws IOException{
+        byte[] header = {'m', 's', 'c', 'h'};
+        for(byte b : header){
+            if(input.read() != b){
+                throw new IOException("Not a schematic file (missing header).");
+            }
+        }
+
+        //discard version
+        input.read();
+
+        try(DataInputStream stream = new DataInputStream(new InflaterInputStream(input))){
+            short width = stream.readShort(), height = stream.readShort();
+
+            StringMap map = new StringMap();
+            byte tags = stream.readByte();
+            for(int i = 0; i < tags; i++){
+                map.put(stream.readUTF(), stream.readUTF());
+            }
+
+            IntMap<Block> blocks = new IntMap<>();
+            byte length = stream.readByte();
+            for(int i = 0; i < length; i++){
+                String name = stream.readUTF();
+                Block block = Vars.content.getByName(ContentType.block, SaveFileReader.fallback.get(name, name));
+                blocks.put(i, block == null || block instanceof LegacyBlock ? Blocks.air : block);
+            }
+
+            int total = stream.readInt();
+            if(total > 64 * 64) throw new IOException("Schematic has too many blocks.");
+            Seq<Stile> tiles = new Seq<>(total);
+            for(int i = 0; i < total; i++){
+                Block block = blocks.get(stream.readByte());
+                int position = stream.readInt();
+                Object config = TypeIO.readObject(Reads.get(stream));
+                byte rotation = stream.readByte();
+                if(block != Blocks.air){
+                    tiles.add(new Stile(block, Point2.x(position), Point2.y(position), config, rotation));
+                }
+            }
+
+            return new Schematic(tiles, map, width, height);
+        }
+    }
+
     public BufferedImage previewSchematic(Schematic schem) throws Exception{
+        if(schem.width > 64 || schem.height > 64) throw new IOException("Schematic cannot be larger than 64x64.");
         BufferedImage image = new BufferedImage(schem.width * 32, schem.height * 32, BufferedImage.TYPE_INT_ARGB);
 
         Draw.reset();
