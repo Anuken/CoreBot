@@ -27,9 +27,7 @@ public class Net{
                     Log.info("Posting update!");
 
                     //don't post revisions
-                    if(!latest.build.contains(".")){
-                        CoreBot.messages.sendUpdate(latest);
-                    }
+                    CoreBot.messages.sendUpdate(latest);
                     CoreBot.prefs.put("lastBuild", latest.build);
                 }
             }catch(Throwable e){
