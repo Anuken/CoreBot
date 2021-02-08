@@ -77,7 +77,7 @@ public class Commands{
             net.pingServer(args[0], result -> {
                 if(result.name != null){
                     messages.info("Server Online", "Host: @\nPlayers: @\nMap: @\nWave: @\nVersion: @\nPing: @ms",
-                    result.name, result.players, result.mapname, result.wave, result.version, result.ping);
+                    Strings.stripColors(result.name), result.players, Strings.stripColors(result.mapname), result.wave, result.version, result.ping);
                 }else{
                     messages.err("Server Offline", "Timed out.");
                 }
