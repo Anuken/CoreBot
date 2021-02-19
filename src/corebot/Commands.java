@@ -384,9 +384,7 @@ public class Commands{
         return false;
     }
 
-    void handle(Message message){
-        if(message.getAuthor().isBot() || message.getChannel().getType() != ChannelType.TEXT) return;
-
+    void checkContents(Message message){
         if(checkInvite(message)){
             return;
         }
@@ -398,8 +396,17 @@ public class Commands{
             }catch(Exception e){
                 e.printStackTrace();
             }
-            return;
         }
+    }
+
+    void edited(Message message){
+        checkContents(message);
+    }
+
+    void handle(Message message){
+        if(message.getAuthor().isBot() || message.getChannel().getType() != ChannelType.TEXT) return;
+
+        checkContents(message);
 
         String text = message.getContentRaw();
 

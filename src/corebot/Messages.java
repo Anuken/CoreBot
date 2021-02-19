@@ -8,6 +8,7 @@ import net.dv8tion.jda.api.*;
 import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.events.guild.member.*;
 import net.dv8tion.jda.api.events.message.*;
+import net.dv8tion.jda.api.events.message.guild.*;
 import net.dv8tion.jda.api.hooks.*;
 import net.dv8tion.jda.api.requests.*;
 import net.dv8tion.jda.api.utils.*;
@@ -51,6 +52,15 @@ public class Messages extends ListenerAdapter{
     public void onMessageReceived(MessageReceivedEvent event){
         try{
             commands.handle(event.getMessage());
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void onGuildMessageUpdate(GuildMessageUpdateEvent event){
+        try{
+            commands.edited(event.getMessage());
         }catch(Exception e){
             e.printStackTrace();
         }

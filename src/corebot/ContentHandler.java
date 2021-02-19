@@ -170,11 +170,11 @@ public class ContentHandler{
     }
 
     public Schematic parseSchematic(String text) throws Exception{
-        return Schematics.read(new ByteArrayInputStream(Base64Coder.decode(text)));
+        return read(new ByteArrayInputStream(Base64Coder.decode(text)));
     }
 
     public Schematic parseSchematicURL(String text) throws Exception{
-        return Schematics.read(CoreBot.net.download(text));
+        return read(CoreBot.net.download(text));
     }
 
     static Schematic read(InputStream input) throws IOException{
