@@ -422,10 +422,12 @@ public class Commands{
             try{
                 Schematic schem = message.getAttachments().size() == 1 ? contentHandler.parseSchematicURL(message.getAttachments().get(0).getUrl()) : contentHandler.parseSchematic(message.getContentRaw());
                 BufferedImage preview = contentHandler.previewSchematic(schem);
+                String sname = schem.name().replace("/", "_").replace(" ", "_");
+                if(sname.isEmpty()) sname = "empty";
 
                 new File("cache").mkdir();
                 File previewFile = new File("cache/img_" + UUID.randomUUID().toString() + ".png");
-                File schemFile = new File("cache/" + schem.name() + "." + Vars.schematicExtension);
+                File schemFile = new File("cache/" + sname + "." + Vars.schematicExtension);
                 Schematics.write(schem, new Fi(schemFile));
                 ImageIO.write(preview, "png", previewFile);
 
