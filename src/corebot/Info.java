@@ -17,7 +17,7 @@ public enum Info{
     "To join the iOS beta, click this [TestFlight Link](https://testflight.apple.com/join/79Azm1hZ), then install the Apple TestFlight app to play Mindustry."),
     rules("Rules",
     "**1.** Don't be rude. This should be obvious. No racism/sexism/etc.\n" +
-    "**2.** No spamming or advertising. Discord links are automatically deleted by the bot; if you want to invite someone to a server, do so in PM.\n" +
+    "**2.** No spamming or advertising.\n" +
     "**3.** No NSFW, sensitive or political content. This includes NSFW conversations. Take it elsewhere.\n" +
     "**4.** Keep content to the appropriate text channels.\n" +
     "**5.** Please keep memes to a minimum; don't post memes without discussion. Any offensive or edgy memes will not be tolerated.\n" +
@@ -25,7 +25,6 @@ public enum Info{
     "**7.** Do not ask for roles. If I need a moderator and I think you fit the position, I will ask you personally.\n" +
     "**8.** Do not impersonate other members or intentionally edit your messages to mislead others.\n" +
     "**9.** Do not cross-post the same message to multiple channels.\n" +
-    "**10.** Breaking any of these rules in a non-serious way may result in a warning. 3 warnings is a ban.\n" +
     "*If I don't like your behavior, you're out. Obey the spirit, not the word.*"),
     pings("Ping and PM Policy",
     "*Please do not PM or ping me (Anuke) unless it is something important.*\n\n" +
