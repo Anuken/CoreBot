@@ -385,6 +385,8 @@ public class Commands{
     }
 
     void checkContents(Message message){
+        if(isAdmin(message.getAuthor()) return;
+
         if(checkInvite(message)){
             return;
         }
