@@ -63,7 +63,7 @@ public class ContentHandler{
         TextureAtlasData data = new TextureAtlasData(new Fi(assets + "sprites/sprites.atlas"), new Fi(assets + "sprites"), false);
         Core.atlas = new TextureAtlas();
 
-        ObjectMap<Page, BufferedImage> images = new ObjectMap<>();
+        ObjectMap<AtlasPage, BufferedImage> images = new ObjectMap<>();
         ObjectMap<String, BufferedImage> regions = new ObjectMap<>();
 
         data.getPages().each(page -> {
@@ -357,7 +357,7 @@ public class ContentHandler{
 
         @Override
         public TextureDataType getType(){
-            return TextureDataType.Custom;
+            return TextureDataType.custom;
         }
 
         @Override
