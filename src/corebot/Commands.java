@@ -410,8 +410,7 @@ public class Commands{
 
         messages.guild.getTextChannelById(logChannelID)
             .sendMessage(new EmbedBuilder()
-            .setAuthor(message.getAuthor().getName())
-            .setImage(message.getAuthor().getAvatarUrl())
+            .setAuthor(message.getAuthor().getName(), message.getAuthor().getAvatarUrl(), message.getAuthor().getAvatarUrl())
             .setDescription(message.getContentRaw())
             .addField("Author", message.getAuthor().getAsMention(), false)
             .addField("Channel", message.getTextChannel().getAsMention(), false)
