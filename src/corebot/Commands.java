@@ -420,7 +420,7 @@ public class Commands{
         }
 
         if(message.getMentionedUsers().stream().anyMatch(u -> u.getIdLong() == 123539225919488000L)){
-            log.addField("Note", "[MENTION] This is a mention.", false);
+            log.addField("Note", "thisisamention", false);
         }
 
         messages.guild.getTextChannelById(logChannelID).sendMessage(log.build()).queue();
