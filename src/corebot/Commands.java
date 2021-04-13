@@ -408,14 +408,18 @@ public class Commands{
     void handle(Message message){
         if(message.getAuthor().isBot() || message.getChannel().getType() != ChannelType.TEXT) return;
 
-        messages.guild.getTextChannelById(logChannelID)
-            .sendMessage(new EmbedBuilder()
-            .setAuthor(message.getAuthor().getName(), message.getAuthor().getAvatarUrl(), message.getAuthor().getAvatarUrl())
-            .setDescription(message.getContentRaw())
-            .addField("Author", message.getAuthor().getAsMention(), false)
-            .addField("Channel", message.getTextChannel().getAsMention(), false)
-            .setColor(messages.normalColor)
-            .build()).queue();
+        EmbedBuilder builder = new EmbedBuilder()
+        .setAuthor(message.getAuthor().getName(), message.getAuthor().getAvatarUrl(), message.getAuthor().getAvatarUrl())
+        .setDescription(message.getContentRaw())
+        .addField("Author", message.getAuthor().getAsMention(), false)
+        .addField("Channel", message.getTextChannel().getAsMention(), false)
+        .setColor(messages.normalColor);
+
+        if(message.getReferencedMessage() != null){
+            builder.addField("Replying to", message.getReferencedMessage().getAuthor().getAsMention() + " [Jump](" + message.getReferencedMessage().getJumpUrl() + ")", false);
+        }
+
+        messages.guild.getTextChannelById(logChannelID).sendMessage(builder.build()).queue();
 
         checkContents(message);
 
