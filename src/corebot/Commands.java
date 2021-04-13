@@ -419,6 +419,10 @@ public class Commands{
             log.addField("Replying to", message.getReferencedMessage().getAuthor().getAsMention() + " [Jump](" + message.getReferencedMessage().getJumpUrl() + ")", false);
         }
 
+        if(message.getMentionedUsers().stream().anyMatch(u -> u.getIdLong() == 123539225919488000L)){
+            log.addField("Note", "[MENTION] This is a mention.", false);
+        }
+
         messages.guild.getTextChannelById(logChannelID).sendMessage(log.build()).queue();
 
         checkContents(message);
