@@ -408,6 +408,8 @@ public class Commands{
     void handle(Message message){
         if(message.getAuthor().isBot() || message.getChannel().getType() != ChannelType.TEXT) return;
 
+        messages.guild.getTextChannelById(logChannelID).sendMessage(message.getAuthor().getAsMention() + "\n" + message.getContentDisplay() + "");
+
         checkContents(message);
 
         String text = message.getContentRaw();
@@ -428,7 +430,7 @@ public class Commands{
                 if(sname.isEmpty()) sname = "empty";
 
                 new File("cache").mkdir();
-                File previewFile = new File("cache/img_" + UUID.randomUUID().toString() + ".png");
+                File previewFile = new File("cache/img_" + UUID.randomUUID() + ".png");
                 File schemFile = new File("cache/" + sname + "." + Vars.schematicExtension);
                 Schematics.write(schem, new Fi(schemFile));
                 ImageIO.write(preview, "png", previewFile);
