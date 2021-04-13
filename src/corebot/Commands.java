@@ -408,7 +408,7 @@ public class Commands{
     void handle(Message message){
         if(message.getAuthor().isBot() || message.getChannel().getType() != ChannelType.TEXT) return;
 
-        EmbedBuilder builder = new EmbedBuilder()
+        EmbedBuilder log = new EmbedBuilder()
         .setAuthor(message.getAuthor().getName(), message.getAuthor().getAvatarUrl(), message.getAuthor().getAvatarUrl())
         .setDescription(message.getContentRaw())
         .addField("Author", message.getAuthor().getAsMention(), false)
@@ -416,10 +416,10 @@ public class Commands{
         .setColor(messages.normalColor);
 
         if(message.getReferencedMessage() != null){
-            builder.addField("Replying to", message.getReferencedMessage().getAuthor().getAsMention() + " [Jump](" + message.getReferencedMessage().getJumpUrl() + ")", false);
+            log.addField("Replying to", message.getReferencedMessage().getAuthor().getAsMention() + " [Jump](" + message.getReferencedMessage().getJumpUrl() + ")", false);
         }
 
-        messages.guild.getTextChannelById(logChannelID).sendMessage(builder.build()).queue();
+        messages.guild.getTextChannelById(logChannelID).sendMessage(log.build()).queue();
 
         checkContents(message);
 
