@@ -408,7 +408,8 @@ public class Commands{
     void handle(Message message){
         if(message.getAuthor().isBot() || message.getChannel().getType() != ChannelType.TEXT) return;
 
-        messages.guild.getTextChannelById(logChannelID).sendMessage(message.getAuthor().getAsMention() + "\n" + message.getContentDisplay() + "");
+        messages.guild.getTextChannelById(logChannelID)
+            .sendMessage(message.getAuthor().getAsMention() + " *in* " + message.getTextChannel().getAsMention() + "\n\n" + message.getContentDisplay() + "").queue();
 
         checkContents(message);
 
