@@ -409,10 +409,12 @@ public class Commands{
         if(message.getAuthor().isBot() || message.getChannel().getType() != ChannelType.TEXT) return;
 
         messages.guild.getTextChannelById(logChannelID)
-            .sendMessage(new EmbedBuilder().setAuthor(message.getAuthor().getName(), message.getAuthor().getAvatarUrl())
-            .setTitle(isAdmin(message.getAuthor()) ? message.getAuthor().getName() + " // `" + message.getAuthor().getId() + "`" : message.getAuthor().getAsMention())
+            .sendMessage(new EmbedBuilder()
+            .setAuthor(message.getAuthor().getName())
+            .setImage(message.getAuthor().getAvatarUrl())
             .setDescription(message.getContentRaw())
-            .setFooter(message.getTextChannel().getAsMention())
+            .addField("Author", message.getAuthor().getAsMention(), false)
+            .addField("Channel", message.getTextChannel().getAsMention(), false)
             .setColor(messages.normalColor)
             .build()).queue();
 
