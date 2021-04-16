@@ -79,6 +79,7 @@ public class Messages extends ListenerAdapter{
             .sendMessage(new EmbedBuilder()
                 .setAuthor(event.getUser().getName(), event.getUser().getAvatarUrl(), event.getUser().getAvatarUrl())
                 .addField("User", event.getUser().getAsMention(), false)
+                .addField("ID", "`" + event.getUser().getId() + "`", false)
                 .setColor(messages.normalColor).build())
             .queue();
         }catch(Exception ignored){
