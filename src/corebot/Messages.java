@@ -74,6 +74,13 @@ public class Messages extends ListenerAdapter{
             "\n\n*Make sure you read #rules and the channel topics before posting.*\n\n" +
             "**View a list of all frequently answered questions here:**\n<https://discordapp.com/channels/391020510269669376/611204372592066570/611586644402765828>"
             ).queue();
+
+            messages.guild.getTextChannelById(joinChannelID)
+            .sendMessage(new EmbedBuilder()
+                .setAuthor(event.getUser().getName(), event.getUser().getAvatarUrl(), event.getUser().getAvatarUrl())
+                .addField("User", event.getUser().getAsMention(), false)
+                .setColor(messages.normalColor).build())
+            .queue();
         }catch(Exception ignored){
             //may not be able to send messages to this user, ignore
         }

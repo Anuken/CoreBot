@@ -17,6 +17,7 @@ public class CoreBot{
     public static final long schematicsChannelID = 640604827344306207L;
     public static final long baseSchematicsChannelID = 718536034127839252L;
     public static final long logChannelID = 568416809964011531L;
+    public static final long joinChannelID = 832688792338038844L;
 
     public static final long messageDeleteTime = 20000;
 
