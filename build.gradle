@@ -49,4 +49,5 @@ dependencies{
     compile "org.jsoup:jsoup:1.7.2"
     compile "com.github.Anuken.Arc:arc-core:$mindustryVersion"
     compile "com.github.Anuken.Mindustry:core:$mindustryVersion"
+    compile "com.github.twitch4j:twitch4j:1.2.1"
 }

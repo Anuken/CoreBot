@@ -1,5 +1,6 @@
 package corebot;
 
+import java.awt.*;
 import java.io.File;
 
 public class CoreBot{
@@ -17,6 +18,11 @@ public class CoreBot{
     public static final long baseSchematicsChannelID = 718536034127839252L;
     public static final long logChannelID = 568416809964011531L;
     public static final long joinChannelID = 832688792338038844L;
+    public static final long streamsChannelID = 833420066238103604L;
+    public static final long testingChannelID = 432984286099144706L;
+
+    public static final Color normalColor = Color.decode("#FAB462");
+    public static final Color errorColor = Color.decode("#ff3838");
 
     public static final long messageDeleteTime = 20000;
 
@@ -25,8 +31,9 @@ public class CoreBot{
     public static Commands commands = new Commands();
     public static Net net = new Net();
     public static Prefs prefs = new Prefs(prefsFile);
+    public static StreamScanner streams = new StreamScanner();
 
-    //crash reporting disabled until V6 is out
+    //crash reporting disabled basically forever
     //public static Reports reports = new Reports();
 
     public static void main(String[] args){

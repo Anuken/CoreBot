@@ -102,8 +102,8 @@ public class Commands{
                 try{
                     Document doc = Jsoup.connect(args[0]).get();
 
-                    EmbedBuilder builder = new EmbedBuilder().setColor(messages.normalColor).
-                    setColor(messages.normalColor)
+                    EmbedBuilder builder = new EmbedBuilder().setColor(normalColor).
+                    setColor(normalColor)
                     .setAuthor(messages.lastUser.getName(), messages.lastUser.getAvatarUrl(), messages.lastUser.getAvatarUrl()).setTitle(doc.select("strong[itemprop=name]").text());
 
                     Elements elem = doc.select("span[itemprop=about]");
@@ -144,7 +144,7 @@ public class Commands{
                 Streams.copy(net.download(a.getUrl()), new FileOutputStream(mapFile));
                 ImageIO.write(map.image, "png", imageFile.file());
 
-                EmbedBuilder builder = new EmbedBuilder().setColor(messages.normalColor).setColor(messages.normalColor)
+                EmbedBuilder builder = new EmbedBuilder().setColor(normalColor).setColor(normalColor)
                 .setImage("attachment://" + imageFile.name())
 
                 .setAuthor(messages.lastUser.getName(), messages.lastUser.getAvatarUrl(), messages.lastUser.getAvatarUrl()).setTitle(map.name == null ? a.getFileName().replace(".msav", "") : map.name);
@@ -413,7 +413,7 @@ public class Commands{
         .setDescription(message.getContentRaw())
         .addField("Author", message.getAuthor().getAsMention(), false)
         .addField("Channel", message.getTextChannel().getAsMention(), false)
-        .setColor(messages.normalColor);
+        .setColor(normalColor);
 
         if(message.getReferencedMessage() != null){
             log.addField("Replying to", message.getReferencedMessage().getAuthor().getAsMention() + " [Jump](" + message.getReferencedMessage().getJumpUrl() + ")", false);
@@ -450,7 +450,7 @@ public class Commands{
                 Schematics.write(schem, new Fi(schemFile));
                 ImageIO.write(preview, "png", previewFile);
 
-                EmbedBuilder builder = new EmbedBuilder().setColor(messages.normalColor).setColor(messages.normalColor)
+                EmbedBuilder builder = new EmbedBuilder().setColor(normalColor).setColor(normalColor)
                 .setImage("attachment://" + previewFile.getName())
                 .setAuthor(message.getAuthor().getName(), message.getAuthor().getAvatarUrl(), message.getAuthor().getAvatarUrl()).setTitle(schem.name());
 

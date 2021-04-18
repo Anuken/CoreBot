@@ -14,7 +14,6 @@ import net.dv8tion.jda.api.requests.*;
 import net.dv8tion.jda.api.utils.*;
 import net.dv8tion.jda.api.utils.cache.*;
 
-import java.awt.*;
 import java.util.Timer;
 import java.util.*;
 
@@ -27,8 +26,6 @@ public class Messages extends ListenerAdapter{
     Message lastMessage;
     Message lastSentMessage;
     Guild guild;
-    Color normalColor = Color.decode("#FAB462");
-    Color errorColor = Color.decode("#ff3838");
 
     public Messages(){
         String token = System.getenv("CORE_BOT_TOKEN");
@@ -80,7 +77,7 @@ public class Messages extends ListenerAdapter{
                 .setAuthor(event.getUser().getName(), event.getUser().getAvatarUrl(), event.getUser().getAvatarUrl())
                 .addField("User", event.getUser().getAsMention(), false)
                 .addField("ID", "`" + event.getUser().getId() + "`", false)
-                .setColor(messages.normalColor).build())
+                .setColor(normalColor).build())
             .queue();
         }catch(Exception ignored){
             //may not be able to send messages to this user, ignore
