@@ -56,7 +56,7 @@ public class StreamScanner{
             .setTitle(stream.getTitle(), "https://twitch.tv/" + stream.getUserLogin())
             .setColor(CoreBot.normalColor)
             .setAuthor(stream.getUserName(), "https://twitch.tv/" + stream.getUserLogin())
-            .setImage(stream.getThumbnailUrl(390, 200))
+            .setImage(stream.getThumbnailUrl(390, 220))
             .build()).queue();
     }
 
