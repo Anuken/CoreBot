@@ -49,14 +49,11 @@ public class StreamScanner{
     }
 
     void newStream(Stream stream){
-        //Log.info("New stream seen:\n| Title: @\n| Streamer: @", stream.getTitle(), stream.getUserName());
-        Log.info(stream);
 
-        //if(false)
         CoreBot.messages.guild.getTextChannelById(CoreBot.testingChannelID)
             .sendMessage(
             new EmbedBuilder()
-            .setTitle(stream.getTitle(), "https://twitch.tv/\" + stream.getUserLogin()")
+            .setTitle(stream.getTitle(), "https://twitch.tv/" + stream.getUserLogin())
             .setColor(CoreBot.normalColor)
             .setAuthor(stream.getUserName(), "https://twitch.tv/" + stream.getUserLogin())
             .setImage(stream.getThumbnailUrl(390, 200))
