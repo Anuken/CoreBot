@@ -33,7 +33,7 @@ public class StreamScanner{
             @Override
             public void run(){
                 try{
-                    var list = client.getStreams(null, null, null, null, List.of(testId), null, null, null).execute();
+                    var list = client.getStreams(null, null, null, null, List.of(minId), null, null, null).execute();
 
                     for(var stream : list.getStreams()){
                         if(seenIds.add(stream.getId())){
@@ -56,7 +56,7 @@ public class StreamScanner{
         if(user.getUsers().size() > 0){
             var avatar = user.getUsers().get(0).getProfileImageUrl();
 
-            CoreBot.messages.guild.getTextChannelById(CoreBot.testingChannelID)
+            CoreBot.messages.guild.getTextChannelById(CoreBot.streamsChannelID)
             .sendMessage(
                 new EmbedBuilder()
                 .setTitle(stream.getTitle(), "https://twitch.tv/" + stream.getUserLogin())
