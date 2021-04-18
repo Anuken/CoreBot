@@ -32,7 +32,7 @@ public class StreamScanner{
             @Override
             public void run(){
                 try{
-                    var list = client.getStreams(null, null, null, null, List.of(testId), null, null, null).execute();
+                    var list = client.getStreams(null, null, null, null, List.of(minId), null, null, null).execute();
 
                     for(var stream : list.getStreams()){
                         if(seenIds.add(stream.getId())){
@@ -50,21 +50,18 @@ public class StreamScanner{
 
     void newStream(Stream stream){
 
-        CoreBot.messages.guild.getTextChannelById(CoreBot.testingChannelID)
+        CoreBot.messages.guild.getTextChannelById(CoreBot.streamsChannelID)
             .sendMessage(
             new EmbedBuilder()
             .setTitle(stream.getTitle(), "https://twitch.tv/" + stream.getUserLogin())
             .setColor(CoreBot.normalColor)
             .setAuthor(stream.getUserName(), "https://twitch.tv/" + stream.getUserLogin())
             .setImage(stream.getThumbnailUrl(390, 220))
+            .setTimestamp(stream.getStartedAtInstant())
             .build()).queue();
     }
 
     Fi seen(){
         return Fi.get("seen_" + (Time.millis() / seenCleanPeriod) + ".txt");
     }
-
-    //public static void main(String[] args){
-        //new StreamScanner();
-    //}
 }
