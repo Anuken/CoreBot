@@ -148,17 +148,16 @@ public class Messages extends ListenerAdapter{
             builder.append("\n");
             value = value.next;
         }
-        guild.getTextChannelById(CoreBot.crashReportChannelID).sendMessage(builder.toString()).queue();
+        guild.getTextChannelById(crashReportChannelID).sendMessage(builder.toString()).queue();
     }
 
     public void text(String text, Object... args){
-        lastSentMessage = channel.sendMessage(format(text, args)).complete();
+        lastSentMessage = channel.sendMessage(Strings.format(text, args)).complete();
     }
 
     public void info(String title, String text, Object... args){
         MessageEmbed object = new EmbedBuilder()
-        .addField(title, format(text, args), true).setColor(normalColor).build();
-
+        .setTitle(title).setDescription(Strings.format(text, args)).setColor(normalColor).build();
         lastSentMessage = channel.sendMessage(object).complete();
     }
 
@@ -168,11 +167,7 @@ public class Messages extends ListenerAdapter{
 
     public void err(String title, String text, Object... args){
         MessageEmbed e = new EmbedBuilder()
-        .addField(title, format(text, args), true).setColor(errorColor).build();
+        .setTitle(title).setDescription(Strings.format(text, args)).setColor(errorColor).build();
         lastSentMessage = channel.sendMessage(e).complete();
-    }
-
-    private String format(String text, Object... args){
-        return Strings.format(text, args);
     }
 }
