@@ -16,12 +16,13 @@ public class StreamScanner{
     private static final String minId = "502103", testId = "31376";
 
     private ObjectSet<String> seenIds;
+    private TwitchHelix client;
 
     public StreamScanner(){
         //clean up old file
         Fi.get("seen_" + (Time.millis() / seenCleanPeriod - 1) + ".txt").delete();
 
-        TwitchHelix client = TwitchHelixBuilder.builder()
+        client = TwitchHelixBuilder.builder()
         .withClientId("worwycsp7vvr6049q2f88l1cj1jj1i")
         .withClientSecret(OS.env("TWITCH_SECRET"))
         .build();
@@ -50,15 +51,21 @@ public class StreamScanner{
 
     void newStream(Stream stream){
 
-        CoreBot.messages.guild.getTextChannelById(CoreBot.streamsChannelID)
+        var user = client.getUsers(null, List.of(stream.getUserId()), null).execute();
+
+        if(user.getUsers().size() > 0){
+            var avatar = user.getUsers().get(0).getProfileImageUrl();
+
+            CoreBot.messages.guild.getTextChannelById(CoreBot.testingChannelID)
             .sendMessage(
-            new EmbedBuilder()
-            .setTitle(stream.getTitle(), "https://twitch.tv/" + stream.getUserLogin())
-            .setColor(CoreBot.normalColor)
-            .setAuthor(stream.getUserName(), "https://twitch.tv/" + stream.getUserLogin())
-            .setImage(stream.getThumbnailUrl(390, 220))
-            .setTimestamp(stream.getStartedAtInstant())
-            .build()).queue();
+                new EmbedBuilder()
+                .setTitle(stream.getTitle(), "https://twitch.tv/" + stream.getUserLogin())
+                .setColor(CoreBot.normalColor)
+                .setAuthor(stream.getUserName(), "https://twitch.tv/" + stream.getUserLogin(), avatar)
+                .setImage(stream.getThumbnailUrl(390, 220))
+                .setTimestamp(stream.getStartedAtInstant())
+                .build()).queue();
+            }
     }
 
     Fi seen(){
