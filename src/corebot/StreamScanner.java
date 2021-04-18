@@ -56,10 +56,10 @@ public class StreamScanner{
         CoreBot.messages.guild.getTextChannelById(CoreBot.testingChannelID)
             .sendMessage(
             new EmbedBuilder()
-            .setTitle(stream.getTitle())
+            .setTitle(stream.getTitle(), "https://twitch.tv/\" + stream.getUserLogin()")
             .setColor(CoreBot.normalColor)
             .setAuthor(stream.getUserName(), "https://twitch.tv/" + stream.getUserLogin())
-            .setImage(stream.getThumbnailUrl(400, 200))
+            .setImage(stream.getThumbnailUrl(390, 200))
             .build()).queue();
     }
 
