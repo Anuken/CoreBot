@@ -19,6 +19,7 @@ public class CoreBot{
     public static final long logChannelID = 568416809964011531L;
     public static final long joinChannelID = 832688792338038844L;
     public static final long streamsChannelID = 833420066238103604L;
+    public static final long videosChannelID = 833826797048692747L;
     public static final long testingChannelID = 432984286099144706L;
 
     public static final Color normalColor = Color.decode("#FAB462");
@@ -32,6 +33,7 @@ public class CoreBot{
     public static Net net = new Net();
     public static Prefs prefs = new Prefs(prefsFile);
     public static StreamScanner streams = new StreamScanner();
+    public static VideoScanner videos = new VideoScanner();
 
     //crash reporting disabled basically forever
     //public static Reports reports = new Reports();
