@@ -17,6 +17,8 @@ public class StreamScanner{
     private static final String minId = "502103", testId = "31376";
 
     private ObjectSet<String> seenIds;
+    private StringMap stream2msg;
+    private Fi streamsFi = Fi.get("streams.txt");
     private TwitchHelix client;
 
     public StreamScanner(){
@@ -29,19 +31,36 @@ public class StreamScanner{
         .build();
 
         seenIds = Seq.with(seen().exists() ? seen().readString().split("\n") : new String[0]).asSet();
+        stream2msg = streamsFi == null ? new StringMap() : StringMap.of((Object[])streamsFi.readString().split("\n"));
 
         new Timer().scheduleAtFixedRate(new TimerTask(){
             @Override
             public void run(){
                 try{
                     var list = client.getStreams(null, null, null, null, List.of(minId), null, null, null).execute();
+                    ObjectSet<String> current = new ObjectSet<>();
 
                     for(var stream : list.getStreams()){
+                        current.add(stream.getId());
                         //only display streams that started a few minutes ago, so the thumbnail is correct
                         if(!Duration.between(stream.getStartedAtInstant(), Instant.now()).minus(Duration.ofMinutes(startDelayMins)).isNegative() &&
                             seenIds.add(stream.getId())){
                             newStream(stream);
                         }
+                    }
+
+                    //remove all streams that are no longer airing
+                    synchronized(stream2msg){
+                        var entries = stream2msg.entries();
+                        for(var entry : entries){
+                            if(!current.contains(entry.key)){
+                                //remove the stream and the message
+                                CoreBot.messages.guild.getTextChannelById(CoreBot.streamsChannelID).deleteMessageById(entry.value).queue();
+                                entries.remove();
+                            }
+                        }
+
+                        streamsFi.writeString(stream2msg.toString("\n").replace('=', '\n'));
                     }
 
                     seen().writeString(seenIds.asArray().toString("\n"));
@@ -61,14 +80,19 @@ public class StreamScanner{
 
             CoreBot.messages.guild.getTextChannelById(CoreBot.streamsChannelID)
             .sendMessage(
-                new EmbedBuilder()
-                .setTitle(stream.getTitle(), "https://twitch.tv/" + stream.getUserLogin())
-                .setColor(CoreBot.normalColor)
-                .setAuthor(stream.getUserName(), "https://twitch.tv/" + stream.getUserLogin(), avatar)
-                .setImage(stream.getThumbnailUrl(390, 220))
-                .setTimestamp(stream.getStartedAtInstant())
-                .build()).queue();
-            }
+            new EmbedBuilder()
+            .setTitle(stream.getTitle(), "https://twitch.tv/" + stream.getUserLogin())
+            .setColor(CoreBot.normalColor)
+            .setAuthor(stream.getUserName(), "https://twitch.tv/" + stream.getUserLogin(), avatar)
+            .setImage(stream.getThumbnailUrl(390, 220))
+            .setTimestamp(stream.getStartedAtInstant())
+            .build())
+            .queue(done -> {
+                synchronized(stream2msg){
+                    stream2msg.put(stream.getId(), done.getId());
+                }
+            });
+        }
     }
 
     Fi seen(){
