@@ -35,7 +35,6 @@ public class VideoScanner{
             @Override
             public void run(){
                 try{
-                    Log.info("querying videos");
                     query("playlistItems",
                     StringMap.of(
                     "part", "snippet",
@@ -74,8 +73,6 @@ public class VideoScanner{
     }
 
     void newVideo(Jval video){
-        Log.info("video: " + video +"\n\n");
-
         var id = video.getString("videoOwnerChannelId");
         Jval[] user = {null};
 
@@ -99,7 +96,7 @@ public class VideoScanner{
             .setAuthor(video.getString("videoOwnerChannelTitle"), videoUrl, avatar)
             .setImage(video.get("thumbnails").get("high").getString("url"))
             .setTimestamp(DateTimeFormatter.ISO_INSTANT.parse(video.getString("publishedAt")))
-            .build());
+            .build()).queue();
         }else{
             Log.warn("unable to get user with ID @", id);
         }
