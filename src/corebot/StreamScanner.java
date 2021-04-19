@@ -31,7 +31,7 @@ public class StreamScanner{
         .build();
 
         seenIds = Seq.with(seen().exists() ? seen().readString().split("\n") : new String[0]).asSet();
-        stream2msg = streamsFi == null ? new StringMap() : StringMap.of((Object[])streamsFi.readString().split("\n"));
+        stream2msg = !streamsFi.exists() ? new StringMap() : StringMap.of((Object[])streamsFi.readString().split("\n"));
 
         new Timer().scheduleAtFixedRate(new TimerTask(){
             @Override
