@@ -39,7 +39,7 @@ public class VideoScanner{
                     StringMap.of(
                     "part", "snippet",
                     "playlistId", popularVideosPlaylist,
-                    "maxResults", "50"
+                    "maxResults", "25"
                     ), result -> {
                         var items = result.get("items");
                         for(var video : items.asArray()){
