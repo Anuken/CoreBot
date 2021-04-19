@@ -96,6 +96,7 @@ public class VideoScanner{
             .setAuthor(video.getString("videoOwnerChannelTitle"), videoUrl, avatar)
             .setImage(video.get("thumbnails").get("high").getString("url"))
             .setTimestamp(DateTimeFormatter.ISO_INSTANT.parse(video.getString("publishedAt")))
+            .setFooter(video.getString("description").replace("\\n", "\n"))
             .build()).queue();
         }else{
             Log.warn("unable to get user with ID @", id);
