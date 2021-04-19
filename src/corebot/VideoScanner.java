@@ -35,6 +35,7 @@ public class VideoScanner{
             @Override
             public void run(){
                 try{
+                    Log.info("querying videos");
                     query("playlistItems",
                     StringMap.of(
                     "part", "snippet",
@@ -51,7 +52,7 @@ public class VideoScanner{
 
                     seenfi.writeString(seen.asArray().toString("\n"));
                 }catch(Exception e){
-                    e.printStackTrace();
+                    Log.err(e);
                 }
             }
         }, 1000, updatePeriod);
@@ -73,6 +74,7 @@ public class VideoScanner{
     }
 
     void newVideo(Jval video){
+        Log.info("video: " + video +"\n\n");
 
         var id = video.getString("videoOwnerChannelId");
         Jval[] user = {null};
@@ -89,7 +91,7 @@ public class VideoScanner{
         if(user[0] != null){
             var avatar = user[0].get("snippet").get("thumbnails").get("default").getString("url");
 
-            CoreBot.messages.guild.getTextChannelById(CoreBot.streamsChannelID)
+            CoreBot.messages.guild.getTextChannelById(CoreBot.videosChannelID)
             .sendMessage(
             new EmbedBuilder()
             .setTitle(video.getString("title"), "https://youtube.com/watch/?v=" + videoUrl)
