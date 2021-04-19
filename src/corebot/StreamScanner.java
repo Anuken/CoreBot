@@ -67,7 +67,7 @@ public class StreamScanner{
             .setAuthor(stream.getUserName(), "https://twitch.tv/" + stream.getUserLogin(), avatar)
             .setImage(stream.getThumbnailUrl(390, 220))
             .setTimestamp(stream.getStartedAtInstant())
-            .build());
+            .build()).queue();
         }
     }
 
