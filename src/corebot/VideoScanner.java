@@ -19,7 +19,7 @@ import java.util.Timer;
 public class VideoScanner{
     private static final String api = "https://youtube.googleapis.com/youtube/v3/";
     private static final long updatePeriod = 1000 * 60 * 60;
-    private static final String minChannelId = "UCR-XYZA9YQVhCIdkssqVNuQ";
+    private static final String minChannelId = "UCR-XYZA9YQVhCIdkssqVNuQ", popularVideosPlaylist = "PLO5a8SnRwlbQ8zKnz_upUGlxQv9qF2Mxo";
     private static final String key = OS.env("GOOGLE_API_KEY");
 
     private final Fi seenfi = new Fi("videos.txt");
@@ -38,7 +38,7 @@ public class VideoScanner{
                     query("playlistItems",
                     StringMap.of(
                     "part", "snippet",
-                    "playlistId", "PLO5a8SnRwlbQ8zKnz_upUGlxQv9qF2Mxo",
+                    "playlistId", popularVideosPlaylist,
                     "maxResults", "25"
                     ), result -> {
                         var items = result.get("items");
@@ -95,7 +95,7 @@ public class VideoScanner{
             .setTitle(video.getString("title"), "https://youtube.com/watch/?v=" + videoUrl)
             .setColor(CoreBot.normalColor)
             .setAuthor(video.getString("videoOwnerChannelTitle"), videoUrl, avatar)
-            .setImage(video.get("thumbnails").getString("high"))
+            .setImage(video.get("thumbnails").get("high").getString("url"))
             .setTimestamp(DateTimeFormatter.ISO_INSTANT.parse(video.getString("publishedAt")))
             .build());
         }else{
