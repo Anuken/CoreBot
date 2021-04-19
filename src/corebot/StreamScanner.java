@@ -13,7 +13,7 @@ import java.util.Timer;
 import java.util.concurrent.*;
 
 public class StreamScanner{
-    private static final long updatePeriod = 1000 * 60, seenCleanPeriod = 1000 * 60 * 60 * 24 * 2, startDelayMins = 10;
+    private static final long updatePeriod = 1000 * 60, seenCleanPeriod = 1000 * 60 * 60 * 24 * 2, startDelayMins = 5;
     private static final String minId = "502103", testId = "31376";
 
     private ObjectSet<String> seenIds;
@@ -38,7 +38,7 @@ public class StreamScanner{
 
                     for(var stream : list.getStreams()){
                         //only display streams that started a few minutes ago, so the thumbnail is correct
-                        if(Duration.between(stream.getStartedAtInstant(), Instant.now()).minus(Duration.ofMinutes(startDelayMins)).isNegative() &&
+                        if(!Duration.between(stream.getStartedAtInstant(), Instant.now()).minus(Duration.ofMinutes(startDelayMins)).isNegative() &&
                             seenIds.add(stream.getId())){
                             newStream(stream);
                         }
