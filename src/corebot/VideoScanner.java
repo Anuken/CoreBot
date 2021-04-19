@@ -91,7 +91,7 @@ public class VideoScanner{
             CoreBot.messages.guild.getTextChannelById(CoreBot.videosChannelID)
             .sendMessage(
             new EmbedBuilder()
-            .setTitle(video.getString("title"), "https://youtube.com/watch/?v=" + videoUrl)
+            .setTitle(video.getString("title"), videoUrl)
             .setColor(CoreBot.normalColor)
             .setAuthor(video.getString("videoOwnerChannelTitle"), videoUrl, avatar)
             .setImage(video.get("thumbnails").get("high").getString("url"))
