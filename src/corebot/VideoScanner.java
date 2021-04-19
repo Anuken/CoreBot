@@ -1,6 +1,5 @@
 package corebot;
 
-import arc.*;
 import arc.Net;
 import arc.Net.*;
 import arc.files.*;
@@ -8,17 +7,16 @@ import arc.func.*;
 import arc.struct.*;
 import arc.util.*;
 import arc.util.serialization.*;
-import arc.util.serialization.Jval.*;
 import net.dv8tion.jda.api.*;
 
 import java.time.format.*;
-import java.util.*;
 import java.util.Timer;
+import java.util.*;
 
 
 public class VideoScanner{
     private static final String api = "https://youtube.googleapis.com/youtube/v3/";
-    private static final long updatePeriod = 1000 * 60 * 60;
+    private static final long updatePeriod = 1000 * 60 * 30;
     private static final String minChannelId = "UCR-XYZA9YQVhCIdkssqVNuQ", popularVideosPlaylist = "PLO5a8SnRwlbQ8zKnz_upUGlxQv9qF2Mxo";
     private static final String key = OS.env("GOOGLE_API_KEY");
 
