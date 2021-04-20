@@ -12,7 +12,7 @@ import java.util.Timer;
 import java.util.*;
 
 public class StreamScanner{
-    private static final long updatePeriod = 1000 * 60, seenCleanPeriod = 1000 * 60 * 60 * 24 * 2, startDelayMins = 15;
+    private static final long updatePeriod = 1000 * 60 * 3, seenCleanPeriod = 1000 * 60 * 60 * 24 * 2, startDelayMins = 15;
     private static final String minId = "502103", testId = "31376";
 
     private ObjectSet<String> seenIds;

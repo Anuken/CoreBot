@@ -86,6 +86,9 @@ public class VideoScanner{
 
         if(user[0] != null){
             var avatar = user[0].get("snippet").get("thumbnails").get("default").getString("url");
+            var desc = video.getString("description").replace("\\n", "\n");
+
+            if(desc.length() > 200) desc = desc.substring(0, 200) + "...";
 
             CoreBot.messages.guild.getTextChannelById(CoreBot.videosChannelID)
             .sendMessage(
@@ -95,7 +98,7 @@ public class VideoScanner{
             .setAuthor(video.getString("videoOwnerChannelTitle"), videoUrl, avatar)
             .setImage(video.get("thumbnails").get("high").getString("url"))
             .setTimestamp(DateTimeFormatter.ISO_INSTANT.parse(video.getString("publishedAt")))
-            .setFooter(video.getString("description").replace("\\n", "\n"))
+            .setFooter(desc)
             .build()).queue();
         }else{
             Log.warn("unable to get user with ID @", id);
