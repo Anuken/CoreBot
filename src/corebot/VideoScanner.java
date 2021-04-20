@@ -41,7 +41,7 @@ public class VideoScanner{
                     ), result -> {
                         var items = result.get("items");
                         for(var video : items.asArray()){
-                            String id = video.get("items").get("resourceId").getString("videoId");
+                            String id = video.get("snippet").get("resourceId").getString("videoId");
                             if(seen.add(id)){
                                 newVideo(video.get("snippet"));
                             }
