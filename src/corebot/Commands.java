@@ -271,7 +271,7 @@ public class Commands{
                     String[] split = s.split(":::");
                     long time = Long.parseLong(split[0]);
                     String warner = split.length > 1 ? split[1] : null, reason = split.length > 2 ? split[2] : null;
-                    return "- `" + fmt.format(new Date(time)) + "`: Expires in " + (30-Duration.ofMillis((System.currentTimeMillis() - time)).toDays()) + " days" +
+                    return "- `" + fmt.format(new Date(time)) + "`: Expires in " + (warnExpireDays - Duration.ofMillis((System.currentTimeMillis() - time)).toDays()) + " days" +
                     (warner == null ? "" : "\n  ↳ *From:* " + warner) +
                     (reason == null ? "" : "\n  ↳ *Reason:* " + reason);
                 }).toString("\n"));
@@ -335,7 +335,7 @@ public class Commands{
         //remove invalid warnings
         list.removeAll(s -> {
             String[] split = s.split(":::");
-            return Duration.ofMillis((System.currentTimeMillis() - Long.parseLong(split[0]))).toDays() >= 30;
+            return Duration.ofMillis((System.currentTimeMillis() - Long.parseLong(split[0]))).toDays() >= warnExpireDays;
         });
 
         return list;

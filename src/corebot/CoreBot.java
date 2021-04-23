@@ -26,6 +26,7 @@ public class CoreBot{
     public static final Color errorColor = Color.decode("#ff3838");
 
     public static final long messageDeleteTime = 20000;
+    public static final int warnExpireDays = 20;
 
     public static ContentHandler contentHandler = new ContentHandler();
     public static Messages messages = new Messages();
