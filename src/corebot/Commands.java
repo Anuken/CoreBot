@@ -242,7 +242,7 @@ public class Commands{
                 .header("Accept", "application/vnd.github.v3+json"),
             result -> {
                 if(result.getStatus() == HttpStatus.OK){
-                    messages.deleteMessageNow();
+                    messages.lastMessage.delete().queue();
                     Jval val = Jval.read(result.getResultAsString());
                     int count = val.getInt("total_count", 0);
                     if(count == 0){
