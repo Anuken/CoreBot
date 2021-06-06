@@ -264,7 +264,8 @@ public class Commands{
                     messages.err("HTTP Error: " + result.getStatus().name());
                 }
             }, err -> {
-                messages.err("Error querying Github: @", Strings.getSimpleMessage(err));
+                Log.err(err);
+                messages.err("Error querying Github", Strings.getSimpleMessage(err));
             });
             Core.net.setBlock(false);
         });
