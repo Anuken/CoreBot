@@ -1,11 +1,13 @@
 package corebot;
 
+import arc.*;
+import arc.Net.*;
 import arc.files.*;
 import arc.math.*;
 import arc.struct.*;
 import arc.util.*;
 import arc.util.CommandHandler.*;
-import arc.util.io.*;
+import arc.util.io.Streams;
 import arc.util.serialization.*;
 import arc.util.serialization.Jval.*;
 import corebot.ContentHandler.Map;
@@ -227,6 +229,44 @@ public class Commands{
                 messages.err("Error parsing mod.", Strings.neatError(e, false));
                 messages.deleteMessages();
             }
+        });
+
+        handler.register("file", "<filename...>", "Find a Mindustry source file by name", args -> {
+            //epic asynchronous code, I know
+            Core.net.setBlock(true);
+            Core.net.http(new HttpRequest(HttpMethod.GET)
+                .url("https://api.github.com/search/code?q=" +
+                    "filename:" + Strings.encode(args[0]) + "%20" +
+                    "repo:Anuken/Mindustry")
+
+                .header("Accept", "application/vnd.github.v3+json"),
+            result -> {
+                if(result.getStatus() == HttpStatus.OK){
+                    messages.deleteMessageNow();
+                    Jval val = Jval.read(result.getResultAsString());
+                    int count = val.getInt("total_count", 0);
+                    if(count == 0){
+                        messages.err("No results found.");
+                        return;
+                    }
+
+                    if(count == 1){
+                        Jval item = val.get("items").asArray().first();
+                        messages.info(item.getString("name"), "[View](@)", item.getString("html_url"));
+                    }else{
+                        StringBuilder results = new StringBuilder();
+                        for(Jval item : val.get("items").asArray()){
+                            results.append("[").append(item.getString("name")).append("]").append("(").append(item.getString("html_url")).append(")\n");
+                        }
+                        messages.info(count + " Results", results.toString());
+                    }
+                }else{
+                    messages.err("HTTP Error: " + result.getStatus().name());
+                }
+            }, err -> {
+                messages.err("Error querying Github: @", Strings.getSimpleMessage(err));
+            });
+            Core.net.setBlock(false);
         });
 
         adminHandler.register("userinfo", "<@user>", "Get user info.", args -> {

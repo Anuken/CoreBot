@@ -122,6 +122,10 @@ public class Messages extends ListenerAdapter{
         }, CoreBot.messageDeleteTime);
     }
 
+    public void deleteMessageNow(){
+        lastSentMessage.delete().queue();
+    }
+
     public void sendCrash(JsonValue value){
 
         StringBuilder builder = new StringBuilder();
