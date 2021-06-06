@@ -244,7 +244,14 @@ public class Commands{
                 if(result.getStatus() == HttpStatus.OK){
                     messages.lastMessage.delete().queue();
                     Jval val = Jval.read(result.getResultAsString());
+
                     int count = val.getInt("total_count", 0);
+
+                    if(count > 0){
+                        val.get("items").asArray().removeAll(j -> !j.getString("name").contains(args[0]));
+                        count = val.get("items").asArray().size;
+                    }
+
                     if(count == 0){
                         messages.err("No results found.");
                         return;
