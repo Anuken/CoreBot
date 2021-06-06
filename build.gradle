@@ -13,7 +13,6 @@ allprojects{
         maven{ url "https://oss.sonatype.org/content/repositories/snapshots/" }
         maven{ url "https://oss.sonatype.org/content/repositories/releases/" }
         maven{ url 'https://jitpack.io' }
-        jcenter()
         maven{
             name 'm2-dv8tion'
             url 'https://m2.dv8tion.net/releases'
