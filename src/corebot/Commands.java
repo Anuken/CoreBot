@@ -252,12 +252,13 @@ public class Commands{
 
                     EmbedBuilder embed = new EmbedBuilder();
                     embed.setColor(normalColor);
-                    embed.setAuthor(messages.lastUser.getName() + ": searched", val.get("items").asArray().first().getString("html_url"), "https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png");
-                    embed.setTitle("File Search Results");
+                    embed.setAuthor(messages.lastUser.getName() + ": Github Search Results", val.get("items").asArray().first().getString("html_url"), "https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png");
+                    embed.setTitle("Github Search Results");
 
                     if(count == 1){
                         Jval item = val.get("items").asArray().first();
-                        embed.addField(item.getString("name"), "[View on Github](" + item.getString("html_url") + ")", false);
+                        embed.setTitle(item.getString("name"));
+                        embed.setDescription("[View on Github](" + item.getString("html_url") + ")");
                     }else{
                         int maxResult = 5, i = 0;
                         StringBuilder results = new StringBuilder();
@@ -268,9 +269,8 @@ public class Commands{
                             results.append("[").append(item.getString("name")).append("]").append("(").append(item.getString("html_url")).append(")\n");
                         }
 
-                        Log.info(results);
-
-                        embed.addField((count > maxResult ? maxResult + "+" : count) + " Source Results", results.toString(), false);
+                        embed.setTitle((count > maxResult ? maxResult + "+" : count) + " Source Results");
+                        embed.setDescription(results.toString());
                     }
 
                     messages.channel.sendMessage(embed.build()).queue();
