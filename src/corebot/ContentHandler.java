@@ -48,7 +48,7 @@ public class ContentHandler{
         Version.enabled = false;
         Vars.content = new ContentLoader();
         Vars.content.createBaseContent();
-        for(ContentType type : ContentType.values()){
+        for(ContentType type : ContentType.all){
             for(Content content : Vars.content.getBy(type)){
                 try{
                     content.init();
@@ -60,7 +60,7 @@ public class ContentHandler{
         String assets = "../Mindustry/core/assets/";
         Vars.state = new GameState();
 
-        TextureAtlasData data = new TextureAtlasData(new Fi(assets + "sprites/sprites.atlas"), new Fi(assets + "sprites"), false);
+        TextureAtlasData data = new TextureAtlasData(new Fi(assets + "sprites/sprites.aatls"), new Fi(assets + "sprites"), false);
         Core.atlas = new TextureAtlas();
 
         new Fi("../Mindustry/core/assets-raw/sprites_out").walk(f -> {

@@ -22,6 +22,7 @@ allprojects{
 }
 
 ext{
+    //currently unused
     mindustryVersion = 'v126'
 }
 
@@ -45,9 +46,9 @@ task dist(type: Jar){
 }
 
 dependencies{
-    compile("net.dv8tion:JDA:4.2.1_253")
+    compile("net.dv8tion:JDA:4.2.1_269")
     compile "org.jsoup:jsoup:1.7.2"
-    compile "com.github.Anuken.Arc:arc-core:$mindustryVersion"
-    compile "com.github.Anuken.Mindustry:core:$mindustryVersion"
+    compile "com.github.Anuken.Arc:arc-core:759b136340ea98d4cb9881e340fb219c6d602a66"
+    compile "com.github.Anuken.Mindustry:core:8d12dbbe7075f7f7a9387ef55eff3bb250453e2f"
     compile "com.github.twitch4j:twitch4j:1.2.1"
 }
