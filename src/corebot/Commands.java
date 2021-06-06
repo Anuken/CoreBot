@@ -250,11 +250,16 @@ public class Commands{
                         return;
                     }
 
+                    EmbedBuilder embed = new EmbedBuilder();
+                    embed.setColor(normalColor);
+                    embed.setAuthor(messages.lastUser.getName() + ": searched", val.get("items").asArray().first().getString("html_url"), "https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png");
+                    embed.setTitle("File Search Results");
+
                     if(count == 1){
                         Jval item = val.get("items").asArray().first();
-                        messages.info("Source File: " + item.getString("name"), "[View on Github](@)", item.getString("html_url"));
+                        embed.addField(item.getString("name"), "[View on Github](" + item.getString("html_url") + ")", false);
                     }else{
-                        int maxResult = 10, i = 0;
+                        int maxResult = 5, i = 0;
                         StringBuilder results = new StringBuilder();
                         for(Jval item : val.get("items").asArray()){
                             if(i++ > maxResult){
@@ -262,8 +267,13 @@ public class Commands{
                             }
                             results.append("[").append(item.getString("name")).append("]").append("(").append(item.getString("html_url")).append(")\n");
                         }
-                        messages.info((count > maxResult ? maxResult + "+" : count) + " Source Results", results.toString());
+
+                        Log.info(results);
+
+                        embed.addField((count > maxResult ? maxResult + "+" : count) + " Source Results", results.toString(), false);
                     }
+
+                    messages.channel.sendMessage(embed.build()).queue();
                 }else{
                     messages.err("HTTP Error: " + result.getStatus().name());
                 }
