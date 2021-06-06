@@ -252,13 +252,17 @@ public class Commands{
 
                     if(count == 1){
                         Jval item = val.get("items").asArray().first();
-                        messages.info(item.getString("name"), "[View](@)", item.getString("html_url"));
+                        messages.info("Source File: " + item.getString("name"), "[View on Github](@)", item.getString("html_url"));
                     }else{
+                        int maxResult = 10, i = 0;
                         StringBuilder results = new StringBuilder();
                         for(Jval item : val.get("items").asArray()){
+                            if(i++ > maxResult){
+                                break;
+                            }
                             results.append("[").append(item.getString("name")).append("]").append("(").append(item.getString("html_url")).append(")\n");
                         }
-                        messages.info(count + " Results", results.toString());
+                        messages.info((count > maxResult ? maxResult + "+" : count) + " Source Results", results.toString());
                     }
                 }else{
                     messages.err("HTTP Error: " + result.getStatus().name());
