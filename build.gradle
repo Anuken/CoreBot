@@ -2,7 +2,7 @@ apply plugin: 'java'
 apply plugin: 'maven'
 
 project.ext.mainClassName = "corebot.CoreBot"
-sourceCompatibility = targetCompatibility = 14
+sourceCompatibility = targetCompatibility = 16
 version = '1.0'
 
 sourceSets.main.java.srcDirs = ["src/"]
@@ -47,7 +47,7 @@ task dist(type: Jar){
 dependencies{
     compile("net.dv8tion:JDA:4.2.1_269")
     compile "org.jsoup:jsoup:1.7.2"
-    compile "com.github.Anuken.Arc:arc-core:759b136340ea98d4cb9881e340fb219c6d602a66"
-    compile "com.github.Anuken.Mindustry:core:300e3f23200bfd3d9cfa32175a6fcdec290a3ca4"
+    compile "com.github.Anuken.Arc:arc-core:45d20b5fc3edac3da0c2497f11ae30a0d10e7e20"
+    compile "com.github.Anuken.Mindustry:core:57fd72f476fd19509c848cbab1aa4498296e026f"
     compile "com.github.twitch4j:twitch4j:1.2.1"
 }
