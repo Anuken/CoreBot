@@ -1,5 +1,4 @@
 apply plugin: 'java'
-apply plugin: 'maven'
 
 project.ext.mainClassName = "corebot.CoreBot"
 sourceCompatibility = targetCompatibility = 16
