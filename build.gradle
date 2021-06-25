@@ -38,15 +38,17 @@ task dist(type: Jar){
 
     archiveFileName = "CoreBot.jar"
 
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+
     manifest{
         attributes 'Main-Class': project.mainClassName
     }
 }
 
 dependencies{
-    compile("net.dv8tion:JDA:4.2.1_269")
-    compile "org.jsoup:jsoup:1.7.2"
-    compile "com.github.Anuken.Arc:arc-core:45d20b5fc3edac3da0c2497f11ae30a0d10e7e20"
-    compile "com.github.Anuken.Mindustry:core:57fd72f476fd19509c848cbab1aa4498296e026f"
-    compile "com.github.twitch4j:twitch4j:1.2.1"
+    implementation "net.dv8tion:JDA:4.2.1_269"
+    implementation "org.jsoup:jsoup:1.7.2"
+    implementation "com.github.Anuken.Arc:arc-core:45d20b5fc3edac3da0c2497f11ae30a0d10e7e20"
+    implementation "com.github.Anuken.Mindustry:core:57fd72f476"
+    implementation "com.github.twitch4j:twitch4j:1.2.1"
 }
