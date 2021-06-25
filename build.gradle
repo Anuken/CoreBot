@@ -50,5 +50,5 @@ dependencies{
     implementation "org.jsoup:jsoup:1.7.2"
     implementation "com.github.Anuken.Arc:arc-core:45d20b5fc3edac3da0c2497f11ae30a0d10e7e20"
     implementation "com.github.Anuken.Mindustry:core:57fd72f476"
-    implementation "com.github.twitch4j:twitch4j:1.2.1"
+    implementation "com.github.twitch4j:twitch4j:1.4.0"
 }
