@@ -5,7 +5,7 @@ while true; do
 
 git pull
 ./gradlew -Dorg.gradle.daemon=false dist
-java -jar build/libs/CoreBot.jar
+java --illegal-access=permit -jar build/libs/CoreBot.jar
 
 excode=$?
 if [ $excode -eq 0 ] || [ $excode -eq 130 ]; then
