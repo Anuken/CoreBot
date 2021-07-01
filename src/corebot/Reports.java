@@ -15,6 +15,7 @@ public class Reports{
             server.createContext("/report", t -> {
                 //who the HECK is this and why are they sending me the same crash report over and over
                 if(t.getRemoteAddress().getAddress().getHostAddress().equals("221.229.196.229")) return;
+
                 byte[] bytes = new byte[t.getRequestBody().available()];
                 new DataInputStream(t.getRequestBody()).readFully(bytes);
 
@@ -38,8 +39,7 @@ public class Reports{
             server.start();
             Log.info("Crash reporting server up.");
         }catch(Exception e){
-            Log.info("Error parsing report: ");
-            e.printStackTrace();
+            Log.err("Error parsing report", e);
         }
     }
 }

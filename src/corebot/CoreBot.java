@@ -36,8 +36,7 @@ public class CoreBot{
     public static StreamScanner streams = new StreamScanner();
     public static VideoScanner videos = new VideoScanner();
 
-    //crash reporting disabled basically forever
-    //public static Reports reports = new Reports();
+    public static Reports reports = new Reports();
 
     public static void main(String[] args){
         new CoreBot();

@@ -66,9 +66,14 @@ public class Messages extends ListenerAdapter{
     @Override
     public void onGuildMemberJoin(GuildMemberJoinEvent event){
         event.getUser().openPrivateChannel().complete().sendMessage(
-        "**Welcome to the Mindustry Discord.**" +
-        "\n\n*Make sure you read #rules and the channel topics before posting.*\n\n" +
-        "**View a list of all frequently answered questions here:**\n<https://discordapp.com/channels/391020510269669376/611204372592066570/611586644402765828>"
+        """
+        **Welcome to the Mindustry Discord.**
+                
+        *Make sure you read #rules and the channel topics before posting.*
+                
+        **View a list of all frequently answered questions here:**
+        <https://discordapp.com/channels/391020510269669376/611204372592066570/611586644402765828>
+        """
         ).queue();
 
         messages.guild.getTextChannelById(joinChannelID)

@@ -21,7 +21,7 @@ allprojects{
 
 ext{
     //currently unused
-    mindustryVersion = 'v126'
+    mindustryVersion = 'v127'
 }
 
 task run(dependsOn: classes, type: JavaExec){
@@ -38,11 +38,11 @@ task dist(type: Jar){
 
     archiveFileName = "CoreBot.jar"
 
-    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
-
     manifest{
         attributes 'Main-Class': project.mainClassName
     }
+
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 }
 
 dependencies{

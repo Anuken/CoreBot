@@ -37,7 +37,7 @@ public class Net{
     }
 
     public String getLastBuild(){
-        return CoreBot.prefs.get("lastBuild", "101");
+        return CoreBot.prefs.get("lastBuild", "127.1");
     }
 
     public InputStream download(String url){
@@ -137,8 +137,8 @@ public class Net{
     }
 
     public Host readServerData(ByteBuffer buffer, String ip, int ping){
-        Host host = NetworkIO.readServerData((int)ping, ip, buffer);
-        host.ping = (int)ping;
+        Host host = NetworkIO.readServerData(ping, ip, buffer);
+        host.ping = ping;
         return host;
         //return new PingResult(ip, ping, players + "", host, map, wave + "", version == -1 ? "Custom Build" : (""+version));
     }

@@ -24,7 +24,6 @@ import org.jsoup.select.*;
 import javax.imageio.*;
 import java.awt.image.*;
 import java.io.*;
-import java.net.*;
 import java.text.*;
 import java.time.*;
 import java.util.*;
@@ -106,7 +105,7 @@ public class Commands{
 
                     EmbedBuilder builder = new EmbedBuilder().setColor(normalColor).
                     setColor(normalColor)
-                    .setAuthor(messages.lastUser.getName(), messages.lastUser.getAvatarUrl(), messages.lastUser.getAvatarUrl()).setTitle(doc.select("strong[itemprop=name]").text());
+                    .setAuthor(messages.lastUser.getName(), messages.lastUser.getEffectiveAvatarUrl(), messages.lastUser.getEffectiveAvatarUrl()).setTitle(doc.select("strong[itemprop=name]").text());
 
                     Elements elem = doc.select("span[itemprop=about]");
                     if(!elem.isEmpty()){
@@ -149,7 +148,7 @@ public class Commands{
                 EmbedBuilder builder = new EmbedBuilder().setColor(normalColor).setColor(normalColor)
                 .setImage("attachment://" + imageFile.name())
 
-                .setAuthor(messages.lastUser.getName(), messages.lastUser.getAvatarUrl(), messages.lastUser.getAvatarUrl()).setTitle(map.name == null ? a.getFileName().replace(".msav", "") : map.name);
+                .setAuthor(messages.lastUser.getName(), messages.lastUser.getEffectiveAvatarUrl(), messages.lastUser.getEffectiveAvatarUrl()).setTitle(map.name == null ? a.getFileName().replace(".msav", "") : map.name);
 
                 if(map.description != null) builder.setFooter(map.description);
 
@@ -166,11 +165,7 @@ public class Commands{
         });
 
         handler.register("google", "<phrase...>", "Let me google that for you.", args -> {
-            try{
-                messages.text("http://lmgtfy.com/?q=@", URLEncoder.encode(args[0], "UTF-8"));
-            }catch(UnsupportedEncodingException e){
-                e.printStackTrace();
-            }
+            messages.text("http://lmgtfy.com/?q=@", Strings.encode(args[0]));
         });
 
         handler.register("cleanmod", "Clean up a modded zip archive. Changes json into hjson and formats code.", args -> {
@@ -471,7 +466,7 @@ public class Commands{
         if(message.getAuthor().isBot() || message.getChannel().getType() != ChannelType.TEXT) return;
 
         EmbedBuilder log = new EmbedBuilder()
-        .setAuthor(message.getAuthor().getName(), message.getAuthor().getAvatarUrl(), message.getAuthor().getAvatarUrl())
+        .setAuthor(message.getAuthor().getName(), message.getAuthor().getEffectiveAvatarUrl(), message.getAuthor().getEffectiveAvatarUrl())
         .setDescription(message.getContentRaw())
         .addField("Author", message.getAuthor().getAsMention(), false)
         .addField("Channel", message.getTextChannel().getAsMention(), false)
@@ -514,7 +509,7 @@ public class Commands{
 
                 EmbedBuilder builder = new EmbedBuilder().setColor(normalColor).setColor(normalColor)
                 .setImage("attachment://" + previewFile.getName())
-                .setAuthor(message.getAuthor().getName(), message.getAuthor().getAvatarUrl(), message.getAuthor().getAvatarUrl()).setTitle(schem.name());
+                .setAuthor(message.getAuthor().getName(), message.getAuthor().getEffectiveAvatarUrl(), message.getAuthor().getEffectiveAvatarUrl()).setTitle(schem.name());
 
                 if(!schem.description().isEmpty()) builder.setFooter(schem.description());
 
@@ -573,11 +568,10 @@ public class Commands{
         }else if(response.type == ResponseType.manyArguments || response.type == ResponseType.fewArguments){
             if(response.command.params.length == 0){
                 messages.err("Invalid arguments.", "Usage: @@", prefix, response.command.text);
-                messages.deleteMessages();
             }else{
                 messages.err("Invalid arguments.", "Usage: @@ *@*", prefix, response.command.text, response.command.paramText);
-                messages.deleteMessages();
             }
+            messages.deleteMessages();
             return false;
         }
         return true;

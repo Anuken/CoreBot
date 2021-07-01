@@ -76,16 +76,14 @@ public class ContentHandler{
 
         data.getPages().each(page -> {
             page.texture = Texture.createEmpty(null);
-            page.texture.width = (int)page.width;
-            page.texture.height = (int)page.height;
+            page.texture.width = page.width;
+            page.texture.height = page.height;
         });
 
-        data.getRegions().each(reg -> {
-            Core.atlas.addRegion(reg.name, new AtlasRegion(reg.page.texture, reg.left, reg.top, reg.width, reg.height){{
-                name = reg.name;
-                texture = reg.page.texture;
-            }});
-        });
+        data.getRegions().each(reg -> Core.atlas.addRegion(reg.name, new AtlasRegion(reg.page.texture, reg.left, reg.top, reg.width, reg.height){{
+            name = reg.name;
+            texture = reg.page.texture;
+        }}));
 
         Lines.useLegacyLine = true;
         Core.atlas.setErrorRegion("error");
@@ -138,7 +136,7 @@ public class ContentHandler{
             for(Block block : Vars.content.blocks()){
                 block.mapColor.argb8888(image.getRGB(block.id, 0));
                 if(block instanceof OreBlock){
-                    block.mapColor.set(((OreBlock)block).itemDrop.color);
+                    block.mapColor.set(block.itemDrop.color);
                 }
             }
         }catch(Exception e){
