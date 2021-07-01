@@ -36,7 +36,8 @@ public class CoreBot{
     public static StreamScanner streams = new StreamScanner();
     public static VideoScanner videos = new VideoScanner();
 
-    public static Reports reports = new Reports();
+    //doesn't work, I guess something else uses that port
+    //public static Reports reports = new Reports();
 
     public static void main(String[] args){
         new CoreBot();
