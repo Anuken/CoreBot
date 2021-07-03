@@ -11,7 +11,7 @@ public class Reports{
 
     public Reports(){
         try{
-            HttpServer server = HttpServer.create(new InetSocketAddress(80), 0);
+            HttpServer server = HttpServer.create(new InetSocketAddress(6748), 0);
             server.createContext("/report", t -> {
                 //who the HECK is this and why are they sending me the same crash report over and over
                 if(t.getRemoteAddress().getAddress().getHostAddress().equals("221.229.196.229")) return;
