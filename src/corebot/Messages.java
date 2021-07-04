@@ -509,12 +509,6 @@ public class Messages extends ListenerAdapter{
         channel.sendMessage(new EmbedBuilder().addField(title, Strings.format(text, args), true).setColor(normalColor).build()).queue();
     }
 
-    public void err(MessageChannel channel, String title, String text, Object... args){
-        channel.sendMessage(new EmbedBuilder()
-        .addField(title, Strings.format(text, args), true).setColor(errorColor).build())
-        .queue();
-    }
-
     /** Sends an error, deleting the base message and the error message after a delay. */
     public void errDelete(Message message, String text, Object... args){
         errDelete(message, "Error", text, args);

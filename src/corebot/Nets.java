@@ -127,8 +127,7 @@ public class Nets{
     }
 
     public void run(long delay, Runnable r){
-        new Timer().schedule(
-        new TimerTask(){
+        new Timer().schedule(new TimerTask(){
             @Override
             public void run(){
                 r.run();
