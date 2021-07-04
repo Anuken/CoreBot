@@ -75,7 +75,7 @@ public class StreamScanner{
         if(users.asArray().size > 0){
             var avatar = users.asArray().first().getString("profile_image_url");
 
-            CoreBot.messages.guild.getTextChannelById(CoreBot.streamsChannelID)
+            CoreBot.messages.streamsChannel
             .sendMessage(
             new EmbedBuilder()
             .setTitle(stream.getString("title"), "https://twitch.tv/" + stream.getString("user_login"))

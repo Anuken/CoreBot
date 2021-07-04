@@ -89,7 +89,7 @@ public class VideoScanner{
 
             if(desc.length() > 200) desc = desc.substring(0, 200) + "...";
 
-            CoreBot.messages.guild.getTextChannelById(CoreBot.videosChannelID)
+            CoreBot.messages.videosChannel
             .sendMessage(
             new EmbedBuilder()
             .setTitle(video.getString("title"), videoUrl)

@@ -6,6 +6,7 @@ import arc.util.serialization.*;
 import java.io.*;
 import java.util.*;
 
+//TODO horrible
 public class Prefs{
     private Properties prop;
     private File file;
