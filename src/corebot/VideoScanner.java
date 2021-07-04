@@ -25,8 +25,6 @@ public class VideoScanner{
     private final ObjectSet<String> seen;
 
     public VideoScanner(){
-        net.setBlock(true);
-
         seen = Seq.with(seenfi.exists() ? seenfi.readString().split("\n") : new String[0]).asSet();
 
         new Timer().scheduleAtFixedRate(new TimerTask(){
@@ -59,6 +57,7 @@ public class VideoScanner{
     void query(String url,StringMap params, Cons<Jval> cons){
         params.put("key", key);
         net.http(new HttpRequest()
+        .block(true)
         .timeout(10000)
         .header("Accept", "application/json")
         .method(HttpMethod.GET)
