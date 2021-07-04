@@ -95,6 +95,7 @@ public class StreamScanner{
 
         net.http(
             new HttpRequest().block(true)
+            .method(HttpMethod.GET)
             .header("Client-Id", clientId)
             .header("Authorization", "Bearer " + token)
             .url(url),
