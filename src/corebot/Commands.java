@@ -228,12 +228,11 @@ public class Commands{
 
         handler.register("file", "<filename...>", "Find a Mindustry source file by name", args -> {
             //epic asynchronous code, I know
-            Core.net.setBlock(true);
             Core.net.http(new HttpRequest(HttpMethod.GET)
+                .block(true)
                 .url("https://api.github.com/search/code?q=" +
                     "filename:" + Strings.encode(args[0]) + "%20" +
                     "repo:Anuken/Mindustry")
-
                 .header("Accept", "application/vnd.github.v3+json"),
             result -> {
                 if(result.getStatus() == HttpStatus.OK){
@@ -283,7 +282,6 @@ public class Commands{
                 Log.err(err);
                 messages.err("Error querying Github", Strings.getSimpleMessage(err));
             });
-            Core.net.setBlock(false);
         });
 
         adminHandler.register("userinfo", "<@user>", "Get user info.", args -> {

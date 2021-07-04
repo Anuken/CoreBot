@@ -30,6 +30,7 @@ public enum Info{
     **6.** Do not ask for roles. If I need a moderator and I think you fit the position, I will ask you personally.
     **7.** Do not impersonate other members or intentionally edit your messages to mislead others.
     **8.** Do not cross-post the same message to multiple channels.
+    **9.** Do not advertise in DMs or send unsolicited messages to other users. Report violations of this sort to moderators immediately.
     *If I don't like your behavior, you're out. Obey the spirit, not the word.*
     """),
     pings("Ping and PM Policy",

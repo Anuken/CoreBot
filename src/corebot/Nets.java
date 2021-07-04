@@ -14,9 +14,9 @@ import java.util.*;
 import java.util.concurrent.*;
 import java.util.function.*;
 
-public class Net{
+public class Nets{
 
-    public Net(){
+    public Nets(){
         Executors.newSingleThreadScheduledExecutor().scheduleAtFixedRate(() -> getChangelog(list -> {
             try{
                 VersionInfo latest = list.first();

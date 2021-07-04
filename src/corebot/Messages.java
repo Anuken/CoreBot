@@ -1,9 +1,8 @@
 package corebot;
 
-import arc.*;
 import arc.util.*;
 import arc.util.serialization.*;
-import corebot.Net.*;
+import corebot.Nets.*;
 import net.dv8tion.jda.api.*;
 import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.events.guild.member.*;
@@ -39,7 +38,6 @@ public class Messages extends ListenerAdapter{
             guild = jda.getGuildById(guildID);
 
             Log.info("Discord bot up.");
-            Core.net = new arc.Net();
         }catch(Exception e){
             throw new RuntimeException(e);
         }

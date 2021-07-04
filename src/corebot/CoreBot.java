@@ -1,7 +1,9 @@
 package corebot;
 
+import arc.*;
+
 import java.awt.*;
-import java.io.File;
+import java.io.*;
 
 public class CoreBot{
     public static final String releasesURL = "https://api.github.com/repos/Anuken/Mindustry/releases";
@@ -31,13 +33,13 @@ public class CoreBot{
     public static ContentHandler contentHandler = new ContentHandler();
     public static Messages messages = new Messages();
     public static Commands commands = new Commands();
-    public static Net net = new Net();
+    public static Nets net = new Nets();
     public static Prefs prefs = new Prefs(prefsFile);
     public static StreamScanner streams = new StreamScanner();
     public static VideoScanner videos = new VideoScanner();
     public static Reports reports = new Reports();
 
     public static void main(String[] args){
-        new CoreBot();
+        Core.net = new Net();
     }
 }
