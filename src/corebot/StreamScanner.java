@@ -53,15 +53,15 @@ public class StreamScanner{
                 if(token == null) return;
 
                 try{
-                    var list = request("https://api.twitch.tv/helix/streams?game_id=" + testId); //TODO use min id
+                    var list = request("https://api.twitch.tv/helix/streams?game_id=" + minId);
 
                     for(var stream : list.get("data").asArray()){
                         var instant = Instant.from(DateTimeFormatter.ISO_INSTANT.parse(stream.getString("started_at")));
                         //only display streams that started a few minutes ago, so the thumbnail is correct
-                        //if(!Duration.between(instant, Instant.now()).minus(Duration.ofMinutes(startDelayMins)).isNegative() &&
-                        //seenIds.add(stream.getString("id"))){
-                        newStream(stream);
-                        //}
+                        if(!Duration.between(instant, Instant.now()).minus(Duration.ofMinutes(startDelayMins)).isNegative() &&
+                                seenIds.add(stream.getString("id"))){
+                            newStream(stream);
+                        }
                     }
 
                     seen().writeString(seenIds.asArray().toString("\n"));
@@ -78,7 +78,7 @@ public class StreamScanner{
         if(users.asArray().size > 0){
             var avatar = users.asArray().first().getString("profile_image_url");
 
-            CoreBot.messages.guild.getTextChannelById(CoreBot.testingChannelID) //TODO switch to stream channel ID
+            CoreBot.messages.guild.getTextChannelById(CoreBot.streamsChannelID)
             .sendMessage(
             new EmbedBuilder()
             .setTitle(stream.getString("title"), "https://twitch.tv/" + stream.getString("user_login"))
