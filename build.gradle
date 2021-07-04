@@ -48,6 +48,6 @@ task dist(type: Jar){
 dependencies{
     implementation "net.dv8tion:JDA:4.2.1_269"
     implementation "org.jsoup:jsoup:1.7.2"
-    implementation "com.github.Anuken.Arc:arc-core:50026893aecfb9ff687df394b822fff9e73a649a"
+    implementation "com.github.Anuken.Arc:arc-core:c238c1c17605ba0e9daabd99e05ed14d12ab99b1"
     implementation "com.github.Anuken.Mindustry:core:57fd72f476"
 }
