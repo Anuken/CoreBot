@@ -532,9 +532,7 @@ public class Commands{
                         e2.printStackTrace();
                     }
                 }
-
-                Log.err("Failed to parse schematic, skipping.");
-                Log.err(e);
+                //ignore errors
             }
         }else if((message.getTextChannel().getIdLong() == schematicsChannelID || message.getTextChannel().getIdLong() == schematicsChannelID) && !isAdmin(message.getAuthor())){
             message.delete().queue();
