@@ -31,7 +31,7 @@ public class StreamScanner{
         new Timer().scheduleAtFixedRate(new TimerTask(){
             @Override
             public void run(){
-                net.http(new HttpRequest().url("https://id.twitch.tv/oauth2/token?client_id=" + clientId + "&client_secret=" + clientSecret + "&grant_type=client_credentials"), result -> {
+                net.http(new HttpRequest().method(HttpMethod.GET).url("https://id.twitch.tv/oauth2/token?client_id=" + clientId + "&client_secret=" + clientSecret + "&grant_type=client_credentials"), result -> {
                     try{
                         if(result.getStatus() == HttpStatus.OK){
                             Log.info("Authenticated with Twitch.");
