@@ -28,7 +28,6 @@ public class Messages extends ListenerAdapter{
 
     public Messages(){
         String token = System.getenv("CORE_BOT_TOKEN");
-        Log.info("Found token: @", token != null);
 
         try{
             jda = JDABuilder.createDefault(token, GatewayIntent.GUILD_MESSAGES, GatewayIntent.GUILD_EMOJIS, GatewayIntent.GUILD_MEMBERS, GatewayIntent.GUILD_PRESENCES)

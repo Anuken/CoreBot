@@ -33,10 +33,9 @@ public class StreamScanner{
             public void run(){
                 net.http(new HttpRequest().method(HttpMethod.POST).url("https://id.twitch.tv/oauth2/token?client_id=" + clientId + "&client_secret=" + clientSecret + "&grant_type=client_credentials"), result -> {
                     try{
-                        Log.info(result.getResultAsString());
                         if(result.getStatus() == HttpStatus.OK){
                             Log.info("Authenticated with Twitch.");
-                            token = Jval.read(result.getResultAsString()).asString();
+                            token = Jval.read(result.getResultAsString()).getString("access_token");
                         }else{
                             Log.err("Failed to authorize: @", result.getStatus().toString());
                         }
