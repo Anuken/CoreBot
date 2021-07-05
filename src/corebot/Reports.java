@@ -26,7 +26,26 @@ public class Reports{
 
                 //custom builds and uninitialized builds (0) are skipped.
                 if(build.equals(CoreBot.net.getLastBuild()) || String.valueOf(value.getInt("build")).equals(CoreBot.net.getLastBuild())){
-                    CoreBot.messages.sendCrash(value);
+                    JsonValue value1 = value;
+
+                    StringBuilder builder = new StringBuilder();
+                    value1 = value1.child;
+                    while(value1 != null){
+                        builder.append("**");
+                        builder.append(value1.name);
+                        builder.append("**");
+                        builder.append(": ");
+                        if(value1.name.equals("trace")){
+                            builder.append("```xl\n"); //xl formatting looks nice
+                            builder.append(value1.asString().replace("\\n", "\n").replace("\t", "  "));
+                            builder.append("```");
+                        }else{
+                            builder.append(value1.asString());
+                        }
+                        builder.append("\n");
+                        value1 = value1.next;
+                    }
+                    CoreBot.messages.crashReportChannel.sendMessage(builder.toString()).queue();
                 }else{
                     Log.info("Rejecting report with invalid build: @. Current latest build is @.", build, CoreBot.net.getLastBuild());
                 }

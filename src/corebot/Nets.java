@@ -5,6 +5,7 @@ import arc.util.*;
 import arc.util.io.*;
 import arc.util.serialization.*;
 import mindustry.net.*;
+import net.dv8tion.jda.api.*;
 
 import java.io.*;
 import java.net.*;
@@ -13,6 +14,8 @@ import java.util.Timer;
 import java.util.*;
 import java.util.concurrent.*;
 import java.util.function.*;
+
+import static corebot.CoreBot.*;
 
 public class Nets{
 
@@ -27,7 +30,21 @@ public class Nets{
                     Log.info("Posting update!");
 
                     //don't post revisions
-                    CoreBot.messages.sendUpdate(latest);
+                    String text = latest.description;
+                    int maxLength = 2000;
+                    while(true){
+                        String current = text.substring(0, Math.min(maxLength, text.length()));
+                        CoreBot.messages.announcementsChannel
+                        .sendMessage(new EmbedBuilder()
+                        .setColor(normalColor).setTitle(latest.name)
+                        .setDescription(current).build()).queue();
+
+                        if(text.length() < maxLength){
+                            break;
+                        }
+
+                        text = text.substring(maxLength);
+                    }
                     CoreBot.prefs.put("lastBuild", latest.build);
                 }
             }catch(Throwable e){

@@ -10,7 +10,6 @@ import arc.util.CommandHandler.*;
 import arc.util.io.Streams;
 import arc.util.serialization.*;
 import arc.util.serialization.Jval.*;
-import corebot.Nets.*;
 import mindustry.*;
 import mindustry.game.*;
 import mindustry.type.*;
@@ -419,19 +418,121 @@ public class Messages extends ListenerAdapter{
 
     @Override
     public void onMessageReceived(MessageReceivedEvent event){
-        try{
-            handle(event.getMessage());
-        }catch(Exception e){
-            Log.err(e);
+        var msg = event.getMessage();
+
+        if(msg.getAuthor().isBot() || msg.getChannel().getType() != ChannelType.TEXT) return;
+
+        EmbedBuilder log = new EmbedBuilder()
+        .setAuthor(msg.getAuthor().getName(), msg.getAuthor().getEffectiveAvatarUrl(), msg.getAuthor().getEffectiveAvatarUrl())
+        .setDescription(msg.getContentRaw())
+        .addField("Author", msg.getAuthor().getAsMention(), false)
+        .addField("Channel", msg.getTextChannel().getAsMention(), false)
+        .setColor(normalColor);
+
+        if(msg.getReferencedMessage() != null){
+            log.addField("Replying to", msg.getReferencedMessage().getAuthor().getAsMention() + " [Jump](" + msg.getReferencedMessage().getJumpUrl() + ")", false);
+        }
+
+        if(msg.getMentionedUsers().stream().anyMatch(u -> u.getIdLong() == 123539225919488000L)){
+            log.addField("Note", "thisisamention", false);
+        }
+
+        logChannel.sendMessage(log.build()).queue();
+
+        if(!isAdmin(msg.getAuthor())){
+            if(!checkInvite(msg)){
+                if((msg.getChannel() == screenshotsChannel || msg.getChannel() == artChannel) && msg.getAttachments().isEmpty()){
+                    msg.delete().queue();
+                    try{
+                        msg.getAuthor().openPrivateChannel().complete().sendMessage("Don't send messages without images in that channel.").queue();
+                    }catch(Exception e1){
+                        e1.printStackTrace();
+                    }
+                }
+            }
+        }
+
+        String text = msg.getContentRaw();
+
+        //schematic preview
+        if((msg.getContentRaw().startsWith(ContentHandler.schemHeader) && msg.getAttachments().isEmpty()) ||
+        (msg.getAttachments().size() == 1 && msg.getAttachments().get(0).getFileExtension() != null && msg.getAttachments().get(0).getFileExtension().equals(Vars.schematicExtension))){
+            try{
+                Schematic schem = msg.getAttachments().size() == 1 ? contentHandler.parseSchematicURL(msg.getAttachments().get(0).getUrl()) : contentHandler.parseSchematic(msg.getContentRaw());
+                BufferedImage preview = contentHandler.previewSchematic(schem);
+                String sname = schem.name().replace("/", "_").replace(" ", "_");
+                if(sname.isEmpty()) sname = "empty";
+
+                new File("cache").mkdir();
+                File previewFile = new File("cache/img_" + UUID.randomUUID() + ".png");
+                File schemFile = new File("cache/" + sname + "." + Vars.schematicExtension);
+                Schematics.write(schem, new Fi(schemFile));
+                ImageIO.write(preview, "png", previewFile);
+
+                EmbedBuilder builder = new EmbedBuilder().setColor(normalColor).setColor(normalColor)
+                .setImage("attachment://" + previewFile.getName())
+                .setAuthor(msg.getAuthor().getName(), msg.getAuthor().getEffectiveAvatarUrl(), msg.getAuthor().getEffectiveAvatarUrl()).setTitle(schem.name());
+
+                if(!schem.description().isEmpty()) builder.setFooter(schem.description());
+
+                StringBuilder field = new StringBuilder();
+
+                for(ItemStack stack : schem.requirements()){
+                    List<Emote> emotes = guild.getEmotesByName(stack.item.name.replace("-", ""), true);
+                    Emote result = emotes.isEmpty() ? guild.getEmotesByName("ohno", true).get(0) : emotes.get(0);
+
+                    field.append(result.getAsMention()).append(stack.amount).append("  ");
+                }
+                builder.addField("Requirements", field.toString(), false);
+
+                msg.getChannel().sendFile(schemFile).addFile(previewFile).embed(builder.build()).queue();
+                msg.delete().queue();
+            }catch(Throwable e){
+                if(msg.getChannel() == schematicsChannel || msg.getChannel() == baseSchematicsChannel){
+                    msg.delete().queue();
+                    try{
+                        msg.getAuthor().openPrivateChannel().complete().sendMessage("Invalid schematic: " + e.getClass().getSimpleName() + (e.getMessage() == null ? "" : " (" + e.getMessage() + ")")).queue();
+                    }catch(Exception e2){
+                        e2.printStackTrace();
+                    }
+                }
+                //ignore errors
+            }
+        }else if((msg.getChannel() == schematicsChannel || msg.getChannel() == baseSchematicsChannel) && !isAdmin(msg.getAuthor())){
+            msg.delete().queue();
+            try{
+                msg.getAuthor().openPrivateChannel().complete().sendMessage("Only send valid schematics in the #schematics channel. You may send them either as clipboard text or as a schematic file.").queue();
+            }catch(Exception e){
+                e.printStackTrace();
+            }
+            return;
+        }
+
+        if(!text.trim().equals("!")){
+            if(isAdmin(msg.getAuthor())){
+                boolean unknown = handleResponse(msg, adminHandler.handleMessage(text, msg), false);
+                handleResponse(msg, handler.handleMessage(text, msg), !unknown);
+            }else{
+                handleResponse(msg, handler.handleMessage(text, msg), true);
+            }
         }
     }
 
     @Override
     public void onGuildMessageUpdate(GuildMessageUpdateEvent event){
-        try{
-            edited(event.getMessage());
-        }catch(Exception e){
-            Log.err(e);
+        var msg = event.getMessage();
+
+        if(isAdmin(msg.getAuthor()) || checkInvite(msg)){
+            return;
+        }
+
+        if((msg.getChannel() == screenshotsChannel || msg.getChannel() == artChannel) && msg.getAttachments().isEmpty()){
+            msg.delete().queue();
+            try{
+                msg.getAuthor().openPrivateChannel().complete().sendMessage("Don't send messages without images in that channel.").queue();
+            }catch(Exception e){
+                e.printStackTrace();
+            }
         }
     }
 
@@ -455,46 +556,6 @@ public class Messages extends ListenerAdapter{
             .addField("ID", "`" + event.getUser().getId() + "`", false)
             .setColor(normalColor).build())
         .queue();
-    }
-
-    public void sendUpdate(VersionInfo info){
-        String text = info.description;
-        int maxLength = 2000;
-        while(true){
-            String current = text.substring(0, Math.min(maxLength, text.length()));
-            announcementsChannel
-            .sendMessage(new EmbedBuilder()
-            .setColor(normalColor).setTitle(info.name)
-            .setDescription(current).build()).queue();
-
-            if(text.length() < maxLength){
-                return;
-            }
-
-            text = text.substring(maxLength);
-        }
-    }
-
-    public void sendCrash(JsonValue value){
-
-        StringBuilder builder = new StringBuilder();
-        value = value.child;
-        while(value != null){
-            builder.append("**");
-            builder.append(value.name);
-            builder.append("**");
-            builder.append(": ");
-            if(value.name.equals("trace")){
-                builder.append("```xl\n"); //xl formatting looks nice
-                builder.append(value.asString().replace("\\n", "\n").replace("\t", "  "));
-                builder.append("```");
-            }else{
-                builder.append(value.asString());
-            }
-            builder.append("\n");
-            value = value.next;
-        }
-        crashReportChannel.sendMessage(builder.toString()).queue();
     }
 
     public void text(MessageChannel channel, String text, Object... args){
@@ -576,115 +637,6 @@ public class Messages extends ListenerAdapter{
             return true;
         }
         return false;
-    }
-
-    void checkContents(Message message){
-        if(isAdmin(message.getAuthor())) return;
-
-        if(checkInvite(message)){
-            return;
-        }
-
-        if((message.getChannel() == screenshotsChannel || message.getChannel() == artChannel) && message.getAttachments().isEmpty()){
-            message.delete().queue();
-            try{
-                message.getAuthor().openPrivateChannel().complete().sendMessage("Don't send messages without images in that channel.").queue();
-            }catch(Exception e){
-                e.printStackTrace();
-            }
-        }
-    }
-
-    void edited(Message message){
-        checkContents(message);
-    }
-
-    void handle(Message message){
-        if(message.getAuthor().isBot() || message.getChannel().getType() != ChannelType.TEXT) return;
-
-        EmbedBuilder log = new EmbedBuilder()
-        .setAuthor(message.getAuthor().getName(), message.getAuthor().getEffectiveAvatarUrl(), message.getAuthor().getEffectiveAvatarUrl())
-        .setDescription(message.getContentRaw())
-        .addField("Author", message.getAuthor().getAsMention(), false)
-        .addField("Channel", message.getTextChannel().getAsMention(), false)
-        .setColor(normalColor);
-
-        if(message.getReferencedMessage() != null){
-            log.addField("Replying to", message.getReferencedMessage().getAuthor().getAsMention() + " [Jump](" + message.getReferencedMessage().getJumpUrl() + ")", false);
-        }
-
-        if(message.getMentionedUsers().stream().anyMatch(u -> u.getIdLong() == 123539225919488000L)){
-            log.addField("Note", "thisisamention", false);
-        }
-
-        logChannel.sendMessage(log.build()).queue();
-
-        checkContents(message);
-
-        String text = message.getContentRaw();
-
-        //schematic preview
-        if((message.getContentRaw().startsWith(ContentHandler.schemHeader) && message.getAttachments().isEmpty()) ||
-        (message.getAttachments().size() == 1 && message.getAttachments().get(0).getFileExtension() != null && message.getAttachments().get(0).getFileExtension().equals(Vars.schematicExtension))){
-            try{
-                Schematic schem = message.getAttachments().size() == 1 ? contentHandler.parseSchematicURL(message.getAttachments().get(0).getUrl()) : contentHandler.parseSchematic(message.getContentRaw());
-                BufferedImage preview = contentHandler.previewSchematic(schem);
-                String sname = schem.name().replace("/", "_").replace(" ", "_");
-                if(sname.isEmpty()) sname = "empty";
-
-                new File("cache").mkdir();
-                File previewFile = new File("cache/img_" + UUID.randomUUID() + ".png");
-                File schemFile = new File("cache/" + sname + "." + Vars.schematicExtension);
-                Schematics.write(schem, new Fi(schemFile));
-                ImageIO.write(preview, "png", previewFile);
-
-                EmbedBuilder builder = new EmbedBuilder().setColor(normalColor).setColor(normalColor)
-                .setImage("attachment://" + previewFile.getName())
-                .setAuthor(message.getAuthor().getName(), message.getAuthor().getEffectiveAvatarUrl(), message.getAuthor().getEffectiveAvatarUrl()).setTitle(schem.name());
-
-                if(!schem.description().isEmpty()) builder.setFooter(schem.description());
-
-                StringBuilder field = new StringBuilder();
-
-                for(ItemStack stack : schem.requirements()){
-                    List<Emote> emotes = guild.getEmotesByName(stack.item.name.replace("-", ""), true);
-                    Emote result = emotes.isEmpty() ? guild.getEmotesByName("ohno", true).get(0) : emotes.get(0);
-
-                    field.append(result.getAsMention()).append(stack.amount).append("  ");
-                }
-                builder.addField("Requirements", field.toString(), false);
-
-                message.getChannel().sendFile(schemFile).addFile(previewFile).embed(builder.build()).queue();
-                message.delete().queue();
-            }catch(Throwable e){
-                if(message.getChannel() == schematicsChannel || message.getChannel() == baseSchematicsChannel){
-                    message.delete().queue();
-                    try{
-                        message.getAuthor().openPrivateChannel().complete().sendMessage("Invalid schematic: " + e.getClass().getSimpleName() + (e.getMessage() == null ? "" : " (" + e.getMessage() + ")")).queue();
-                    }catch(Exception e2){
-                        e2.printStackTrace();
-                    }
-                }
-                //ignore errors
-            }
-        }else if((message.getChannel() == schematicsChannel || message.getChannel() == baseSchematicsChannel) && !isAdmin(message.getAuthor())){
-            message.delete().queue();
-            try{
-                message.getAuthor().openPrivateChannel().complete().sendMessage("Only send valid schematics in the #schematics channel. You may send them either as clipboard text or as a schematic file.").queue();
-            }catch(Exception e){
-                e.printStackTrace();
-            }
-            return;
-        }
-
-        if(!text.trim().equals("!")){
-            if(isAdmin(message.getAuthor())){
-                boolean unknown = handleResponse(message, adminHandler.handleMessage(text, message), false);
-                handleResponse(message, handler.handleMessage(text, message), !unknown);
-            }else{
-                handleResponse(message, handler.handleMessage(text, message), true);
-            }
-        }
     }
 
     boolean handleResponse(Message msg, CommandResponse response, boolean logUnknown){

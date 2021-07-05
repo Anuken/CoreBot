@@ -13,7 +13,6 @@ import java.time.format.*;
 import java.util.Timer;
 import java.util.*;
 
-
 public class VideoScanner{
     private static final String api = "https://youtube.googleapis.com/youtube/v3/";
     private static final long updatePeriod = 1000 * 60 * 30;
