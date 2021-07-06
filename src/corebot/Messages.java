@@ -52,7 +52,7 @@ public class Messages extends ListenerAdapter{
 
     public Guild guild;
     public TextChannel
-    pluginChannel, crashReportChannel, announcementsChannel, screenshotsChannel, artChannel, 
+    pluginChannel, crashReportChannel, announcementsChannel, artChannel,
     mapsChannel, moderationChannel, schematicsChannel, baseSchematicsChannel,
     logChannel, joinChannel, videosChannel, streamsChannel, testingChannel;
 
@@ -86,7 +86,6 @@ public class Messages extends ListenerAdapter{
         pluginChannel = channel(617833229973717032L);
         crashReportChannel = channel(467033526018113546L);
         announcementsChannel = channel(391020997098340352L);
-        screenshotsChannel = channel(553071673587400705L);
         artChannel = channel(754011833928515664L);
         mapsChannel = channel(416719902641225732L);
         moderationChannel = channel(488049830275579906L);
@@ -441,7 +440,7 @@ public class Messages extends ListenerAdapter{
 
         if(!isAdmin(msg.getAuthor())){
             if(!checkInvite(msg)){
-                if((msg.getChannel() == screenshotsChannel || msg.getChannel() == artChannel) && msg.getAttachments().isEmpty()){
+                if((msg.getChannel() == artChannel) && msg.getAttachments().isEmpty()){
                     msg.delete().queue();
                     try{
                         msg.getAuthor().openPrivateChannel().complete().sendMessage("Don't send messages without images in that channel.").queue();
@@ -488,7 +487,7 @@ public class Messages extends ListenerAdapter{
                 msg.getChannel().sendFile(schemFile).addFile(previewFile).embed(builder.build()).queue();
                 msg.delete().queue();
             }catch(Throwable e){
-                if(msg.getChannel() == schematicsChannel || msg.getChannel() == baseSchematicsChannel){
+                if(msg.getChannel().getIdLong() == schematicsChannel.getIdLong() || msg.getChannel().getIdLong() == baseSchematicsChannel.getIdLong()){
                     msg.delete().queue();
                     try{
                         msg.getAuthor().openPrivateChannel().complete().sendMessage("Invalid schematic: " + e.getClass().getSimpleName() + (e.getMessage() == null ? "" : " (" + e.getMessage() + ")")).queue();
@@ -498,7 +497,7 @@ public class Messages extends ListenerAdapter{
                 }
                 //ignore errors
             }
-        }else if((msg.getChannel() == schematicsChannel || msg.getChannel() == baseSchematicsChannel) && !isAdmin(msg.getAuthor())){
+        }else if((msg.getChannel().getIdLong() == schematicsChannel.getIdLong() || msg.getChannel().getIdLong() == baseSchematicsChannel.getIdLong())){
             msg.delete().queue();
             try{
                 msg.getAuthor().openPrivateChannel().complete().sendMessage("Only send valid schematics in the #schematics channel. You may send them either as clipboard text or as a schematic file.").queue();
@@ -526,7 +525,7 @@ public class Messages extends ListenerAdapter{
             return;
         }
 
-        if((msg.getChannel() == screenshotsChannel || msg.getChannel() == artChannel) && msg.getAttachments().isEmpty()){
+        if((msg.getChannel().getIdLong() == artChannel.getIdLong()) && msg.getAttachments().isEmpty()){
             msg.delete().queue();
             try{
                 msg.getAuthor().openPrivateChannel().complete().sendMessage("Don't send messages without images in that channel.").queue();
