@@ -453,6 +453,8 @@ public class Messages extends ListenerAdapter{
 
         String text = msg.getContentRaw();
 
+        Log.info("(@) (@) @ @", baseSchematicsChannel.getIdLong(), msg.getChannel().getIdLong(), msg.getChannel().getIdLong() == schematicsChannel.getIdLong() || msg.getChannel().getIdLong() == baseSchematicsChannel.getIdLong(), text);
+
         //schematic preview
         if((msg.getContentRaw().startsWith(ContentHandler.schemHeader) && msg.getAttachments().isEmpty()) ||
         (msg.getAttachments().size() == 1 && msg.getAttachments().get(0).getFileExtension() != null && msg.getAttachments().get(0).getFileExtension().equals(Vars.schematicExtension))){
@@ -497,7 +499,7 @@ public class Messages extends ListenerAdapter{
                 }
                 //ignore errors
             }
-        }else if((msg.getChannel().getIdLong() == schematicsChannel.getIdLong() || msg.getChannel().getIdLong() == baseSchematicsChannel.getIdLong())){
+        }else if(msg.getChannel().getIdLong() == schematicsChannel.getIdLong() || msg.getChannel().getIdLong() == baseSchematicsChannel.getIdLong()){
             msg.delete().queue();
             try{
                 msg.getAuthor().openPrivateChannel().complete().sendMessage("Only send valid schematics in the #schematics channel. You may send them either as clipboard text or as a schematic file.").queue();
