@@ -423,7 +423,7 @@ public class Messages extends ListenerAdapter{
 
         EmbedBuilder log = new EmbedBuilder()
         .setAuthor(msg.getAuthor().getName(), msg.getAuthor().getEffectiveAvatarUrl(), msg.getAuthor().getEffectiveAvatarUrl())
-        .setDescription(msg.getContentRaw())
+        .setDescription(msg.getContentRaw().length() >= 2040 ? msg.getContentRaw().substring(0, 2040) + "..." : msg.getContentRaw())
         .addField("Author", msg.getAuthor().getAsMention(), false)
         .addField("Channel", msg.getTextChannel().getAsMention(), false)
         .setColor(normalColor);
