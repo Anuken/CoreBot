@@ -1,7 +1,5 @@
 package corebot;
 
-import arc.*;
-
 import java.awt.*;
 import java.io.*;
 
@@ -24,6 +22,5 @@ public class CoreBot{
     public static Reports reports = new Reports();
 
     public static void main(String[] args){
-        Core.net = new Net();
     }
 }

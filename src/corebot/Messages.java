@@ -1,7 +1,5 @@
 package corebot;
 
-import arc.*;
-import arc.Net.*;
 import arc.files.*;
 import arc.math.*;
 import arc.struct.*;
@@ -268,58 +266,51 @@ public class Messages extends ListenerAdapter{
 
         handler.<Message>register("file", "<filename...>", "Find a Mindustry source file by name", (args, msg) -> {
             //epic asynchronous code, I know
-            Core.net.http(new HttpRequest(HttpMethod.GET)
-            .block(true)
-            .url("https://api.github.com/search/code?q=" +
+            Http.get("https://api.github.com/search/code?q=" +
             "filename:" + Strings.encode(args[0]) + "%20" +
             "repo:Anuken/Mindustry")
-            .header("Accept", "application/vnd.github.v3+json"),
-            result -> {
-                if(result.getStatus() == HttpStatus.OK){
-                    msg.delete().queue();
-                    Jval val = Jval.read(result.getResultAsString());
+            .header("Accept", "application/vnd.github.v3+json")
+            .error(err -> errDelete(msg, "Error querying Github", Strings.getSimpleMessage(err)))
+            .block(result -> {
+                msg.delete().queue();
+                Jval val = Jval.read(result.getResultAsString());
 
-                    int count = val.getInt("total_count", 0);
+                int count = val.getInt("total_count", 0);
 
-                    if(count > 0){
-                        val.get("items").asArray().removeAll(j -> !j.getString("name").contains(args[0]));
-                        count = val.get("items").asArray().size;
-                    }
-
-                    if(count == 0){
-                        errDelete(msg, "No results found.");
-                        return;
-                    }
-
-                    EmbedBuilder embed = new EmbedBuilder();
-                    embed.setColor(normalColor);
-                    embed.setAuthor(msg.getAuthor().getName() + ": Github Search Results", val.get("items").asArray().first().getString("html_url"), "https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png");
-                    embed.setTitle("Github Search Results");
-
-                    if(count == 1){
-                        Jval item = val.get("items").asArray().first();
-                        embed.setTitle(item.getString("name"));
-                        embed.setDescription("[View on Github](" + item.getString("html_url") + ")");
-                    }else{
-                        int maxResult = 5, i = 0;
-                        StringBuilder results = new StringBuilder();
-                        for(Jval item : val.get("items").asArray()){
-                            if(i++ > maxResult){
-                                break;
-                            }
-                            results.append("[").append(item.getString("name")).append("]").append("(").append(item.getString("html_url")).append(")\n");
-                        }
-
-                        embed.setTitle((count > maxResult ? maxResult + "+" : count) + " Source Results");
-                        embed.setDescription(results.toString());
-                    }
-
-                    msg.getChannel().sendMessage(embed.build()).queue();
-                }else{
-                    errDelete(msg, "HTTP Error: " + result.getStatus().name());
+                if(count > 0){
+                    val.get("items").asArray().removeAll(j -> !j.getString("name").contains(args[0]));
+                    count = val.get("items").asArray().size;
                 }
-            }, err -> {
-                errDelete(msg, "Error querying Github", Strings.getSimpleMessage(err));
+
+                if(count == 0){
+                    errDelete(msg, "No results found.");
+                    return;
+                }
+
+                EmbedBuilder embed = new EmbedBuilder();
+                embed.setColor(normalColor);
+                embed.setAuthor(msg.getAuthor().getName() + ": Github Search Results", val.get("items").asArray().first().getString("html_url"), "https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png");
+                embed.setTitle("Github Search Results");
+
+                if(count == 1){
+                    Jval item = val.get("items").asArray().first();
+                    embed.setTitle(item.getString("name"));
+                    embed.setDescription("[View on Github](" + item.getString("html_url") + ")");
+                }else{
+                    int maxResult = 5, i = 0;
+                    StringBuilder results = new StringBuilder();
+                    for(Jval item : val.get("items").asArray()){
+                        if(i++ > maxResult){
+                            break;
+                        }
+                        results.append("[").append(item.getString("name")).append("]").append("(").append(item.getString("html_url")).append(")\n");
+                    }
+
+                    embed.setTitle((count > maxResult ? maxResult + "+" : count) + " Source Results");
+                    embed.setDescription(results.toString());
+                }
+
+                msg.getChannel().sendMessage(embed.build()).queue();
             });
         });
 

@@ -1,7 +1,5 @@
 package corebot;
 
-import arc.*;
-import arc.Net.*;
 import arc.files.*;
 import arc.struct.*;
 import arc.util.*;
@@ -18,7 +16,6 @@ public class StreamScanner{
     private static final String minId = "502103", testId = "31376", clientId = "worwycsp7vvr6049q2f88l1cj1jj1i", clientSecret = OS.env("TWITCH_SECRET");
 
     private ObjectSet<String> seenIds;
-    private Net net = new Net();
     private String token;
 
     public StreamScanner(){
@@ -31,15 +28,9 @@ public class StreamScanner{
         new Timer().scheduleAtFixedRate(new TimerTask(){
             @Override
             public void run(){
-                net.http(new HttpRequest().method(HttpMethod.POST).url("https://id.twitch.tv/oauth2/token?client_id=" + clientId + "&client_secret=" + clientSecret + "&grant_type=client_credentials"), result -> {
-                    try{
-                        if(result.getStatus() == HttpStatus.OK){
-                            token = Jval.read(result.getResultAsString()).getString("access_token");
-                        }
-                    }catch(Exception e){
-                        Log.err(e);
-                    }
-                }, Log::err);
+                Http.get("https://id.twitch.tv/oauth2/token?client_id=" + clientId + "&client_secret=" + clientSecret + "&grant_type=client_credentials", result -> {
+                    token = Jval.read(result.getResultAsString()).getString("access_token");
+                });
             }
         }, 0, 1000 * 60 * 60); //once an hour
 
@@ -90,14 +81,11 @@ public class StreamScanner{
     Jval request(String url){
         Jval[] val = {null};
 
-        net.http(
-            new HttpRequest().block(true)
-            .method(HttpMethod.GET)
-            .header("Client-Id", clientId)
-            .header("Authorization", "Bearer " + token)
-            .url(url),
-            res -> val[0] = Jval.read(res.getResultAsString()),
-            e -> { throw new RuntimeException(e); });
+        Http.get(url)
+        .header("Client-Id", clientId)
+        .header("Authorization", "Bearer " + token)
+        .error(e -> { throw new RuntimeException(e); })
+        .block(res -> val[0] = Jval.read(res.getResultAsString()));
 
         return val[0];
     }

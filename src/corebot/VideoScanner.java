@@ -1,7 +1,5 @@
 package corebot;
 
-import arc.Net;
-import arc.Net.*;
 import arc.files.*;
 import arc.func.*;
 import arc.struct.*;
@@ -20,7 +18,6 @@ public class VideoScanner{
     private static final String key = OS.env("GOOGLE_API_KEY");
 
     private final Fi seenfi = new Fi("videos.txt");
-    private final Net net = new Net();
     private final ObjectSet<String> seen;
 
     public VideoScanner(){
@@ -55,18 +52,11 @@ public class VideoScanner{
 
     void query(String url,StringMap params, Cons<Jval> cons){
         params.put("key", key);
-        net.http(new HttpRequest()
-        .block(true)
+
+        Http.get(api + url + "?" + params.keys().toSeq().map(entry -> Strings.encode(entry) + "=" + Strings.encode(params.get(entry))).toString("&"))
         .timeout(10000)
         .header("Accept", "application/json")
-        .method(HttpMethod.GET)
-        .url(api + url + "?" + params.keys().toSeq().map(entry -> Strings.encode(entry) + "=" + Strings.encode(params.get(entry))).toString("&")), response -> {
-            try{
-                cons.get(Jval.read(response.getResultAsString()));
-            }catch(Throwable error){
-                Log.err(error);
-            }
-        }, Log::err);
+        .block(response -> cons.get(Jval.read(response.getResultAsString())));
     }
 
     void newVideo(Jval video){
