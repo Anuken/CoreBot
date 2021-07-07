@@ -41,7 +41,7 @@ task dist(type: Jar){
 dependencies{
     implementation "net.dv8tion:JDA:4.2.1_269"
     implementation "org.jsoup:jsoup:1.7.2"
-    implementation "com.github.Anuken.Arc:arc-core:7f3955755fc4a37e2778b53869b233d2db7b73f3"
+    implementation "com.github.Anuken.Arc:arc-core:db7090ae8a694b918a7bcdc3565deb8d2acf71ab"
     implementation "com.github.Anuken.Mindustry:core:2ae7863caed3023d14140d2fe84723802d8f78ab"
     implementation "org.slf4j:slf4j-nop:1.7.31"
 }

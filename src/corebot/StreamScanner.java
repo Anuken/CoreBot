@@ -28,7 +28,7 @@ public class StreamScanner{
         new Timer().scheduleAtFixedRate(new TimerTask(){
             @Override
             public void run(){
-                Http.get("https://id.twitch.tv/oauth2/token?client_id=" + clientId + "&client_secret=" + clientSecret + "&grant_type=client_credentials", result -> {
+                Http.post("https://id.twitch.tv/oauth2/token?client_id=" + clientId + "&client_secret=" + clientSecret + "&grant_type=client_credentials").submit(result -> {
                     token = Jval.read(result.getResultAsString()).getString("access_token");
                 });
             }
