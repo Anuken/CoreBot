@@ -435,7 +435,7 @@ public class Messages extends ListenerAdapter{
         }
 
         //delete stray invites
-        if(!isAdmin(msg.getAuthor()) && checkInvite(msg)){
+        if(/*!isAdmin(msg.getAuthor()) && */checkInvite(msg)){
             return;
         }
 
@@ -628,7 +628,7 @@ public class Messages extends ListenerAdapter{
     }
 
     boolean checkInvite(Message message){
-        if(/*!isAdmin(message.getAuthor()) && */message.getChannel().getType() != ChannelType.PRIVATE){
+        if(message.getChannel().getType() != ChannelType.PRIVATE){
             if(invitePattern.matcher(message.getContentRaw()).find()){
                 Log.warn("User @ just sent a discord invite in @.", message.getAuthor().getName(), message.getChannel().getName());
                 message.delete().queue();
