@@ -440,7 +440,7 @@ public class Messages extends ListenerAdapter{
         }
 
         //delete non-art
-        if(!isAdmin(msg.getAuthor()) && msg.getChannel() == artChannel && msg.getAttachments().isEmpty()){
+        if(!isAdmin(msg.getAuthor()) && msg.getChannel().getIdLong() == artChannel.getIdLong() && msg.getAttachments().isEmpty()){
             msg.delete().queue();
             try{
                 msg.getAuthor().openPrivateChannel().complete().sendMessage("Don't send messages without images in that channel.").queue();
