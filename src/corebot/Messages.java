@@ -43,7 +43,7 @@ public class Messages extends ListenerAdapter{
     private static final SimpleDateFormat fmt = new SimpleDateFormat("yyyy-MM-dd");
     private static final String[] warningStrings = {"once", "twice", "thrice", "too many times"};
     private static final Pattern invitePattern = Pattern.compile("(discord\\.gg/\\w|discordapp\\.com/invite/\\w|discord\\.com/invite/\\w)");
-    private static final Pattern scamPattern = Pattern.compile("stea.?.?community\\.ru");
+    private static final Pattern scamPattern = Pattern.compile("stea.?.?com.*?\\.ru");
 
     private final CommandHandler handler = new CommandHandler(prefix);
     private final CommandHandler adminHandler = new CommandHandler(prefix);
@@ -434,6 +434,7 @@ public class Messages extends ListenerAdapter{
             logChannel.sendMessage(log.build()).queue();
         }
 
+        //stearncomminuty.ru
         //delete stray invites
         if(/*!isAdmin(msg.getAuthor()) && */checkInvite(msg)){
             return;
