@@ -43,7 +43,7 @@ public class Messages extends ListenerAdapter{
     private static final SimpleDateFormat fmt = new SimpleDateFormat("yyyy-MM-dd");
     private static final String[] warningStrings = {"once", "twice", "thrice", "too many times"};
     private static final Pattern invitePattern = Pattern.compile("(discord\\.gg/\\w|discordapp\\.com/invite/\\w|discord\\.com/invite/\\w)");
-    private static final Pattern scamPattern = Pattern.compile("stea.*com.*\\.ru|CSGO.*knife|CSGO.*inventory");
+    private static final Pattern scamPattern = Pattern.compile("stea.*com.*\\.ru|csgo.*knife|csgo.*inventory|csgo.*cheat|cheat.*csgo|csgo.*skins|skins.*csgo");
 
     private final CommandHandler handler = new CommandHandler(prefix);
     private final CommandHandler adminHandler = new CommandHandler(prefix);
@@ -634,7 +634,7 @@ public class Messages extends ListenerAdapter{
                 message.delete().queue();
                 message.getAuthor().openPrivateChannel().complete().sendMessage("Do not send invite links in the Mindustry Discord server! Read the rules.").queue();
                 return true;
-            }else if(scamPattern.matcher(message.getContentRaw()).find()){
+            }else if(scamPattern.matcher(message.getContentRaw().toLowerCase(Locale.ROOT)).find()){
                 Log.warn("User @ just sent a potential scam message in @.", message.getAuthor().getName(), message.getChannel().getName());
 
                 alertsChannel.sendMessage(
