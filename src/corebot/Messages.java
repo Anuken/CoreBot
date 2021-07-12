@@ -43,6 +43,7 @@ public class Messages extends ListenerAdapter{
     private static final SimpleDateFormat fmt = new SimpleDateFormat("yyyy-MM-dd");
     private static final String[] warningStrings = {"once", "twice", "thrice", "too many times"};
     private static final Pattern invitePattern = Pattern.compile("(discord\\.gg/\\w|discordapp\\.com/invite/\\w|discord\\.com/invite/\\w)");
+    private static final Pattern scamPattern = Pattern.compile("stea.?.?community\\.ru");
 
     private final CommandHandler handler = new CommandHandler(prefix);
     private final CommandHandler adminHandler = new CommandHandler(prefix);
@@ -52,7 +53,8 @@ public class Messages extends ListenerAdapter{
     public TextChannel
     pluginChannel, crashReportChannel, announcementsChannel, artChannel,
     mapsChannel, moderationChannel, schematicsChannel, baseSchematicsChannel,
-    logChannel, joinChannel, videosChannel, streamsChannel, testingChannel;
+    logChannel, joinChannel, videosChannel, streamsChannel, testingChannel,
+    alertsChannel;
 
     public Messages(){
         String token = System.getenv("CORE_BOT_TOKEN");
@@ -94,6 +96,7 @@ public class Messages extends ListenerAdapter{
         streamsChannel = channel(833420066238103604L);
         videosChannel = channel(833826797048692747L);
         testingChannel = channel(432984286099144706L);
+        alertsChannel = channel(864139464401223730L);
     }
 
     void register(){
@@ -427,7 +430,9 @@ public class Messages extends ListenerAdapter{
             log.addField("Note", "thisisamention", false);
         }
 
-        logChannel.sendMessage(log.build()).queue();
+        if(msg.getChannel().getIdLong() != testingChannel.getIdLong()){
+            logChannel.sendMessage(log.build()).queue();
+        }
 
         //delete stray invites
         if(!isAdmin(msg.getAuthor()) && checkInvite(msg)){
@@ -623,11 +628,26 @@ public class Messages extends ListenerAdapter{
     }
 
     boolean checkInvite(Message message){
-        if(invitePattern.matcher(message.getContentRaw()).find() && !isAdmin(message.getAuthor()) && message.getChannel().getType() != ChannelType.PRIVATE){
-            Log.warn("User @ just sent a discord invite in @.", message.getAuthor().getName(), message.getChannel().getName());
-            message.delete().queue();
-            message.getAuthor().openPrivateChannel().complete().sendMessage("Do not send invite links in the Mindustry Discord server! Read the rules.").queue();
-            return true;
+        if(/*!isAdmin(message.getAuthor()) && */message.getChannel().getType() != ChannelType.PRIVATE){
+            if(invitePattern.matcher(message.getContentRaw()).find()){
+                Log.warn("User @ just sent a discord invite in @.", message.getAuthor().getName(), message.getChannel().getName());
+                message.delete().queue();
+                message.getAuthor().openPrivateChannel().complete().sendMessage("Do not send invite links in the Mindustry Discord server! Read the rules.").queue();
+                return true;
+            }else if(scamPattern.matcher(message.getContentRaw()).find()){
+                Log.warn("User @ just sent a potential scam message in @.", message.getAuthor().getName(), message.getChannel().getName());
+
+                alertsChannel.sendMessage(
+                    message.getAuthor().getAsMention() +
+                    " **has sent a potential scam message** in " + message.getTextChannel().getAsMention() +
+                    ":\n\n" + message.getContentRaw()
+                ).queue();
+
+                message.delete().queue();
+                message.getAuthor().openPrivateChannel().complete().sendMessage("Your message has been flagged as spam.").queue();
+                return true;
+            }
+
         }
         return false;
     }
