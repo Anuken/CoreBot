@@ -40,11 +40,13 @@ import static corebot.CoreBot.*;
 
 public class Messages extends ListenerAdapter{
     private static final String prefix = "!";
+    private static final int scamAutobanLimit = 4;
     private static final SimpleDateFormat fmt = new SimpleDateFormat("yyyy-MM-dd");
     private static final String[] warningStrings = {"once", "twice", "thrice", "too many times"};
     private static final Pattern invitePattern = Pattern.compile("(discord\\.gg/\\w|discordapp\\.com/invite/\\w|discord\\.com/invite/\\w)");
     private static final Pattern scamPattern = Pattern.compile("stea.*co.*\\.ru|csgo.*kni[fv]e|cs.?go.*inventory|cs.?go.*cheat|cheat.*cs.?go|cs.?go.*skins|skins.*cs.?go|stea.*\\.com.*partner|скин.*partner|steamcommutiny|dis.*\\.gift.*nitro");
 
+    private final ObjectIntMap<String> scamMessagesSent = new ObjectIntMap<>();
     private final CommandHandler handler = new CommandHandler(prefix);
     private final CommandHandler adminHandler = new CommandHandler(prefix);
     private final JDA jda;
@@ -637,6 +639,8 @@ public class Messages extends ListenerAdapter{
             }else if(scamPattern.matcher(message.getContentRaw().toLowerCase(Locale.ROOT)).find()){
                 Log.warn("User @ just sent a potential scam message in @.", message.getAuthor().getName(), message.getChannel().getName());
 
+                int count = scamMessagesSent.increment(message.getAuthor().getId());
+
                 alertsChannel.sendMessage(
                     message.getAuthor().getAsMention() +
                     " **has sent a potential scam message** in " + message.getTextChannel().getAsMention() +
@@ -644,8 +648,19 @@ public class Messages extends ListenerAdapter{
                 ).queue();
 
                 message.delete().queue();
-                message.getAuthor().openPrivateChannel().complete().sendMessage("Your message has been flagged as spam.").queue();
+                message.getAuthor().openPrivateChannel().complete().sendMessage("Your message has been flagged as a potential scam.").queue();
+
+                if(count >= scamAutobanLimit){
+                    Log.warn("User @ (@) has been auto-banned after @ scam messages.", message.getAuthor().getName(), message.getAuthor().getAsMention(), count);
+
+                    alertsChannel.sendMessage(message.getAuthor().getAsMention() + " **has been auto-banned for posting " + count + " scam messages in a row!**").queue();
+
+                    message.getGuild().ban(message.getAuthor(), 0, "Posting several potential scam messages in a row.").queue();
+                }
+
                 return true;
+            }else if(scamMessagesSent.containsKey(message.getAuthor().getId())){
+                scamMessagesSent.remove(message.getAuthor().getId(), 0);
             }
 
         }
