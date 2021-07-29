@@ -660,6 +660,7 @@ public class Messages extends ListenerAdapter{
 
                 return true;
             }else if(scamMessagesSent.containsKey(message.getAuthor().getId())){
+                //non-consecutive scam messages don't count
                 scamMessagesSent.remove(message.getAuthor().getId(), 0);
             }
 

@@ -15,7 +15,7 @@ public class CoreBot{
 
     public static ContentHandler contentHandler = new ContentHandler();
     public static Messages messages = new Messages();
-    public static Nets net = new Nets();
+    public static Net net = new Net();
     public static Prefs prefs = new Prefs(prefsFile);
     public static StreamScanner streams = new StreamScanner();
     public static VideoScanner videos = new VideoScanner();

@@ -17,9 +17,9 @@ import java.util.function.*;
 
 import static corebot.CoreBot.*;
 
-public class Nets{
+public class Net{
 
-    public Nets(){
+    public Net(){
         Executors.newSingleThreadScheduledExecutor().scheduleAtFixedRate(() -> getChangelog(list -> {
             try{
                 VersionInfo latest = list.first();
