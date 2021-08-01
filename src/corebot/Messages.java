@@ -44,7 +44,7 @@ public class Messages extends ListenerAdapter{
     private static final SimpleDateFormat fmt = new SimpleDateFormat("yyyy-MM-dd");
     private static final String[] warningStrings = {"once", "twice", "thrice", "too many times"};
     private static final Pattern invitePattern = Pattern.compile("(discord\\.gg/\\w|discordapp\\.com/invite/\\w|discord\\.com/invite/\\w)");
-    private static final Pattern scamPattern = Pattern.compile("stea.*co.*\\.ru|csgo.*kni[fv]e|cs.?go.*inventory|cs.?go.*cheat|cheat.*cs.?go|cs.?go.*skins|skins.*cs.?go|stea.*\\.com.*partner|скин.*partner|steamcommutiny|dis.*\\.gift.*nitro");
+    private static final Pattern scamPattern = Pattern.compile("stea.*co.*\\.ru|csgo.*kni[fv]e|cs.?go.*inventory|cs.?go.*cheat|cheat.*cs.?go|cs.?go.*skins|skins.*cs.?go|stea.*\\.com.*partner|скин.*partner|steamcommutiny|dis.*\\.gift.*nitro|disc.*gift.*\\.");
 
     private final ObjectIntMap<String> scamMessagesSent = new ObjectIntMap<>();
     private final CommandHandler handler = new CommandHandler(prefix);
