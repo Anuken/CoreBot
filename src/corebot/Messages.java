@@ -59,7 +59,11 @@ public class Messages extends ListenerAdapter{
         "http.*disc.*gift.*\\.|" +
         "free.*nitro.*http|" +
         "http.*free.*nitro.*|" +
-        "nitro.*free.*http"
+        "nitro.*free.*http|" +
+        "discord.*nitro.*free|" +
+        "free.*discord.*nitro|" +
+        "<@&391020510269669376>|" +
+        "discordgivenitro|"
     );
 
     private final ObjectIntMap<String> scamMessagesSent = new ObjectIntMap<>();
@@ -666,7 +670,7 @@ public class Messages extends ListenerAdapter{
                 message.delete().queue();
                 message.getAuthor().openPrivateChannel().complete().sendMessage("Your message has been flagged as a potential scam.").queue();
 
-                if(count >= scamAutobanLimit){
+                if(count >= scamAutobanLimit - 1){
                     Log.warn("User @ (@) has been auto-banned after @ scam messages.", message.getAuthor().getName(), message.getAuthor().getAsMention(), count);
 
                     alertsChannel.sendMessage(message.getAuthor().getAsMention() + " **has been auto-banned for posting " + count + " scam messages in a row!**").queue();
