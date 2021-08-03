@@ -671,7 +671,7 @@ public class Messages extends ListenerAdapter{
                 message.getAuthor().openPrivateChannel().complete().sendMessage("Your message has been flagged as a potential scam.").queue();
 
                 if(count >= scamAutobanLimit - 1){
-                    Log.warn("User @ (@) has been auto-banned after @ scam messages.", message.getAuthor().getName(), message.getAuthor().getAsMention(), count);
+                    Log.warn("User @ (@) has been auto-banned after @ scam messages.", message.getAuthor().getName(), message.getAuthor().getAsMention(), count + 1);
 
                     alertsChannel.sendMessage(message.getAuthor().getAsMention() + " **has been auto-banned for posting " + count + " scam messages in a row!**").queue();
 
