@@ -63,7 +63,7 @@ public class Messages extends ListenerAdapter{
         "discord.*nitro.*free|" +
         "free.*discord.*nitro|" +
         "<@&391020510269669376>|" +
-        "discordgivenitro|"
+        "discordgivenitro"
     );
 
     private final ObjectIntMap<String> scamMessagesSent = new ObjectIntMap<>();
