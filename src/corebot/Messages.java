@@ -673,7 +673,7 @@ public class Messages extends ListenerAdapter{
                 if(count >= scamAutobanLimit - 1){
                     Log.warn("User @ (@) has been auto-banned after @ scam messages.", message.getAuthor().getName(), message.getAuthor().getAsMention(), count + 1);
 
-                    alertsChannel.sendMessage(message.getAuthor().getAsMention() + " **has been auto-banned for posting " + count + " scam messages in a row!**").queue();
+                    alertsChannel.sendMessage(message.getAuthor().getAsMention() + " **has been auto-banned for posting " + scamAutobanLimit + " scam messages in a row!**").queue();
 
                     message.getGuild().ban(message.getAuthor(), 0, "Posting several potential scam messages in a row.").queue();
                 }
