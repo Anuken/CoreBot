@@ -19,7 +19,7 @@ public class CoreBot{
     public static Prefs prefs = new Prefs(prefsFile);
     public static StreamScanner streams = new StreamScanner();
     public static VideoScanner videos = new VideoScanner();
-    public static Reports reports = new Reports();
+    //public static Reports reports = new Reports();
 
     public static void main(String[] args){
     }
