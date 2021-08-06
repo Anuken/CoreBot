@@ -55,7 +55,7 @@ public class Messages extends ListenerAdapter{
         "stea.*\\.com.*partner",
         "скин.*partner",
         "steamcommutiny",
-        "dis.*\\.gift.*nitro",
+        "di.*\\.gift.*nitro",
         "http.*disc.*gift.*\\.",
         "free.*nitro.*http",
         "http.*free.*nitro.*",
@@ -63,7 +63,10 @@ public class Messages extends ListenerAdapter{
         "discord.*nitro.*free",
         "free.*discord.*nitro",
         "<@&391020510269669376>",
-        "discordgivenitro"
+        "discordgivenitro",
+        "http.*gift.*nitro",
+        "http.*nitro.*gift",
+        "http.*n.*gift"
     ));
 
     private final ObjectIntMap<String> scamMessagesSent = new ObjectIntMap<>();
