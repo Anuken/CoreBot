@@ -67,7 +67,9 @@ public class Messages extends ListenerAdapter{
         "discordgivenitro",
         "http.*gift.*nitro",
         "http.*nitro.*gift",
-        "http.*n.*gift"
+        "http.*n.*gift",
+        "бесплатно.*нитро.*http",
+        "нитро.*бесплатно.*http"
     ));
 
     private final ObjectIntMap<String> scamMessagesSent = new ObjectIntMap<>();
