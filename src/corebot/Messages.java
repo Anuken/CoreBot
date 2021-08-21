@@ -68,8 +68,10 @@ public class Messages extends ListenerAdapter{
         "http.*gift.*nitro",
         "http.*nitro.*gift",
         "http.*n.*gift",
-        "бесплатно.*нитро.*http",
-        "нитро.*бесплатно.*http"
+        "бесплат.*нитро.*http",
+        "нитро.*бесплат.*http",
+        "nitro.*http.*disc.*nitro",
+        "http.*click.*nitro"
     ));
 
     private final ObjectIntMap<String> scamMessagesSent = new ObjectIntMap<>();
