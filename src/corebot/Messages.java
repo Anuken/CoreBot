@@ -472,10 +472,13 @@ public class Messages extends ListenerAdapter{
         //delete non-art
         if(!isAdmin(msg.getAuthor()) && msg.getChannel().getIdLong() == artChannel.getIdLong() && msg.getAttachments().isEmpty()){
             msg.delete().queue();
-            try{
-                msg.getAuthor().openPrivateChannel().complete().sendMessage("Don't send messages without images in that channel.").queue();
-            }catch(Exception e1){
-                e1.printStackTrace();
+
+            if(msg.getType() != MessageType.CHANNEL_PINNED_ADD){
+                try{
+                    msg.getAuthor().openPrivateChannel().complete().sendMessage("Don't send messages without images in that channel.").queue();
+                }catch(Exception e1){
+                    e1.printStackTrace();
+                }
             }
         }
 
