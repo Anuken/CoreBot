@@ -71,7 +71,10 @@ public class Messages extends ListenerAdapter{
         "бесплат.*нитро.*http",
         "нитро.*бесплат.*http",
         "nitro.*http.*disc.*nitro",
-        "http.*click.*nitro"
+        "http.*click.*nitro",
+        "http.*st.*nitro",
+        "http.*\\/nitro",
+        "stea.*give.*nitro"
     ));
 
     private final ObjectIntMap<String> scamMessagesSent = new ObjectIntMap<>();
@@ -679,7 +682,7 @@ public class Messages extends ListenerAdapter{
                 ).queue();
 
                 message.delete().queue();
-                message.getAuthor().openPrivateChannel().complete().sendMessage("Your message has been flagged as a potential scam.").queue();
+                message.getAuthor().openPrivateChannel().complete().sendMessage("Your message has been flagged as a potential scam. Do not send any similar messages, or **you will be auto-banned.**").queue();
 
                 if(count >= scamAutobanLimit - 1){
                     Log.warn("User @ (@) has been auto-banned after @ scam messages.", message.getAuthor().getName(), message.getAuthor().getAsMention(), count + 1);
