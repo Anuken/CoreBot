@@ -73,8 +73,9 @@ public class Messages extends ListenerAdapter{
         "nitro.*http.*disc.*nitro",
         "http.*click.*nitro",
         "http.*st.*nitro",
-        "http.*\\/nitro",
-        "stea.*give.*nitro"
+        "http.*nitro",
+        "stea.*give.*nitro",
+        "discord.*nitro.*steam.*get"
     ));
 
     private final ObjectIntMap<String> scamMessagesSent = new ObjectIntMap<>();
@@ -664,6 +665,8 @@ public class Messages extends ListenerAdapter{
     }
 
     boolean checkInvite(Message message){
+        Log.info(message.getContentRaw().toLowerCase(Locale.ROOT));
+
         if(message.getChannel().getType() != ChannelType.PRIVATE){
             if(invitePattern.matcher(message.getContentRaw()).find()){
                 Log.warn("User @ just sent a discord invite in @.", message.getAuthor().getName(), message.getChannel().getName());
