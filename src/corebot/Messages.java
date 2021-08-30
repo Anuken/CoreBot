@@ -63,7 +63,8 @@ public class Messages extends ListenerAdapter{
         "nitro.*free.*http",
         "discord.*nitro.*free",
         "free.*discord.*nitro",
-        "<@&391020510269669376>",
+        "@everyone.*http",
+        "http.*@everyone",
         "discordgivenitro",
         "http.*gift.*nitro",
         "http.*nitro.*gift",
@@ -468,7 +469,6 @@ public class Messages extends ListenerAdapter{
             logChannel.sendMessage(log.build()).queue();
         }
 
-        Log.info(msg.getContentRaw().toLowerCase(Locale.ROOT));
         //delete stray invites
         if(!isAdmin(msg.getAuthor()) && checkInvite(msg)){
             return;
