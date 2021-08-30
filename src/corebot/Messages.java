@@ -77,6 +77,7 @@ public class Messages extends ListenerAdapter{
         "stea.*give.*nitro"
     ));
 
+    private int totalScamsSent = 0;
     private final ObjectIntMap<String> scamMessagesSent = new ObjectIntMap<>();
     private final CommandHandler handler = new CommandHandler(prefix);
     private final CommandHandler adminHandler = new CommandHandler(prefix);
@@ -692,6 +693,7 @@ public class Messages extends ListenerAdapter{
                     message.getGuild().ban(message.getAuthor(), 0, "Posting several potential scam messages in a row.").queue();
                 }
 
+                jda.getPresence().setActivity(Activity.playing((totalScamsSent++) + "scams sent"));
                 return true;
             }else if(scamMessagesSent.containsKey(message.getAuthor().getId())){
                 //non-consecutive scam messages don't count
