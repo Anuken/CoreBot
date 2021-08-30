@@ -468,6 +468,7 @@ public class Messages extends ListenerAdapter{
             logChannel.sendMessage(log.build()).queue();
         }
 
+        Log.info(msg.getContentRaw().toLowerCase(Locale.ROOT));
         //delete stray invites
         if(!isAdmin(msg.getAuthor()) && checkInvite(msg)){
             return;
@@ -665,7 +666,6 @@ public class Messages extends ListenerAdapter{
     }
 
     boolean checkInvite(Message message){
-        Log.info(message.getContentRaw().toLowerCase(Locale.ROOT));
 
         if(message.getChannel().getType() != ChannelType.PRIVATE){
             if(invitePattern.matcher(message.getContentRaw()).find()){
