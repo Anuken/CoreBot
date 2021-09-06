@@ -462,6 +462,7 @@ public class Messages extends ListenerAdapter{
 
                 text(msg, "**@** is @ a verified schematic designer.", user.getName(), add ? "now" : "no longer");
             }catch(Exception e){
+                e.printStackTrace();
                 errDelete(msg, "Incorrect name format.");
             }
         });
