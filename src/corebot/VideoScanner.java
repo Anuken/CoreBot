@@ -79,7 +79,7 @@ public class VideoScanner{
             if(desc.length() > 200) desc = desc.substring(0, 200) + "...";
 
             CoreBot.messages.videosChannel
-            .sendMessage(
+            .sendMessageEmbeds(
             new EmbedBuilder()
             .setTitle(video.getString("title"), videoUrl)
             .setColor(CoreBot.normalColor)

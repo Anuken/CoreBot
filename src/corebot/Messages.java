@@ -89,7 +89,8 @@ public class Messages extends ListenerAdapter{
     pluginChannel, crashReportChannel, announcementsChannel, artChannel,
     mapsChannel, moderationChannel, schematicsChannel, baseSchematicsChannel,
     logChannel, joinChannel, videosChannel, streamsChannel, testingChannel,
-    alertsChannel;
+    alertsChannel, curatedSchematicsChannel;
+    LongSeq schematicChannels = new LongSeq();
 
     public Messages(){
         String token = System.getenv("CORE_BOT_TOKEN");
@@ -132,6 +133,9 @@ public class Messages extends ListenerAdapter{
         videosChannel = channel(833826797048692747L);
         testingChannel = channel(432984286099144706L);
         alertsChannel = channel(864139464401223730L);
+        curatedSchematicsChannel = channel(878022862915653723L);
+
+        schematicChannels.add(schematicsChannel.getIdLong(), baseSchematicsChannel.getIdLong(), curatedSchematicsChannel.getIdLong());
     }
 
     void register(){
@@ -202,7 +206,7 @@ public class Messages extends ListenerAdapter{
                     .addField("Link", args[0], false)
                     .addField("Downloads", args[0] + (args[0].endsWith("/") ? "" : "/") + "releases", false);
 
-                    pluginChannel.sendMessage(builder.build()).queue();
+                    pluginChannel.sendMessageEmbeds(builder.build()).queue();
 
                     text(msg, "*Plugin posted.*");
                 }catch(IOException e){
@@ -235,7 +239,7 @@ public class Messages extends ListenerAdapter{
 
                 if(map.description != null) builder.setFooter(map.description);
 
-                mapsChannel.sendFile(mapFile).addFile(imageFile.file()).embed(builder.build()).queue();
+                mapsChannel.sendFile(mapFile).addFile(imageFile.file()).setEmbeds(builder.build()).queue();
 
                 text(msg, "*Map posted successfully.*");
             }catch(Exception e){
@@ -348,7 +352,7 @@ public class Messages extends ListenerAdapter{
                     embed.setDescription(results.toString());
                 }
 
-                msg.getChannel().sendMessage(embed.build()).queue();
+                msg.getChannel().sendMessageEmbeds(embed.build()).queue();
             });
         });
 
@@ -466,7 +470,7 @@ public class Messages extends ListenerAdapter{
         }
 
         if(msg.getChannel().getIdLong() != testingChannel.getIdLong()){
-            logChannel.sendMessage(log.build()).queue();
+            logChannel.sendMessageEmbeds(log.build()).queue();
         }
 
         //delete stray invites
@@ -520,10 +524,10 @@ public class Messages extends ListenerAdapter{
                 }
                 builder.addField("Requirements", field.toString(), false);
 
-                msg.getChannel().sendFile(schemFile).addFile(previewFile).embed(builder.build()).queue();
+                msg.getChannel().sendFile(schemFile).addFile(previewFile).setEmbeds(builder.build()).queue();
                 msg.delete().queue();
             }catch(Throwable e){
-                if(msg.getChannel().getIdLong() == schematicsChannel.getIdLong() || msg.getChannel().getIdLong() == baseSchematicsChannel.getIdLong()){
+                if(schematicChannels.contains(msg.getChannel().getIdLong())){
                     msg.delete().queue();
                     try{
                         msg.getAuthor().openPrivateChannel().complete().sendMessage("Invalid schematic: " + e.getClass().getSimpleName() + (e.getMessage() == null ? "" : " (" + e.getMessage() + ")")).queue();
@@ -533,7 +537,7 @@ public class Messages extends ListenerAdapter{
                 }
                 //ignore errors
             }
-        }else if((msg.getChannel().getIdLong() == schematicsChannel.getIdLong() || msg.getChannel().getIdLong() == baseSchematicsChannel.getIdLong()) && !isAdmin(msg.getAuthor())){
+        }else if(schematicChannels.contains(msg.getChannel().getIdLong()) && !isAdmin(msg.getAuthor())){
             //delete non-schematics
             msg.delete().queue();
             try{
@@ -586,7 +590,7 @@ public class Messages extends ListenerAdapter{
         ).queue();
 
         joinChannel
-        .sendMessage(new EmbedBuilder()
+        .sendMessageEmbeds(new EmbedBuilder()
             .setAuthor(event.getUser().getName(), event.getUser().getAvatarUrl(), event.getUser().getAvatarUrl())
             .addField("User", event.getUser().getAsMention(), false)
             .addField("ID", "`" + event.getUser().getId() + "`", false)
@@ -603,7 +607,7 @@ public class Messages extends ListenerAdapter{
     }
 
     public void info(MessageChannel channel, String title, String text, Object... args){
-        channel.sendMessage(new EmbedBuilder().addField(title, Strings.format(text, args), true).setColor(normalColor).build()).queue();
+        channel.sendMessageEmbeds(new EmbedBuilder().addField(title, Strings.format(text, args), true).setColor(normalColor).build()).queue();
     }
 
     /** Sends an error, deleting the base message and the error message after a delay. */
@@ -613,7 +617,7 @@ public class Messages extends ListenerAdapter{
 
     /** Sends an error, deleting the base message and the error message after a delay. */
     public void errDelete(Message message, String title, String text, Object... args){
-        message.getChannel().sendMessage(new EmbedBuilder()
+        message.getChannel().sendMessageEmbeds(new EmbedBuilder()
         .addField(title, Strings.format(text, args), true).setColor(errorColor).build())
         .queue(result -> result.delete().queueAfter(messageDeleteTime, TimeUnit.MILLISECONDS));
 

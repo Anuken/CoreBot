@@ -35,7 +35,7 @@ public class Net{
                     while(true){
                         String current = text.substring(0, Math.min(maxLength, text.length()));
                         CoreBot.messages.announcementsChannel
-                        .sendMessage(new EmbedBuilder()
+                        .sendMessageEmbeds(new EmbedBuilder()
                         .setColor(normalColor).setTitle(latest.name)
                         .setDescription(current).build()).queue();
 

@@ -67,7 +67,7 @@ public class StreamScanner{
             var avatar = users.asArray().first().getString("profile_image_url");
 
             CoreBot.messages.streamsChannel
-            .sendMessage(
+            .sendMessageEmbeds(
             new EmbedBuilder()
             .setTitle(stream.getString("title"), "https://twitch.tv/" + stream.getString("user_login"))
             .setColor(CoreBot.normalColor)
