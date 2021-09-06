@@ -446,6 +446,25 @@ public class Messages extends ListenerAdapter{
                 errDelete(msg, "Incorrect name format.");
             }
         });
+
+        adminHandler.<Message>register("schemdesigner", "<add/remove> <@user>", "Make a user a verified schematic designer.", (args, msg) -> {
+            String author = args[1].substring(2, args[1].length() - 1);
+            if(author.startsWith("!")) author = author.substring(1);
+            try{
+                long l = Long.parseLong(author);
+                User user = jda.retrieveUserById(l).complete();
+                boolean add = args[0].equals("add");
+                if(add){
+                    guild.addRoleToMember(l, guild.getRoleById(877171645427621889L)).queue();
+                }else{
+                    guild.removeRoleFromMember(l, guild.getRoleById(877171645427621889L)).queue();
+                }
+
+                text(msg, "**@** is @ a verified schematic designer.", user.getName(), add ? "now" : "no longer");
+            }catch(Exception e){
+                errDelete(msg, "Incorrect name format.");
+            }
+        });
     }
 
     @Override
