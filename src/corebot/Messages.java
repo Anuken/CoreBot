@@ -40,7 +40,7 @@ import static corebot.CoreBot.*;
 
 public class Messages extends ListenerAdapter{
     private static final String prefix = "!";
-    private static final int scamAutobanLimit = 4;
+    private static final int scamAutobanLimit = 4, pingSpamLimit = 12;
     private static final SimpleDateFormat fmt = new SimpleDateFormat("yyyy-MM-dd");
     private static final String[] warningStrings = {"once", "twice", "thrice", "too many times"};
     private static final Pattern invitePattern = Pattern.compile("(discord\\.gg/\\w|discordapp\\.com/invite/\\w|discord\\.com/invite/\\w)");
@@ -80,6 +80,8 @@ public class Messages extends ListenerAdapter{
     ));
 
     private final ObjectIntMap<String> scamMessagesSent = new ObjectIntMap<>();
+    private final ObjectIntMap<String> pingsSent = new ObjectIntMap<>();
+    private final ObjectMap<String, String> lastPinged = new ObjectMap<>();
     private final CommandHandler handler = new CommandHandler(prefix);
     private final CommandHandler adminHandler = new CommandHandler(prefix);
     private final JDA jda;
@@ -691,6 +693,27 @@ public class Messages extends ListenerAdapter{
     boolean checkInvite(Message message){
 
         if(message.getChannel().getType() != ChannelType.PRIVATE){
+            Seq<String> mentioned = Seq.with(message.getMentionedMembers()).map(IMentionable::getAsMention).and(Seq.with(message.getMentionedRoles()).map(IMentionable::getAsMention));
+
+            String id = message.getAuthor().getId();
+            for(var ping : mentioned){
+                String last = lastPinged.get(id);
+                if(!ping.equals(last)){
+                    lastPinged.put(id, ping);
+                    if(pingsSent.increment(id) >= pingSpamLimit){
+                        alertsChannel.sendMessage(message.getAuthor().getAsMention() + " **has been auto-banned for pinging " + pingSpamLimit + " unique members in a row!**").queue();
+
+                        message.getGuild().ban(message.getAuthor(), 1, "Spamming member pings").queue();
+                    }
+                }else{
+                    pingsSent.remove(id);
+                }
+            }
+
+            if(mentioned.isEmpty()){
+                pingsSent.remove(id);
+            }
+
             if(invitePattern.matcher(message.getContentRaw()).find()){
                 Log.warn("User @ just sent a discord invite in @.", message.getAuthor().getName(), message.getChannel().getName());
                 message.delete().queue();
@@ -699,7 +722,7 @@ public class Messages extends ListenerAdapter{
             }else if(scamPattern.matcher(message.getContentRaw().toLowerCase(Locale.ROOT)).find()){
                 Log.warn("User @ just sent a potential scam message in @.", message.getAuthor().getName(), message.getChannel().getName());
 
-                int count = scamMessagesSent.increment(message.getAuthor().getId());
+                int count = scamMessagesSent.increment(id);
 
                 alertsChannel.sendMessage(
                     message.getAuthor().getAsMention() +
@@ -719,9 +742,9 @@ public class Messages extends ListenerAdapter{
                 }
 
                 return true;
-            }else if(scamMessagesSent.containsKey(message.getAuthor().getId())){
+            }else if(scamMessagesSent.containsKey(id)){
                 //non-consecutive scam messages don't count
-                scamMessagesSent.remove(message.getAuthor().getId(), 0);
+                scamMessagesSent.remove(id, 0);
             }
 
         }
