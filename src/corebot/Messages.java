@@ -693,25 +693,29 @@ public class Messages extends ListenerAdapter{
     boolean checkInvite(Message message){
 
         if(message.getChannel().getType() != ChannelType.PRIVATE){
-            Seq<String> mentioned = Seq.with(message.getMentionedMembers()).map(IMentionable::getAsMention).and(Seq.with(message.getMentionedRoles()).map(IMentionable::getAsMention));
-
             String id = message.getAuthor().getId();
-            for(var ping : mentioned){
-                String last = lastPinged.get(id);
-                if(!ping.equals(last)){
-                    lastPinged.put(id, ping);
-                    if(pingsSent.increment(id) >= pingSpamLimit){
-                        alertsChannel.sendMessage(message.getAuthor().getAsMention() + " **has been auto-banned for pinging " + pingSpamLimit + " unique members in a row!**").queue();
 
-                        message.getGuild().ban(message.getAuthor(), 1, "Spamming member pings").queue();
+            //TODO may incorrectly ban people
+            if(false){
+                Seq<String> mentioned = Seq.with(message.getMentionedMembers()).map(IMentionable::getAsMention).and(Seq.with(message.getMentionedRoles()).map(IMentionable::getAsMention));
+
+                for(var ping : mentioned){
+                    String last = lastPinged.get(id);
+                    if(!ping.equals(last)){
+                        lastPinged.put(id, ping);
+                        if(pingsSent.increment(id) >= pingSpamLimit){
+                            alertsChannel.sendMessage(message.getAuthor().getAsMention() + " **has been auto-banned for pinging " + pingSpamLimit + " unique members in a row!**").queue();
+
+                            message.getGuild().ban(message.getAuthor(), 1, "Spamming member pings").queue();
+                        }
+                    }else{
+                        pingsSent.remove(id);
                     }
-                }else{
+                }
+
+                if(mentioned.isEmpty()){
                     pingsSent.remove(id);
                 }
-            }
-
-            if(mentioned.isEmpty()){
-                pingsSent.remove(id);
             }
 
             if(invitePattern.matcher(message.getContentRaw()).find()){
