@@ -696,7 +696,7 @@ public class Messages extends ListenerAdapter{
             String id = message.getAuthor().getId();
 
             //TODO may incorrectly ban people
-            if(false){
+            if(false && message.getReferencedMessage() == null){
                 Seq<String> mentioned = Seq.with(message.getMentionedMembers()).map(IMentionable::getAsMention).and(Seq.with(message.getMentionedRoles()).map(IMentionable::getAsMention));
 
                 for(var ping : mentioned){
@@ -706,7 +706,7 @@ public class Messages extends ListenerAdapter{
                         if(pingsSent.increment(id) >= pingSpamLimit){
                             alertsChannel.sendMessage(message.getAuthor().getAsMention() + " **has been auto-banned for pinging " + pingSpamLimit + " unique members in a row!**").queue();
 
-                            message.getGuild().ban(message.getAuthor(), 1, "Spamming member pings").queue();
+                            message.getGuild().ban(message.getAuthor(), 1, "[Auto-Ban] Spamming member pings").queue();
                         }
                     }else{
                         pingsSent.remove(id);
@@ -742,7 +742,7 @@ public class Messages extends ListenerAdapter{
 
                     alertsChannel.sendMessage(message.getAuthor().getAsMention() + " **has been auto-banned for posting " + scamAutobanLimit + " scam messages in a row!**").queue();
 
-                    message.getGuild().ban(message.getAuthor(), 0, "Posting several potential scam messages in a row.").queue();
+                    message.getGuild().ban(message.getAuthor(), 0, "[Auto-Ban] Posting several potential scam messages in a row.").queue();
                 }
 
                 return true;
