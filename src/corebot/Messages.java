@@ -358,6 +358,16 @@ public class Messages extends ListenerAdapter{
             });
         });
 
+
+        handler.<Message>register("mywarnings", "Get information about your own warnings. Only usable in #bots.", (args, msg) -> {
+            if(!msg.getChannel().getName().equalsIgnoreCase("bots")){
+                errDelete(msg, "Use this command in #bots.");
+                return;
+            }
+
+            sendWarnings(msg, msg.getAuthor());
+        });
+
         adminHandler.<Message>register("userinfo", "<@user>", "Get user info.", (args, msg) -> {
             String author = args[0].substring(2, args[0].length() - 1);
             if(author.startsWith("!")) author = author.substring(1);
@@ -392,16 +402,7 @@ public class Messages extends ListenerAdapter{
             try{
                 long l = Long.parseLong(author);
                 User user = jda.retrieveUserById(l).complete();
-                var list = getWarnings(user);
-                text(msg, "User '@' has **@** @.\n@", user.getName(), list.size, list.size == 1 ? "warning" : "warnings",
-                list.map(s -> {
-                    String[] split = s.split(":::");
-                    long time = Long.parseLong(split[0]);
-                    String warner = split.length > 1 ? split[1] : null, reason = split.length > 2 ? split[2] : null;
-                    return "- `" + fmt.format(new Date(time)) + "`: Expires in " + (warnExpireDays - Duration.ofMillis((System.currentTimeMillis() - time)).toDays()) + " days" +
-                    (warner == null ? "" : "\n  ↳ *From:* " + warner) +
-                    (reason == null ? "" : "\n  ↳ *Reason:* " + reason);
-                }).toString("\n"));
+                sendWarnings(msg, user);
             }catch(Exception e){
                 errDelete(msg, "Incorrect name format.");
             }
@@ -617,6 +618,19 @@ public class Messages extends ListenerAdapter{
             .addField("ID", "`" + event.getUser().getId() + "`", false)
             .setColor(normalColor).build())
         .queue();
+    }
+
+    void sendWarnings(Message msg, User user){
+        var list = getWarnings(user);
+        text(msg, "User '@' has **@** @.\n@", user.getName(), list.size, list.size == 1 ? "warning" : "warnings",
+        list.map(s -> {
+            String[] split = s.split(":::");
+            long time = Long.parseLong(split[0]);
+            String warner = split.length > 1 ? split[1] : null, reason = split.length > 2 ? split[2] : null;
+            return "- `" + fmt.format(new Date(time)) + "`: Expires in " + (warnExpireDays - Duration.ofMillis((System.currentTimeMillis() - time)).toDays()) + " days" +
+            (warner == null ? "" : "\n  ↳ *From:* " + warner) +
+            (reason == null ? "" : "\n  ↳ *Reason:* " + reason);
+        }).toString("\n"));
     }
 
     public void text(MessageChannel channel, String text, Object... args){
