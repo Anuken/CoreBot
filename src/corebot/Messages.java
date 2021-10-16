@@ -85,7 +85,9 @@ public class Messages extends ListenerAdapter{
         "steam.*nitro.*http",
         "nitro.*http.*d",
         "http.*d.*gift",
-        "gift.*http.*d"
+        "gift.*http.*d",
+        "gift.*http.*d.*s",
+        "discord.*steam.*http.*d"
     ));
 
     private final ObjectIntMap<String> scamMessagesSent = new ObjectIntMap<>();
