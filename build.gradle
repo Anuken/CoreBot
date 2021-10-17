@@ -20,7 +20,7 @@ allprojects{
 }
 
 ext{
-    mindustryVersion = 'v131'
+    mindustryVersion = 'v132'
 }
 
 task dist(type: Jar){
