@@ -44,6 +44,7 @@ public class Messages extends ListenerAdapter{
     private static final SimpleDateFormat fmt = new SimpleDateFormat("yyyy-MM-dd");
     private static final String[] warningStrings = {"once", "twice", "thrice", "too many times"};
     private static final Pattern invitePattern = Pattern.compile("(discord\\.gg/\\w|discordapp\\.com/invite/\\w|discord\\.com/invite/\\w)");
+    private static final Pattern linkPattern = Pattern.compile("http(s?)://");
     private static final Pattern scamPattern = Pattern.compile(String.join("|",
         "stea.*co.*\\.ru",
         "http.*stea.*c.*\\..*trad",
@@ -93,12 +94,14 @@ public class Messages extends ListenerAdapter{
         "free.*nitro.*http",
         "discord.*nitro.*http",
         "@everyone.*http",
-        "http.*@everyone"
+        "http.*@everyone",
+        "@everyone nitro",
+        "nitro @everyone"
     ));
 
     private final ObjectIntMap<String> scamMessagesSent = new ObjectIntMap<>();
-    private final ObjectIntMap<String> pingsSent = new ObjectIntMap<>();
-    private final ObjectMap<String, String> lastPinged = new ObjectMap<>();
+    private final ObjectIntMap<String> linkCrossposts = new ObjectIntMap<>();
+    private final ObjectMap<String, String> lastLinkMessage = new ObjectMap<>();
     private final CommandHandler handler = new CommandHandler(prefix);
     private final CommandHandler adminHandler = new CommandHandler(prefix);
     private final JDA jda;
@@ -513,7 +516,7 @@ public class Messages extends ListenerAdapter{
         }
 
         //delete stray invites
-        if(/*!isAdmin(msg.getAuthor()) && */checkInvite(msg)){
+        if(/*!isAdmin(msg.getAuthor()) && */checkSpam(msg)){
             return;
         }
 
@@ -601,7 +604,7 @@ public class Messages extends ListenerAdapter{
     public void onGuildMessageUpdate(GuildMessageUpdateEvent event){
         var msg = event.getMessage();
 
-        if(isAdmin(msg.getAuthor()) || checkInvite(msg)){
+        if(isAdmin(msg.getAuthor()) || checkSpam(msg)){
             return;
         }
 
@@ -721,40 +724,44 @@ public class Messages extends ListenerAdapter{
         return member != null && member.getRoles().stream().anyMatch(role -> role.getName().equals("Developer") || role.getName().equals("Moderator") || role.getName().equals("\uD83D\uDD28 \uD83D\uDD75️\u200D♂️"));
     }
 
-    boolean checkInvite(Message message){
+    boolean checkSpam(Message message){
 
         if(message.getChannel().getType() != ChannelType.PRIVATE){
             String id = message.getAuthor().getId();
+            String content = message.getContentRaw().toLowerCase(Locale.ROOT);
 
-            //TODO may incorrectly ban people
-            if(false && message.getReferencedMessage() == null){
-                Seq<String> mentioned = Seq.with(message.getMentionedMembers()).map(IMentionable::getAsMention).and(Seq.with(message.getMentionedRoles()).map(IMentionable::getAsMention));
+            //check for consecutive links
+            if(linkPattern.matcher(content).find()){
+                String last = lastLinkMessage.get(id);
 
-                for(var ping : mentioned){
-                    String last = lastPinged.get(id);
-                    if(!ping.equals(last)){
-                        lastPinged.put(id, ping);
-                        if(pingsSent.increment(id) >= pingSpamLimit){
-                            alertsChannel.sendMessage(message.getAuthor().getAsMention() + " **has been auto-banned for pinging " + pingSpamLimit + " unique members in a row!**").queue();
+                if(content.equals(last)){
+                    alertsChannel.sendMessage(
+                        message.getAuthor().getAsMention() +
+                        " **is spamming a link** in " + message.getTextChannel().getAsMention() +
+                        ":\n\n" + message.getContentRaw()
+                    ).queue();
 
-                            message.getGuild().ban(message.getAuthor(), 1, "[Auto-Ban] Spamming member pings").queue();
-                        }
-                    }else{
-                        pingsSent.remove(id);
+                    message.delete().queue();
+                    message.getAuthor().openPrivateChannel().complete().sendMessage("You have posted a link several times. Do not send any similar messages, or **you will be auto-banned.**").queue();
+
+                    if(linkCrossposts.increment(id) >= 2){
+                        alertsChannel.sendMessage(message.getAuthor().getAsMention() + " **has been auto-banned for cross-posting links!**").queue();
+                        //message.getGuild().ban(message.getAuthor(), 0, "[Auto-Ban] Cross-posting suspicious links.").queue();
                     }
                 }
 
-                if(mentioned.isEmpty()){
-                    pingsSent.remove(id);
-                }
+                lastLinkMessage.put(id, content);
+            }else{
+                linkCrossposts.remove(id);
+                lastLinkMessage.remove(id);
             }
 
-            if(invitePattern.matcher(message.getContentRaw()).find()){
+            if(invitePattern.matcher(content).find()){
                 Log.warn("User @ just sent a discord invite in @.", message.getAuthor().getName(), message.getChannel().getName());
                 message.delete().queue();
                 message.getAuthor().openPrivateChannel().complete().sendMessage("Do not send invite links in the Mindustry Discord server! Read the rules.").queue();
                 return true;
-            }else if(scamPattern.matcher(message.getContentRaw().toLowerCase(Locale.ROOT).replace("\n", " ")).find()){
+            }else if(scamPattern.matcher(content.replace("\n", " ")).find()){
                 Log.warn("User @ just sent a potential scam message in @.", message.getAuthor().getName(), message.getChannel().getName());
 
                 int count = scamMessagesSent.increment(id);
@@ -772,7 +779,6 @@ public class Messages extends ListenerAdapter{
                     Log.warn("User @ (@) has been auto-banned after @ scam messages.", message.getAuthor().getName(), message.getAuthor().getAsMention(), count + 1);
 
                     alertsChannel.sendMessage(message.getAuthor().getAsMention() + " **has been auto-banned for posting " + scamAutobanLimit + " scam messages in a row!**").queue();
-
                     //message.getGuild().ban(message.getAuthor(), 0, "[Auto-Ban] Posting several potential scam messages in a row.").queue();
                 }
 
