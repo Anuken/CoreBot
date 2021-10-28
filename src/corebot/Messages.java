@@ -43,6 +43,20 @@ public class Messages extends ListenerAdapter{
     private static final int scamAutobanLimit = 4, pingSpamLimit = 12;
     private static final SimpleDateFormat fmt = new SimpleDateFormat("yyyy-MM-dd");
     private static final String[] warningStrings = {"once", "twice", "thrice", "too many times"};
+
+    // https://stackoverflow.com/a/48769624
+    private static final Pattern urlPattern = Pattern.compile("(?:(?:https?):\\/\\/)?[\\w/\\-?=%.]+\\.[\\w/\\-&?=%.]+");
+    private static final Set<String> trustedDomains = Set.of(
+            "discord.com",
+            "discord.co",
+            "discord.gg",
+            "discord.media",
+            "discord.gift",
+            "discordapp.com",
+            "discordapp.net",
+            "discordstatus.com"
+    );
+
     private static final Pattern invitePattern = Pattern.compile("(discord\\.gg/\\w|discordapp\\.com/invite/\\w|discord\\.com/invite/\\w)");
     private static final Pattern scamPattern = Pattern.compile(String.join("|",
         "stea.*co.*\\.ru",
@@ -754,7 +768,7 @@ public class Messages extends ListenerAdapter{
                 message.delete().queue();
                 message.getAuthor().openPrivateChannel().complete().sendMessage("Do not send invite links in the Mindustry Discord server! Read the rules.").queue();
                 return true;
-            }else if(scamPattern.matcher(message.getContentRaw().toLowerCase(Locale.ROOT).replace("\n", " ")).find()){
+            }else if(containsScamLink(message)){
                 Log.warn("User @ just sent a potential scam message in @.", message.getAuthor().getName(), message.getChannel().getName());
 
                 int count = scamMessagesSent.increment(id);
@@ -801,5 +815,39 @@ public class Messages extends ListenerAdapter{
             return false;
         }
         return true;
+    }
+
+    boolean containsScamLink(Message message){
+        String content = message.getContentRaw().toLowerCase(Locale.ROOT);
+
+        // Regular check
+        if(scamPattern.matcher(content.replace("\n", " ")).find()){
+            return true;
+        }
+
+        // Extracts the urls of the message
+        List<String> urls = urlPattern.matcher(content).results().map(MatchResult::group).toList();
+
+        for(String url : urls){
+            // Gets the domain and splits its different parts
+            String[] rawDomain = url
+                    .replace("https://", "")
+                    .replace("http://", "")
+                    .split("/")[0]
+                    .split("\\.");
+
+            // Gets rid of the subdomains
+            rawDomain = Arrays.copyOfRange(rawDomain, Math.max(rawDomain.length - 2, 0), rawDomain.length);
+
+            // Re-assemble
+            String domain = String.join(".", rawDomain);
+
+            // Matches slightly altered links
+            if(!trustedDomains.contains(domain) && trustedDomains.stream().anyMatch(genuine -> Strings.levenshtein(genuine, domain) <= 2)){
+                return true;
+            }
+        }
+
+        return false;
     }
 }
