@@ -758,8 +758,8 @@ public class Messages extends ListenerAdapter{
                     message.delete().queue();
                     message.getAuthor().openPrivateChannel().complete().sendMessage("You have posted a link several times. Do not send any similar messages, or **you will be auto-banned.**").queue();
 
-                    if(linkCrossposts.increment(id) >= 2){
-                        alertsChannel.sendMessage(message.getAuthor().getAsMention() + " **has been auto-banned for cross-posting links!**").queue();
+                    if(linkCrossposts.increment(id) >= 3){
+                        alertsChannel.sendMessage(message.getAuthor().getAsMention() + " **has been auto-banned for spam-posting links!**").queue();
                         //message.getGuild().ban(message.getAuthor(), 0, "[Auto-Ban] Cross-posting suspicious links.").queue();
                     }
                 }
