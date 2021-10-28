@@ -749,6 +749,8 @@ public class Messages extends ListenerAdapter{
                 String last = lastLinkMessage.get(id);
 
                 if(content.equals(last)){
+                    Log.warn("User @ just spammed a link in @: '@'", message.getAuthor().getName(), message.getChannel().getName(), content);
+
                     //only start deleting after 2 posts
                     if(linkCrossposts.get(id) >= 2){
                         alertsChannel.sendMessage(
