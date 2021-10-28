@@ -51,6 +51,7 @@ public class Messages extends ListenerAdapter{
             "discord.co",
             "discord.gg",
             "discord.media",
+            "discord.gift",
             "discordapp.com",
             "discordapp.net",
             "discordstatus.com"
