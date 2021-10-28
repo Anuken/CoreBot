@@ -749,16 +749,22 @@ public class Messages extends ListenerAdapter{
                 String last = lastLinkMessage.get(id);
 
                 if(content.equals(last)){
-                    alertsChannel.sendMessage(
-                        message.getAuthor().getAsMention() +
-                        " **is spamming a link** in " + message.getTextChannel().getAsMention() +
-                        ":\n\n" + message.getContentRaw()
-                    ).queue();
+                    //only start deleting after 2 posts
+                    if(linkCrossposts.get(id) >= 2){
+                        alertsChannel.sendMessage(
+                            message.getAuthor().getAsMention() +
+                            " **is spamming a link** in " + message.getTextChannel().getAsMention() +
+                            ":\n\n" + message.getContentRaw()
+                        ).queue();
 
-                    message.delete().queue();
-                    message.getAuthor().openPrivateChannel().complete().sendMessage("You have posted a link several times. Do not send any similar messages, or **you will be auto-banned.**").queue();
+                        message.delete().queue();
+                        message.getAuthor().openPrivateChannel().complete().sendMessage("You have posted a link several times. Do not send any similar messages, or **you will be auto-banned.**").queue();
+                    }
 
+                    //4 posts = ban
                     if(linkCrossposts.increment(id) >= 3){
+                        Log.warn("User @ (@) has been auto-banned after spamming link messages.", message.getAuthor().getName(), message.getAuthor().getAsMention());
+
                         alertsChannel.sendMessage(message.getAuthor().getAsMention() + " **has been auto-banned for spam-posting links!**").queue();
                         //message.getGuild().ban(message.getAuthor(), 0, "[Auto-Ban] Cross-posting suspicious links.").queue();
                     }
