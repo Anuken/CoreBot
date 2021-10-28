@@ -91,7 +91,9 @@ public class Messages extends ListenerAdapter{
         "steam.*nitro.*http",
         "dliscord.com",
         "free.*nitro.*http",
-        "discord.*nitro.*http"
+        "discord.*nitro.*http",
+        "@everyone.*http",
+        "http.*@everyone"
     ));
 
     private final ObjectIntMap<String> scamMessagesSent = new ObjectIntMap<>();
@@ -720,7 +722,6 @@ public class Messages extends ListenerAdapter{
     }
 
     boolean checkInvite(Message message){
-        Log.info(message.getContentRaw() + " // " + message.getContentDisplay());
 
         if(message.getChannel().getType() != ChannelType.PRIVATE){
             String id = message.getAuthor().getId();
@@ -772,7 +773,7 @@ public class Messages extends ListenerAdapter{
 
                     alertsChannel.sendMessage(message.getAuthor().getAsMention() + " **has been auto-banned for posting " + scamAutobanLimit + " scam messages in a row!**").queue();
 
-                    message.getGuild().ban(message.getAuthor(), 0, "[Auto-Ban] Posting several potential scam messages in a row.").queue();
+                    //message.getGuild().ban(message.getAuthor(), 0, "[Auto-Ban] Posting several potential scam messages in a row.").queue();
                 }
 
                 return true;
