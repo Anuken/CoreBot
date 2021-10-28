@@ -530,7 +530,7 @@ public class Messages extends ListenerAdapter{
         }
 
         //delete stray invites
-        if(/*!isAdmin(msg.getAuthor()) && */checkSpam(msg)){
+        if(!isAdmin(msg.getAuthor()) && checkSpam(msg, false)){
             return;
         }
 
@@ -618,7 +618,7 @@ public class Messages extends ListenerAdapter{
     public void onGuildMessageUpdate(GuildMessageUpdateEvent event){
         var msg = event.getMessage();
 
-        if(isAdmin(msg.getAuthor()) || checkSpam(msg)){
+        if(isAdmin(msg.getAuthor()) || checkSpam(msg, true)){
             return;
         }
 
@@ -738,14 +738,14 @@ public class Messages extends ListenerAdapter{
         return member != null && member.getRoles().stream().anyMatch(role -> role.getName().equals("Developer") || role.getName().equals("Moderator") || role.getName().equals("\uD83D\uDD28 \uD83D\uDD75️\u200D♂️"));
     }
 
-    boolean checkSpam(Message message){
+    boolean checkSpam(Message message, boolean edit){
 
         if(message.getChannel().getType() != ChannelType.PRIVATE){
             String id = message.getAuthor().getId();
             String content = message.getContentRaw().toLowerCase(Locale.ROOT);
 
             //check for consecutive links
-            if(linkPattern.matcher(content).find()){
+            if(!edit && linkPattern.matcher(content).find()){
                 String last = lastLinkMessage.get(id);
 
                 if(content.equals(last)){
@@ -768,7 +768,7 @@ public class Messages extends ListenerAdapter{
                         Log.warn("User @ (@) has been auto-banned after spamming link messages.", message.getAuthor().getName(), message.getAuthor().getAsMention());
 
                         alertsChannel.sendMessage(message.getAuthor().getAsMention() + " **has been auto-banned for spam-posting links!**").queue();
-                        //message.getGuild().ban(message.getAuthor(), 0, "[Auto-Ban] Cross-posting suspicious links.").queue();
+                        message.getGuild().ban(message.getAuthor(), 1, "[Auto-Ban] Spam-posting links.").queue();
                     }
                 }
 
@@ -801,7 +801,7 @@ public class Messages extends ListenerAdapter{
                     Log.warn("User @ (@) has been auto-banned after @ scam messages.", message.getAuthor().getName(), message.getAuthor().getAsMention(), count + 1);
 
                     alertsChannel.sendMessage(message.getAuthor().getAsMention() + " **has been auto-banned for posting " + scamAutobanLimit + " scam messages in a row!**").queue();
-                    //message.getGuild().ban(message.getAuthor(), 0, "[Auto-Ban] Posting several potential scam messages in a row.").queue();
+                    message.getGuild().ban(message.getAuthor(), 0, "[Auto-Ban] Posting several potential scam messages in a row.").queue();
                 }
 
                 return true;
