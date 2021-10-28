@@ -40,21 +40,21 @@ import static corebot.CoreBot.*;
 
 public class Messages extends ListenerAdapter{
     private static final String prefix = "!";
-    private static final int scamAutobanLimit = 4, pingSpamLimit = 12;
+    private static final int scamAutobanLimit = 4;
     private static final SimpleDateFormat fmt = new SimpleDateFormat("yyyy-MM-dd");
     private static final String[] warningStrings = {"once", "twice", "thrice", "too many times"};
 
     // https://stackoverflow.com/a/48769624
     private static final Pattern urlPattern = Pattern.compile("(?:(?:https?):\\/\\/)?[\\w/\\-?=%.]+\\.[\\w/\\-&?=%.]+");
     private static final Set<String> trustedDomains = Set.of(
-            "discord.com",
-            "discord.co",
-            "discord.gg",
-            "discord.media",
-            "discord.gift",
-            "discordapp.com",
-            "discordapp.net",
-            "discordstatus.com"
+        "discord.com",
+        "discord.co",
+        "discord.gg",
+        "discord.media",
+        "discord.gift",
+        "discordapp.com",
+        "discordapp.net",
+        "discordstatus.com"
     );
 
     private static final Pattern invitePattern = Pattern.compile("(discord\\.gg/\\w|discordapp\\.com/invite/\\w|discord\\.com/invite/\\w)");
@@ -116,6 +116,7 @@ public class Messages extends ListenerAdapter{
     private final ObjectIntMap<String> scamMessagesSent = new ObjectIntMap<>();
     private final ObjectIntMap<String> linkCrossposts = new ObjectIntMap<>();
     private final ObjectMap<String, String> lastLinkMessage = new ObjectMap<>();
+    private final ObjectMap<String, String> lastLinkChannel = new ObjectMap<>();
     private final CommandHandler handler = new CommandHandler(prefix);
     private final CommandHandler adminHandler = new CommandHandler(prefix);
     private final JDA jda;
@@ -747,8 +748,9 @@ public class Messages extends ListenerAdapter{
             //check for consecutive links
             if(!edit && linkPattern.matcher(content).find()){
                 String last = lastLinkMessage.get(id);
+                String lastChannel = lastLinkChannel.get(id);
 
-                if(content.equals(last)){
+                if(content.equals(last) && !message.getChannel().getId().equals(lastChannel)){
                     Log.warn("User @ just spammed a link in @: '@'", message.getAuthor().getName(), message.getChannel().getName(), content);
 
                     //only start deleting after 2 posts
@@ -773,9 +775,11 @@ public class Messages extends ListenerAdapter{
                 }
 
                 lastLinkMessage.put(id, content);
+                lastLinkChannel.put(id, message.getChannel().getId());
             }else{
                 linkCrossposts.remove(id);
                 lastLinkMessage.remove(id);
+                lastLinkChannel.remove(id);
             }
 
             if(invitePattern.matcher(content).find()){
