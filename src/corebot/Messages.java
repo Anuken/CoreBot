@@ -770,7 +770,7 @@ public class Messages extends ListenerAdapter{
                         Log.warn("User @ (@) has been auto-banned after spamming link messages.", message.getAuthor().getName(), message.getAuthor().getAsMention());
 
                         alertsChannel.sendMessage(message.getAuthor().getAsMention() + " **has been auto-banned for spam-posting links!**").queue();
-                        message.getGuild().ban(message.getAuthor(), 1, "[Auto-Ban] Spam-posting links.").queue();
+                        message.getGuild().ban(message.getAuthor(), 1, "[Auto-Ban] Spam-posting links. If you are not a bot or spammer, please report this at https://github.com/Anuken/CoreBot/issues immediately!").queue();
                     }
                 }
 
@@ -805,7 +805,7 @@ public class Messages extends ListenerAdapter{
                     Log.warn("User @ (@) has been auto-banned after @ scam messages.", message.getAuthor().getName(), message.getAuthor().getAsMention(), count + 1);
 
                     alertsChannel.sendMessage(message.getAuthor().getAsMention() + " **has been auto-banned for posting " + scamAutobanLimit + " scam messages in a row!**").queue();
-                    message.getGuild().ban(message.getAuthor(), 0, "[Auto-Ban] Posting several potential scam messages in a row.").queue();
+                    message.getGuild().ban(message.getAuthor(), 0, "[Auto-Ban] Posting several potential scam messages in a row. If you are not a bot or spammer, please report this at https://github.com/Anuken/CoreBot/issues immediately!").queue();
                 }
 
                 return true;
