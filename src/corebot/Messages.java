@@ -788,7 +788,7 @@ public class Messages extends ListenerAdapter{
                 message.getAuthor().openPrivateChannel().complete().sendMessage("Do not send invite links in the Mindustry Discord server! Read the rules.").queue();
                 return true;
             }else if(containsScamLink(message)){
-                Log.warn("User @ just sent a potential scam message in @.", message.getAuthor().getName(), message.getChannel().getName());
+                Log.warn("User @ just sent a potential scam message in @: '@'", message.getAuthor().getName(), message.getChannel().getName(), message.getContentRaw());
 
                 int count = scamMessagesSent.increment(id);
 
