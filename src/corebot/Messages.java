@@ -40,7 +40,7 @@ import static corebot.CoreBot.*;
 
 public class Messages extends ListenerAdapter{
     private static final String prefix = "!";
-    private static final int scamAutobanLimit = 4;
+    private static final int scamAutobanLimit = 4, pingSpamLimit = 12;
     private static final SimpleDateFormat fmt = new SimpleDateFormat("yyyy-MM-dd");
     private static final String[] warningStrings = {"once", "twice", "thrice", "too many times"};
 
@@ -59,6 +59,7 @@ public class Messages extends ListenerAdapter{
 
     private static final Pattern invitePattern = Pattern.compile("(discord\\.gg/\\w|discordapp\\.com/invite/\\w|discord\\.com/invite/\\w)");
     private static final Pattern linkPattern = Pattern.compile("http(s?)://");
+    private static final Pattern notScamPattern = Pattern.compile("discord\\.py|discord\\.js");
     private static final Pattern scamPattern = Pattern.compile(String.join("|",
         "stea.*co.*\\.ru",
         "http.*stea.*c.*\\..*trad",
@@ -113,10 +114,7 @@ public class Messages extends ListenerAdapter{
         "nitro @everyone"
     ));
 
-    private final ObjectIntMap<String> scamMessagesSent = new ObjectIntMap<>();
-    private final ObjectIntMap<String> linkCrossposts = new ObjectIntMap<>();
-    private final ObjectMap<String, String> lastLinkMessage = new ObjectMap<>();
-    private final ObjectMap<String, String> lastLinkChannel = new ObjectMap<>();
+    private final ObjectMap<String, UserData> userData = new ObjectMap<>();
     private final CommandHandler handler = new CommandHandler(prefix);
     private final CommandHandler adminHandler = new CommandHandler(prefix);
     private final JDA jda;
@@ -742,19 +740,41 @@ public class Messages extends ListenerAdapter{
     boolean checkSpam(Message message, boolean edit){
 
         if(message.getChannel().getType() != ChannelType.PRIVATE){
-            String id = message.getAuthor().getId();
+            Seq<String> mentioned =
+                //ignore empty messages
+                message.getReferencedMessage() == null ? new Seq<>() :
+                //get all mentioned members and roles in one list
+                Seq.with(message.getMentionedMembers()).map(IMentionable::getAsMention).and(Seq.with(message.getMentionedRoles()).map(IMentionable::getAsMention));
+
+            var data = data(message.getAuthor());
             String content = message.getContentRaw().toLowerCase(Locale.ROOT);
+
+            //go through every ping individually
+            for(var ping : mentioned){
+                if(!ping.equals(data.lastPingId)){
+                    data.lastPingId = ping;
+                    if(data.uniquePings >= pingSpamLimit){
+                        Log.info("Autobanning @ for spamming @ pings in a row.", message.getAuthor().getName() + "#" + message.getAuthor().getId(), data.uniquePings);
+                        alertsChannel.sendMessage(message.getAuthor().getAsMention() + " **has been auto-banned for pinging " + pingSpamLimit + " unique members in a row!**").queue();
+                        message.getGuild().ban(message.getAuthor(), 1, "Banned for spamming member pings. If you believe this was in error, file an issue on the CoreBot Github (https://github.com/Anuken/CoreBot/issues) or contact a moderator.").queue();
+                    }
+                }else{
+                    data.uniquePings = 0;
+                }
+            }
+
+            if(mentioned.isEmpty()){
+                data.uniquePings = 0;
+            }
 
             //check for consecutive links
             if(!edit && linkPattern.matcher(content).find()){
-                String last = lastLinkMessage.get(id);
-                String lastChannel = lastLinkChannel.get(id);
 
-                if(content.equals(last) && !message.getChannel().getId().equals(lastChannel)){
+                if(content.equals(data.lastLinkMessage) && !message.getChannel().getId().equals(data.lastLinkChannelId)){
                     Log.warn("User @ just spammed a link in @ (message: @): '@'", message.getAuthor().getName(), message.getChannel().getName(), message.getId(), content);
 
                     //only start deleting after 2 posts
-                    if(linkCrossposts.get(id) >= 1){
+                    if(data.linkCrossposts >= 1){
                         alertsChannel.sendMessage(
                             message.getAuthor().getAsMention() +
                             " **is spamming a link** in " + message.getTextChannel().getAsMention() +
@@ -766,7 +786,7 @@ public class Messages extends ListenerAdapter{
                     }
 
                     //4 posts = ban
-                    if(linkCrossposts.increment(id) >= 3){
+                    if(data.linkCrossposts ++ >= 3){
                         Log.warn("User @ (@) has been auto-banned after spamming link messages.", message.getAuthor().getName(), message.getAuthor().getAsMention());
 
                         alertsChannel.sendMessage(message.getAuthor().getAsMention() + " **has been auto-banned for spam-posting links!**").queue();
@@ -774,12 +794,12 @@ public class Messages extends ListenerAdapter{
                     }
                 }
 
-                lastLinkMessage.put(id, content);
-                lastLinkChannel.put(id, message.getChannel().getId());
+                data.lastLinkMessage = content;
+                data.lastLinkChannelId = message.getChannel().getId();
             }else{
-                linkCrossposts.remove(id);
-                lastLinkMessage.remove(id);
-                lastLinkChannel.remove(id);
+                data.linkCrossposts = 0;
+                data.lastLinkMessage = null;
+                data.lastLinkChannelId = null;
             }
 
             if(invitePattern.matcher(content).find()){
@@ -790,7 +810,7 @@ public class Messages extends ListenerAdapter{
             }else if(containsScamLink(message)){
                 Log.warn("User @ just sent a potential scam message in @: '@'", message.getAuthor().getName(), message.getChannel().getName(), message.getContentRaw());
 
-                int count = scamMessagesSent.increment(id);
+                int count = data.scamMessages ++;
 
                 alertsChannel.sendMessage(
                     message.getAuthor().getAsMention() +
@@ -809,9 +829,9 @@ public class Messages extends ListenerAdapter{
                 }
 
                 return true;
-            }else if(scamMessagesSent.containsKey(id)){
+            }else{
                 //non-consecutive scam messages don't count
-                scamMessagesSent.remove(id, 0);
+                data.scamMessages = 0;
             }
 
         }
@@ -837,6 +857,11 @@ public class Messages extends ListenerAdapter{
 
     boolean containsScamLink(Message message){
         String content = message.getContentRaw().toLowerCase(Locale.ROOT);
+
+        //some discord-related keywords are never scams (at least, not from bots)
+        if(notScamPattern.matcher(content).find()){
+            return false;
+        }
 
         // Regular check
         if(scamPattern.matcher(content.replace("\n", " ")).find()){
@@ -867,5 +892,25 @@ public class Messages extends ListenerAdapter{
         }
 
         return false;
+    }
+
+    UserData data(User user){
+        return userData.get(user.getId(), UserData::new);
+    }
+
+    static class UserData{
+        /** consecutive scam messages sent */
+        int scamMessages;
+        /** last message that contained any link */
+        @Nullable String lastLinkMessage;
+        /** channel ID of last link posted */
+        @Nullable String lastLinkChannelId;
+        /** link cross-postings in a row */
+        int linkCrossposts;
+        /** ID of last member pinged */
+        String lastPingId;
+        /** number of unique members pinged in a row */
+        int uniquePings;
+
     }
 }
