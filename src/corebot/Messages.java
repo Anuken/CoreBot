@@ -40,7 +40,7 @@ import static corebot.CoreBot.*;
 
 public class Messages extends ListenerAdapter{
     private static final String prefix = "!";
-    private static final int scamAutobanLimit = 4, pingSpamLimit = 12;
+    private static final int scamAutobanLimit = 4, pingSpamLimit = 24;
     private static final SimpleDateFormat fmt = new SimpleDateFormat("yyyy-MM-dd");
     private static final String[] warningStrings = {"once", "twice", "thrice", "too many times"};
 
@@ -753,13 +753,12 @@ public class Messages extends ListenerAdapter{
             for(var ping : mentioned){
                 if(!ping.equals(data.lastPingId)){
                     data.lastPingId = ping;
+                    data.uniquePings++;
                     if(data.uniquePings >= pingSpamLimit){
                         Log.info("Autobanning @ for spamming @ pings in a row.", message.getAuthor().getName() + "#" + message.getAuthor().getId(), data.uniquePings);
                         alertsChannel.sendMessage(message.getAuthor().getAsMention() + " **has been auto-banned for pinging " + pingSpamLimit + " unique members in a row!**").queue();
                         message.getGuild().ban(message.getAuthor(), 1, "Banned for spamming member pings. If you believe this was in error, file an issue on the CoreBot Github (https://github.com/Anuken/CoreBot/issues) or contact a moderator.").queue();
                     }
-                }else{
-                    data.uniquePings = 0;
                 }
             }
 
@@ -911,6 +910,5 @@ public class Messages extends ListenerAdapter{
         String lastPingId;
         /** number of unique members pinged in a row */
         int uniquePings;
-
     }
 }
