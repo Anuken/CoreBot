@@ -352,6 +352,18 @@ public class Messages extends ListenerAdapter{
                 msg.delete().queue();
                 Jval val = Jval.read(result.getResultAsString());
 
+                //merge with arc results
+                Http.get("https://api.github.com/search/code?q=" +
+                "filename:" + Strings.encode(args[0]) + "%20" +
+                "repo:Anuken/Arc")
+                .header("Accept", "application/vnd.github.v3+json")
+                .block(arcResult -> {
+                    Jval arcVal = Jval.read(result.getResultAsString());
+
+                    val.get("items").asArray().addAll(arcVal.get("items").asArray());
+                    val.put("total_count", val.getInt("total_count", 0) + arcVal.getInt("total_count", 0));
+                });
+
                 int count = val.getInt("total_count", 0);
 
                 if(count > 0){

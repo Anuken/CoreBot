@@ -66,6 +66,9 @@ public class StreamScanner{
         if(users.asArray().size > 0){
             var avatar = users.asArray().first().getString("profile_image_url");
 
+            //comedy
+            if(stream.getString("title").contains("18")) return;
+
             CoreBot.messages.streamsChannel
             .sendMessageEmbeds(
             new EmbedBuilder()
