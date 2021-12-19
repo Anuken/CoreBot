@@ -358,7 +358,7 @@ public class Messages extends ListenerAdapter{
                 "repo:Anuken/Arc")
                 .header("Accept", "application/vnd.github.v3+json")
                 .block(arcResult -> {
-                    Jval arcVal = Jval.read(result.getResultAsString());
+                    Jval arcVal = Jval.read(arcResult.getResultAsString());
 
                     val.get("items").asArray().addAll(arcVal.get("items").asArray());
                     val.put("total_count", val.getInt("total_count", 0) + arcVal.getInt("total_count", 0));
