@@ -3,7 +3,9 @@ package corebot;
 public enum Info{
     links("Relevant Links",
     """
-    [Github](https://github.com/Anuken/Mindustry/)
+    [Source Code on Github](https://github.com/Anuken/Mindustry/)
+    [Suggestion Form](https://github.com/Anuken/Mindustry-Suggestions/issues/new/choose)
+    [Bug Report Form](https://github.com/Anuken/Mindustry/issues/new/choose)
     [Trello](https://trello.com/b/aE2tcUwF)
     [Steam Version](https://store.steampowered.com/app/1127400/Mindustry/)
     [Android APKs and itch.io version](https://anuke.itch.io/mindustry)
@@ -31,18 +33,8 @@ public enum Info{
     **8.** Do not cross-post the same message to multiple channels.
     **9.** Do not advertise in DMs or send unsolicited messages to other users. Report violations of this sort to moderators immediately.
     **10.** Ban evasion and alternate accounts are not allowed. Alts posting any content on the server will be banned immediately.
+    **11.** Please do not PM me (Anuke) unless you are reporting an exploit, a significant problem with the Discord server, or need to discuss something relating to Github PRs. If you need help with the game, *ask in #help. or #mindustry*. Do *not* PM me suggestions - use the suggestions form.
     *If I don't like your behavior, you're out. Obey the spirit, not the word.*
-    """),
-    pings("Ping and PM Policy",
-    """
-    *Please do not PM or ping me (Anuke) unless it is something important.*
-        
-    'Important' includes things like major unreported game server issues or exploits, problems with the Discord server (e.g. spammers), or Github pull request related issues.
-    Do *not* PM or ping me when posting normal suggestions or bugs reports. If it's relevant, I'll read it.
-    If you have a question about the game, *ask in #mindustry or #help.*
-        
-    I will not respond to PMs with non-personal game-related questions or random messages such as 'hey'. And no, video calling me multiple times in PM doesn't get my attention, it just gets you blocked.
-    *I also do not accept random friend requests from people I don't know.*
     """);
     public final String text;
     public final String title;
