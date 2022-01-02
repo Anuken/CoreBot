@@ -215,7 +215,6 @@ public class Messages extends ListenerAdapter{
                 Info info = Info.valueOf(args[0]);
                 infoDesc(msg.getChannel(), info.title, info.text);
             }catch(IllegalArgumentException e){
-                e.printStackTrace();
                 errDelete(msg, "Error", "Invalid topic '@'.\nValid topics: *@*", args[0], Arrays.toString(Info.values()));
             }
         });
