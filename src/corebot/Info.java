@@ -31,6 +31,7 @@ public enum Info{
     **7.** Do not impersonate other members or intentionally edit your messages to mislead others.
     **8.** Do not cross-post the same message to multiple channels.
     **9.** Do not advertise in DMs or send unsolicited messages to other users. Report violations of this sort to moderators immediately.
+    **10.** Ban evasion and alternate accounts are not allowed. Alts posting any content on the server will be banned immediately.
     *If I don't like your behavior, you're out. Obey the spirit, not the word.*
     """),
     pings("Ping and PM Policy",
