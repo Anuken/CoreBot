@@ -213,7 +213,7 @@ public class Messages extends ListenerAdapter{
         handler.<Message>register("info", "<topic>", "Displays information about a topic.", (args, msg) -> {
             try{
                 Info info = Info.valueOf(args[0]);
-                info(msg.getChannel(), info.title, info.text);
+                infoDesc(msg.getChannel(), info.title, info.text);
             }catch(IllegalArgumentException e){
                 e.printStackTrace();
                 errDelete(msg, "Error", "Invalid topic '@'.\nValid topics: *@*", args[0], Arrays.toString(Info.values()));
@@ -689,6 +689,10 @@ public class Messages extends ListenerAdapter{
 
     public void info(MessageChannel channel, String title, String text, Object... args){
         channel.sendMessageEmbeds(new EmbedBuilder().addField(title, Strings.format(text, args), true).setColor(normalColor).build()).queue();
+    }
+
+    public void infoDesc(MessageChannel channel, String title, String text, Object... args){
+        channel.sendMessageEmbeds(new EmbedBuilder().setTitle(title).setDescription(Strings.format(text, args)).setColor(normalColor).build()).queue();
     }
 
     /** Sends an error, deleting the base message and the error message after a delay. */
