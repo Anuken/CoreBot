@@ -5,11 +5,12 @@ public enum Info{
     """
     [Github](https://github.com/Anuken/Mindustry/)
     [Trello](https://trello.com/b/aE2tcUwF)
-    [Steam version](https://store.steampowered.com/app/1127400/Mindustry/)
-    [PC/Web/Android Versions](https://anuke.itch.io/mindustry)
+    [Steam Version](https://store.steampowered.com/app/1127400/Mindustry/)
+    [Android APKs and itch.io version](https://anuke.itch.io/mindustry)
     [iOS version](https://itunes.apple.com/us/app/mindustry/id1385258906?mt=8&ign-mpt=uo%3D8)
     [Google Play Listing](https://play.google.com/store/apps/details?id=mindustry)
     [TestFlight Link](https://testflight.apple.com/join/79Azm1hZ)
+    [Mindustry Subreddit](https://www.reddit.com/r/mindustry)
     [Unofficial Matrix](https://matrix.to/#/!bjBcJCYyWfNVdAAWZt:matrix.org)
     """),
     beta("iOS Beta",
