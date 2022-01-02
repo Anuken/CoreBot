@@ -5,20 +5,18 @@ public enum Info{
     """
     [Github](https://github.com/Anuken/Mindustry/)
     [Trello](https://trello.com/b/aE2tcUwF)
+    [Steam version](https://store.steampowered.com/app/1127400/Mindustry/)
     [PC/Web/Android Versions](https://anuke.itch.io/mindustry)
-    [Itch.io App / Updater](https://itch.io/app)
     [iOS version](https://itunes.apple.com/us/app/mindustry/id1385258906?mt=8&ign-mpt=uo%3D8)
     [Google Play Listing](https://play.google.com/store/apps/details?id=mindustry)
     [TestFlight Link](https://testflight.apple.com/join/79Azm1hZ)
     [Unofficial Matrix](https://matrix.to/#/!bjBcJCYyWfNVdAAWZt:matrix.org)
     """),
-    beta("iOS/Android Beta",
+    beta("iOS Beta",
     """
-    To join the Android Beta in Google Play Store, just scroll to the bottom of the page and tap 'join beta'.
-    Betas can take some time to become available after release. Be patient.
-    [Direct Link](https://play.google.com/apps/testing/mindustry)
-        
     To join the iOS beta, click this [TestFlight Link](https://testflight.apple.com/join/79Azm1hZ), then install the Apple TestFlight app to play Mindustry.
+    
+    There is currently no beta available on Google Play. Download the itch.io version.
     """),
     rules("Rules",
     """
