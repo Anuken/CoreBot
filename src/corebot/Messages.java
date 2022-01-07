@@ -615,7 +615,7 @@ public class Messages extends ListenerAdapter{
             return;
         }
 
-        if(!text.trim().equals("!")){
+        if(!text.replace(prefix, "").trim().isEmpty()){
             if(isAdmin(msg.getAuthor())){
                 boolean unknown = handleResponse(msg, adminHandler.handleMessage(text, msg), false);
                 handleResponse(msg, handler.handleMessage(text, msg), !unknown);
