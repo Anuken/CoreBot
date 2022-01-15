@@ -429,8 +429,9 @@ public class Messages extends ListenerAdapter{
                 embed.setColor(normalColor);
                 embed.setTitle("Avatar: " + user.getName() + "#" + user.getDiscriminator());
                 embed.setImage(user.getEffectiveAvatarUrl());
-                embed.setFooter("[Link](" + user.getEffectiveAvatarUrl() + ")");
+                embed.setDescription("[Link](" + user.getEffectiveAvatarUrl() + ")");
                 msg.getChannel().sendMessageEmbeds(embed.build()).queue();
+
             }catch(Exception e){
                 errDelete(msg, "Incorrect name format.");
             }
