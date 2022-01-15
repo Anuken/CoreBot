@@ -413,6 +413,30 @@ public class Messages extends ListenerAdapter{
             sendWarnings(msg, msg.getAuthor());
         });
 
+        adminHandler.<Message>register("avatar", "<@user>", "Get a user's full avatar.", (args, msg) -> {
+            if(!msg.getChannel().getName().equalsIgnoreCase("bots")){
+                errDelete(msg, "Use this command in #bots.");
+                return;
+            }
+
+            String author = args[0].substring(2, args[0].length() - 1);
+            if(author.startsWith("!")) author = author.substring(1);
+            try{
+                long l = Long.parseLong(author);
+                User user = jda.retrieveUserById(l).complete();
+
+                EmbedBuilder embed = new EmbedBuilder();
+                embed.setColor(normalColor);
+                embed.setTitle("Avatar: " + user.getName() + "#" + user.getDiscriminator());
+                embed.setImage(user.getEffectiveAvatarUrl());
+                embed.setFooter("[Link](" + user.getEffectiveAvatarUrl() + ")");
+
+
+            }catch(Exception e){
+                errDelete(msg, "Incorrect name format.");
+            }
+        });
+
         adminHandler.<Message>register("userinfo", "<@user>", "Get user info.", (args, msg) -> {
             String author = args[0].substring(2, args[0].length() - 1);
             if(author.startsWith("!")) author = author.substring(1);
