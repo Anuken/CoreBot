@@ -415,8 +415,8 @@ public class Messages extends ListenerAdapter{
 
         handler.<Message>register("avatar", "<@user>", "Get a user's full avatar.", (args, msg) -> {
             if(!msg.getChannel().getName().equalsIgnoreCase("bots")){
-            //    errDelete(msg, "Use this command in #bots.");
-            //    return;
+                errDelete(msg, "Use this command in #bots.");
+                return;
             }
 
             String author = args[0].substring(2, args[0].length() - 1);
@@ -425,11 +425,13 @@ public class Messages extends ListenerAdapter{
                 long l = Long.parseLong(author);
                 User user = jda.retrieveUserById(l).complete();
 
+                String link = user.getEffectiveAvatarUrl() + "?size=1024";
+
                 EmbedBuilder embed = new EmbedBuilder();
                 embed.setColor(normalColor);
                 embed.setTitle("Avatar: " + user.getName() + "#" + user.getDiscriminator());
-                embed.setImage(user.getEffectiveAvatarUrl());
-                embed.setDescription("[Link](" + user.getEffectiveAvatarUrl() + ")");
+                embed.setImage(link);
+                embed.setDescription("[Link](" + link + ")");
                 msg.getChannel().sendMessageEmbeds(embed.build()).queue();
 
             }catch(Exception e){
