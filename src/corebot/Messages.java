@@ -413,7 +413,7 @@ public class Messages extends ListenerAdapter{
             sendWarnings(msg, msg.getAuthor());
         });
 
-        adminHandler.<Message>register("avatar", "<@user>", "Get a user's full avatar.", (args, msg) -> {
+        handler.<Message>register("avatar", "<@user>", "Get a user's full avatar.", (args, msg) -> {
             if(!msg.getChannel().getName().equalsIgnoreCase("bots")){
             //    errDelete(msg, "Use this command in #bots.");
             //    return;
@@ -430,8 +430,7 @@ public class Messages extends ListenerAdapter{
                 embed.setTitle("Avatar: " + user.getName() + "#" + user.getDiscriminator());
                 embed.setImage(user.getEffectiveAvatarUrl());
                 embed.setFooter("[Link](" + user.getEffectiveAvatarUrl() + ")");
-
-
+                msg.getChannel().sendMessageEmbeds(embed.build()).queue();
             }catch(Exception e){
                 errDelete(msg, "Incorrect name format.");
             }
