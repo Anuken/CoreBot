@@ -413,23 +413,28 @@ public class Messages extends ListenerAdapter{
             sendWarnings(msg, msg.getAuthor());
         });
 
-        handler.<Message>register("avatar", "<@user>", "Get a user's full avatar.", (args, msg) -> {
+        handler.<Message>register("avatar", "[@user]", "Get a user's full avatar.", (args, msg) -> {
             if(!msg.getChannel().getName().equalsIgnoreCase("bots")){
                 errDelete(msg, "Use this command in #bots.");
                 return;
             }
 
             try{
-                long id;
-                try{
-                    id = Long.parseLong(args[0]);
-                }catch(NumberFormatException e){
-                    String author = args[0].substring(2, args[0].length() - 1);
-                    if(author.startsWith("!")) author = author.substring(1);
-                    id = Long.parseLong(author);
-                }
+                User user;
+                if(args.length > 0){
+                    long id;
+                    try{
+                        id = Long.parseLong(args[0]);
+                    }catch(NumberFormatException e){
+                        String author = args[0].substring(2, args[0].length() - 1);
+                        if(author.startsWith("!")) author = author.substring(1);
+                        id = Long.parseLong(author);
+                    }
 
-                User user = jda.retrieveUserById(id).complete();
+                    user = jda.retrieveUserById(id).complete();
+                }else{
+                    user = msg.getAuthor();
+                }
 
                 String link = user.getEffectiveAvatarUrl() + "?size=1024";
 
