@@ -419,11 +419,17 @@ public class Messages extends ListenerAdapter{
                 return;
             }
 
-            String author = args[0].substring(2, args[0].length() - 1);
-            if(author.startsWith("!")) author = author.substring(1);
             try{
-                long l = Long.parseLong(author);
-                User user = jda.retrieveUserById(l).complete();
+                long id;
+                try{
+                    id = Long.parseLong(args[0]);
+                }catch(NumberFormatException e){
+                    String author = args[0].substring(2, args[0].length() - 1);
+                    if(author.startsWith("!")) author = author.substring(1);
+                    id = Long.parseLong(author);
+                }
+
+                User user = jda.retrieveUserById(id).complete();
 
                 String link = user.getEffectiveAvatarUrl() + "?size=1024";
 
@@ -435,7 +441,7 @@ public class Messages extends ListenerAdapter{
                 msg.getChannel().sendMessageEmbeds(embed.build()).queue();
 
             }catch(Exception e){
-                errDelete(msg, "Incorrect name format.");
+                errDelete(msg, "Incorrect name format or ID.");
             }
         });
 
