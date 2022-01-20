@@ -110,8 +110,8 @@ public class Messages extends ListenerAdapter{
         "discord.*nitro.*http",
         "@everyone.*http",
         "http.*@everyone",
-        "@everyone nitro",
-        "nitro @everyone"
+        "@everyone.*nitro",
+        "nitro.*@everyone"
     ));
 
     private final ObjectMap<String, UserData> userData = new ObjectMap<>();
