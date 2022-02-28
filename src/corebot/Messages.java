@@ -444,6 +444,7 @@ public class Messages extends ListenerAdapter{
                 embed.setTitle("Avatar: " + user.getName() + "#" + user.getDiscriminator());
                 embed.setImage(link);
                 embed.setDescription("[Link](" + link + ")");
+                embed.setFooter("Requested by " + msg.getAuthor().getName() + "#" + msg.getAuthor().getDiscriminator());
                 msg.getChannel().sendMessageEmbeds(embed.build()).queue();
 
             }catch(Exception e){
