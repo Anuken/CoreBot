@@ -59,7 +59,7 @@ public class Messages extends ListenerAdapter{
 
     private static final Pattern invitePattern = Pattern.compile("(discord\\.gg/\\w|discordapp\\.com/invite/\\w|discord\\.com/invite/\\w)");
     private static final Pattern linkPattern = Pattern.compile("http(s?)://");
-    private static final Pattern notScamPattern = Pattern.compile("discord\\.py|discord\\.js");
+    private static final Pattern notScamPattern = Pattern.compile("discord\\.py|discord\\.js|nitrome\\.com");
     private static final Pattern scamPattern = Pattern.compile(String.join("|",
         "stea.*co.*\\.ru",
         "http.*stea.*c.*\\..*trad",
