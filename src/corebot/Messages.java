@@ -492,7 +492,7 @@ public class Messages extends ListenerAdapter{
             }
         });
 
-        adminHandler.<Message>register("delete", "<amount>", "Delete some ", (args, msg) -> {
+        adminHandler.<Message>register("delete", "<amount>", "Delete some messages.", (args, msg) -> {
             try{
                 int number = Integer.parseInt(args[0]);
                 MessageHistory hist = msg.getChannel().getHistoryBefore(msg, number).complete();
