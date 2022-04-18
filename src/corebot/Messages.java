@@ -156,7 +156,7 @@ public class Messages extends ListenerAdapter{
     
     void loadChannels(){
         //TODO
-        modderRole = guild.getRoleById(0L);
+        modderRole = guild.getRoleById(965691639811149865L);
 
         //all guilds and channels are loaded here for faster lookup
         guild = jda.getGuildById(391020510269669376L);
