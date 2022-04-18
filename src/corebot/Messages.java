@@ -40,7 +40,7 @@ import static corebot.CoreBot.*;
 
 public class Messages extends ListenerAdapter{
     private static final String prefix = "!";
-    private static final int scamAutobanLimit = 3, pingSpamLimit = 10;
+    private static final int scamAutobanLimit = 3, pingSpamLimit = 10, minModStars = 8;
     private static final SimpleDateFormat fmt = new SimpleDateFormat("yyyy-MM-dd");
     private static final String[] warningStrings = {"once", "twice", "thrice", "too many times"};
 
@@ -308,10 +308,10 @@ public class Messages extends ListenerAdapter{
                 To obtain the Modder role, you must do the following:
                 
                 1. Own a Github repository with the `mindustry-mod` tag.
-                2. Have at least 3 stars on the repository.
+                2. Have at least @ stars on the repository.
                 3. Temporarily add your Discord `USERNAME#DISCRIMINATOR` (`@`) to the repository description or your user bio, to verify ownership.
                 4. Run this command with the repository URL or `Username/Repo` as an argument.
-                """, rawSearchString);
+                """, minModStars, rawSearchString);
             }else{
                 if(msg.getMember().getRoles().stream().anyMatch(r -> r.equals(modderRole))){
                     errDelete(msg, "You already have that role.");
@@ -356,8 +356,8 @@ public class Messages extends ListenerAdapter{
                         return;
                     }
 
-                    if(val.getInt("stargazers_count", 0) < 3){
-                        errDelete(msg, "You need at least 2 stars on your repository to get the Modder role.");
+                    if(val.getInt("stargazers_count", 0) < minModStars){
+                        errDelete(msg, "You need at least " + minModStars + " stars on your repository to get the Modder role.");
                         return;
                     }
 
