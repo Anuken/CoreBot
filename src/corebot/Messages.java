@@ -585,6 +585,7 @@ public class Messages extends ListenerAdapter{
                 }
             }
             if(emoji == null){
+                Log.info("deleting");
                 errDelete(msg, "Emoji not found.");
             }else{
                 Log.info(emoji.getAsMention());
