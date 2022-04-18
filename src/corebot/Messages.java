@@ -575,6 +575,18 @@ public class Messages extends ListenerAdapter{
             }
         });
 
+        adminHandler.<Message>register("testemoji", "<ID>", "Send an emoji by ID.", (args, msg) -> {
+            Emote emoji = guild.getEmoteById(args[0]);
+            if(emoji == null){
+                guild.getEmotesByName(args[0], true);
+            }
+            if(emoji == null){
+                errDelete(msg, "Emoji not found.");
+            }else{
+                text(msg.getChannel(), emoji.getAsMention());
+            }
+        });
+
         adminHandler.<Message>register("delete", "<amount>", "Delete some messages.", (args, msg) -> {
             try{
                 int number = Integer.parseInt(args[0]);
