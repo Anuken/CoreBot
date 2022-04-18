@@ -576,21 +576,28 @@ public class Messages extends ListenerAdapter{
         });
 
         adminHandler.<Message>register("testemoji", "<ID>", "Send an emoji by ID.", (args, msg) -> {
-            Log.info(args[0]);
-            Emote emoji = guild.getEmoteById(args[0]);
-            if(emoji == null){
-                var emotes = guild.getEmotesByName(args[0], true);
-                if(emotes.size() > 0){
-                    emoji = emotes.get(0);
+            try{
+                Log.info(args[0]);
+                Emote emoji = guild.getEmoteById(args[0]);
+
+                if(emoji == null){
+                    var emotes = guild.getEmotesByName(args[0], true);
+                    if(emotes.size() > 0){
+                        emoji = emotes.get(0);
+                    }
                 }
+
+                if(emoji == null){
+                    Log.info("deleting");
+                    errDelete(msg, "Emoji not found.");
+                }else{
+                    Log.info(emoji.getAsMention());
+                    text(msg.getChannel(), emoji.getAsMention());
+                }
+            }catch(Exception e){
+                e.printStackTrace();
             }
-            if(emoji == null){
-                Log.info("deleting");
-                errDelete(msg, "Emoji not found.");
-            }else{
-                Log.info(emoji.getAsMention());
-                text(msg.getChannel(), emoji.getAsMention());
-            }
+
         });
 
         adminHandler.<Message>register("delete", "<amount>", "Delete some messages.", (args, msg) -> {
