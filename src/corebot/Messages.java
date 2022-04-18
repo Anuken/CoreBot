@@ -352,7 +352,7 @@ public class Messages extends ListenerAdapter{
                     }
 
                     if(!actualContains[0]){
-                        errDelete(msg, "Unable to find your Discord username + discriminator in the repo description or owner bio.\n\nMake sure `@` is written in one of these locations.", rawSearchString);
+                        errDelete(msg, "Unable to find your Discord username + discriminator in the repo description or owner bio.\n\nMake sure `" + rawSearchString + "` is written in one of these locations.");
                         return;
                     }
 
