@@ -26,7 +26,7 @@ public class Net{
 
                 String lastVersion = getLastBuild();
 
-                if(!latest.build.equals(lastVersion)){
+                if(parseVersionFloat(latest.build) > parseVersionFloat(lastVersion)){
                     Log.info("Posting update!");
 
                     //don't post revisions
@@ -51,6 +51,19 @@ public class Net{
                 e.printStackTrace();
             }
         }, e -> {}), 60, 240, TimeUnit.SECONDS);
+    }
+
+    public float parseVersionFloat(String str){
+        if(str.startsWith("v")){
+            str = str.substring(1);
+        }
+
+        if(str.contains(".")){
+            var split = str.split("\\.");
+            return Integer.parseInt(split[0]) + Integer.parseInt(split[1]) / 10f;
+        }else{
+            return Integer.parseInt(str);
+        }
     }
 
     public String getLastBuild(){

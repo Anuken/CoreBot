@@ -126,6 +126,9 @@ public class Messages extends ListenerAdapter{
     mapsChannel, moderationChannel, schematicsChannel, baseSchematicsChannel,
     logChannel, joinChannel, videosChannel, streamsChannel, testingChannel,
     alertsChannel, curatedSchematicsChannel;
+
+    public Role modderRole;
+
     LongSeq schematicChannels = new LongSeq();
 
     public Messages(){
@@ -152,6 +155,8 @@ public class Messages extends ListenerAdapter{
     }
     
     void loadChannels(){
+        //TODO
+        modderRole = guild.getRoleById(0L);
 
         //all guilds and channels are loaded here for faster lookup
         guild = jda.getGuildById(391020510269669376L);
@@ -282,6 +287,84 @@ public class Messages extends ListenerAdapter{
                 String err = Strings.neatError(e, true);
                 int max = 900;
                 errDelete(msg, "Error parsing map.", err.length() < max ? err : err.substring(0, max));
+            }
+        });
+
+        handler.<Message>register("verifymodder", "[user/repo]", "Verify yourself as a modder by showing a mod repository that you own. Invoke with no arguments for additional info.", (args, msg) -> {
+            if(!msg.getChannel().getName().equalsIgnoreCase("bots")){
+                errDelete(msg, "Use this command in #bots.");
+                return;
+            }
+
+            if(msg.getMember() == null){
+                errDelete(msg, "Absolutely no ghosts allowed.");
+                return;
+            }
+
+            String rawSearchString = (msg.getAuthor().getName() + "#" + msg.getAuthor().getDiscriminator());
+
+            if(args.length == 0){
+                info(msg.getChannel(), "Modder Verification", """
+                To obtain the Modder role, you must do the following:
+                
+                1. Own a Github repository with the `mindustry-mod` tag.
+                2. Have at least 2 stars on the repository.
+                3. Temporarily add your Discord `USERNAME#DISCRIMINATOR` (`@`) to the repository description or your user bio, to verify ownership.
+                4. Run this command with the repository URL or `Username/Repo` as an argument.
+                """, rawSearchString);
+            }else{
+                if(msg.getMember().getRoles().stream().anyMatch(r -> r.equals(modderRole))){
+                    errDelete(msg, "You already have that role.");
+                    return;
+                }
+
+                String repo = args[0];
+                int offset = "https://github.com/".length();
+                if(repo.startsWith("https://") && repo.length() > offset + 1){
+                    repo = repo.substring(offset);
+                }
+
+                Http.get("https://api.github.com/repos/" + repo)
+                .header("Accept", "application/vnd.github.v3+json")
+                .error(err -> errDelete(msg, "Error fetching repository (Did you type the name correctly?)", Strings.getSimpleMessage(err)))
+                .block(res -> {
+                    Jval val = Jval.read(res.getResultAsString());
+                    String searchString = rawSearchString.toLowerCase(Locale.ROOT);
+
+                    boolean contains = val.getString("description").toLowerCase(Locale.ROOT).contains(searchString);
+                    boolean[] actualContains = {contains};
+
+                    //check bio if not found
+                    if(!contains){
+                        Http.get(val.get("owner").getString("url"))
+                        .error(Log::err) //why would this ever happen
+                        .block(user -> {
+                            Jval userVal = Jval.read(user.getResultAsString());
+                            if(userVal.getString("bio", "").toLowerCase(Locale.ROOT).contains(searchString)){
+                                actualContains[0] = true;
+                            }
+                        });
+                    }
+
+                    if(!val.get("topics").asArray().contains(j -> j.asString().contains("mindustry-mod"))){
+                        errDelete(msg, "Unable to find `mindustry-mod` in the list of repository topics.\nAdd it in the topics section *(this can be edited next to the 'About' section)*.");
+                        return;
+                    }
+
+                    if(!actualContains[0]){
+                        errDelete(msg, "Unable to find your Discord username + discriminator in the repo description or owner bio.\n\nMake sure `@` is written in one of these locations.", rawSearchString);
+                        return;
+                    }
+
+                    if(val.getInt("stargazers_count", 0) < 2){
+                        errDelete(msg, "You need at least 2 stars on your repository to get the Modder role.");
+                        return;
+                    }
+
+                    guild.addRoleToMember(msg.getMember(), modderRole).queue();
+
+                    info(msg.getChannel(), "Success!", "You have now obtained the Modder role.");
+                });
             }
         });
 
