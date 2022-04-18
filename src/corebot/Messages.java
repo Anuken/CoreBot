@@ -593,6 +593,7 @@ public class Messages extends ListenerAdapter{
             if(emoji == null){
                 errDelete(msg, "Emoji not found.");
             }else{
+                msg.delete().queue();
                 text(msg.getChannel(), emoji.getAsMention());
             }
         });
