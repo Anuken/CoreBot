@@ -308,7 +308,7 @@ public class Messages extends ListenerAdapter{
                 To obtain the Modder role, you must do the following:
                 
                 1. Own a Github repository with the `mindustry-mod` tag.
-                2. Have at least 2 stars on the repository.
+                2. Have at least 3 stars on the repository.
                 3. Temporarily add your Discord `USERNAME#DISCRIMINATOR` (`@`) to the repository description or your user bio, to verify ownership.
                 4. Run this command with the repository URL or `Username/Repo` as an argument.
                 """, rawSearchString);
@@ -356,7 +356,7 @@ public class Messages extends ListenerAdapter{
                         return;
                     }
 
-                    if(val.getInt("stargazers_count", 0) < 2){
+                    if(val.getInt("stargazers_count", 0) < 3){
                         errDelete(msg, "You need at least 2 stars on your repository to get the Modder role.");
                         return;
                     }
