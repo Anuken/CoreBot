@@ -43,6 +43,10 @@ public class Messages extends ListenerAdapter{
     private static final SimpleDateFormat fmt = new SimpleDateFormat("yyyy-MM-dd");
     private static final String[] warningStrings = {"once", "twice", "thrice", "too many times"};
 
+    private static final String
+    cyrillicFrom = "абсдефгнигклмпоркгзтюушхуз",
+    cyrillicTo =   "abcdefghijklmnopqrstuvwxyz";
+
     // https://stackoverflow.com/a/48769624
     private static final Pattern urlPattern = Pattern.compile("(?:(?:https?):\\/\\/)?[\\w/\\-?=%.]+\\.[\\w/\\-&?=%.]+");
     private static final Set<String> trustedDomains = Set.of(
@@ -905,6 +909,20 @@ public class Messages extends ListenerAdapter{
         return member != null && member.getRoles().stream().anyMatch(role -> role.getName().equals("Developer") || role.getName().equals("Moderator") || role.getName().equals("\uD83D\uDD28 \uD83D\uDD75️\u200D♂️"));
     }
 
+    String replaceCyrillic(String in){
+        StringBuilder out = new StringBuilder(in.length());
+        for(int i = 0; i < in.length(); i++){
+            char c = in.charAt(i);
+            int index = cyrillicFrom.indexOf(c);
+            if(index == -1){
+                out.append(c);
+            }else{
+                out.append(cyrillicTo.charAt(index));
+            }
+        }
+        return out.toString();
+    }
+
     boolean checkSpam(Message message, boolean edit){
 
         if(message.getChannel().getType() != ChannelType.PRIVATE){
@@ -974,7 +992,7 @@ public class Messages extends ListenerAdapter{
                 message.delete().queue();
                 message.getAuthor().openPrivateChannel().complete().sendMessage("Do not send invite links in the Mindustry Discord server! Read the rules.").queue();
                 return true;
-            }else if(badWordPattern.matcher(content).find()){
+            }else if(badWordPattern.matcher(content).find() || badWordPattern.matcher(replaceCyrillic(content)).find()){
                 alertsChannel.sendMessage(
                     message.getAuthor().getAsMention() +
                     " **has sent a message with inaproppriate language** in " + message.getTextChannel().getAsMention() +
