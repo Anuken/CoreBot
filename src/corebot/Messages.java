@@ -39,7 +39,7 @@ import static corebot.CoreBot.*;
 
 public class Messages extends ListenerAdapter{
     private static final String prefix = "!";
-    private static final int scamAutobanLimit = 3, pingSpamLimit = 10, minModStars = 10, naughtyTimeoutMins = 1;
+    private static final int scamAutobanLimit = 3, pingSpamLimit = 10, minModStars = 10, naughtyTimeoutMins = 5;
     private static final SimpleDateFormat fmt = new SimpleDateFormat("yyyy-MM-dd");
     private static final String[] warningStrings = {"once", "twice", "thrice", "too many times"};
 
@@ -978,7 +978,12 @@ public class Messages extends ListenerAdapter{
 
                 message.delete().queue();
                 message.getAuthor().openPrivateChannel().complete().sendMessage("You have been timed out for " + naughtyTimeoutMins + " minutes for using an unacceptable word in `#" + message.getChannel().getName() + "`.").queue();
-                message.getMember().timeoutFor(Duration.ofMinutes(naughtyTimeoutMins)).queue();
+                try{
+                    message.getMember().timeoutFor(Duration.ofMinutes(naughtyTimeoutMins)).queue();
+                }catch(Exception e){
+                    Log.err(e);
+                }
+
                 return true;
             }else if(containsScamLink(message)){
                 Log.warn("User @ just sent a potential scam message in @: '@'", message.getAuthor().getName(), message.getChannel().getName(), message.getContentRaw());
