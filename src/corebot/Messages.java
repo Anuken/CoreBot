@@ -16,7 +16,6 @@ import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.entities.Message.*;
 import net.dv8tion.jda.api.events.guild.member.*;
 import net.dv8tion.jda.api.events.message.*;
-import net.dv8tion.jda.api.events.message.guild.*;
 import net.dv8tion.jda.api.hooks.*;
 import net.dv8tion.jda.api.requests.*;
 import net.dv8tion.jda.api.utils.*;
@@ -40,7 +39,7 @@ import static corebot.CoreBot.*;
 
 public class Messages extends ListenerAdapter{
     private static final String prefix = "!";
-    private static final int scamAutobanLimit = 3, pingSpamLimit = 10, minModStars = 10;
+    private static final int scamAutobanLimit = 3, pingSpamLimit = 10, minModStars = 10, naughtyTimeoutMins = 1;
     private static final SimpleDateFormat fmt = new SimpleDateFormat("yyyy-MM-dd");
     private static final String[] warningStrings = {"once", "twice", "thrice", "too many times"};
 
@@ -57,6 +56,8 @@ public class Messages extends ListenerAdapter{
         "discordstatus.com"
     );
 
+    //yes it's base64 encoded, I don't want any of these words typed here
+    private static final Pattern badWordPattern = Pattern.compile(new String(Base64Coder.decode("Y3VtfHNlbWVufG5pZ2cucg==")));
     private static final Pattern invitePattern = Pattern.compile("(discord\\.gg/\\w|discordapp\\.com/invite/\\w|discord\\.com/invite/\\w)");
     private static final Pattern linkPattern = Pattern.compile("http(s?)://");
     private static final Pattern notScamPattern = Pattern.compile("discord\\.py|discord\\.js|nitrome\\.com");
@@ -644,8 +645,9 @@ public class Messages extends ListenerAdapter{
             String author = args[1].substring(2, args[1].length() - 1);
             if(author.startsWith("!")) author = author.substring(1);
             try{
-                long l = Long.parseLong(author);
-                User user = jda.retrieveUserById(l).complete();
+
+                var l = UserSnowflake.fromId(author);
+                User user = jda.retrieveUserById(author).complete();
                 boolean add = args[0].equals("add");
                 if(add){
                     guild.addRoleToMember(l, guild.getRoleById(877171645427621889L)).queue();
@@ -771,7 +773,7 @@ public class Messages extends ListenerAdapter{
     }
 
     @Override
-    public void onGuildMessageUpdate(GuildMessageUpdateEvent event){
+    public void onMessageUpdate(MessageUpdateEvent event){
         var msg = event.getMessage();
 
         if(isAdmin(msg.getAuthor()) || checkSpam(msg, true)){
@@ -966,6 +968,17 @@ public class Messages extends ListenerAdapter{
                 Log.warn("User @ just sent a discord invite in @.", message.getAuthor().getName(), message.getChannel().getName());
                 message.delete().queue();
                 message.getAuthor().openPrivateChannel().complete().sendMessage("Do not send invite links in the Mindustry Discord server! Read the rules.").queue();
+                return true;
+            }else if(badWordPattern.matcher(content).find()){
+                alertsChannel.sendMessage(
+                    message.getAuthor().getAsMention() +
+                    " **has sent a message with inaproppriate language** in " + message.getTextChannel().getAsMention() +
+                    ":\n\n" + message.getContentRaw()
+                ).queue();
+
+                message.delete().queue();
+                message.getAuthor().openPrivateChannel().complete().sendMessage("You have been timed out for " + naughtyTimeoutMins + " minutes for using an unacceptable word in `#" + message.getChannel().getName() + "`.").queue();
+                message.getMember().timeoutFor(Duration.ofMinutes(naughtyTimeoutMins)).queue();
                 return true;
             }else if(containsScamLink(message)){
                 Log.warn("User @ just sent a potential scam message in @: '@'", message.getAuthor().getName(), message.getChannel().getName(), message.getContentRaw());

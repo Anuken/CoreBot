@@ -38,7 +38,7 @@ task dist(type: Jar){
 }
 
 dependencies{
-    implementation "net.dv8tion:JDA:4.4.0_350"
+    implementation("net.dv8tion:JDA:5.0.0-alpha.10")
     implementation "org.jsoup:jsoup:1.7.2"
     implementation "com.github.Anuken.Arc:arc-core:$mindustryVersion"
     implementation "com.github.Anuken.Mindustry:core:$mindustryVersion"
