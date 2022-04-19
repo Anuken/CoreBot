@@ -987,6 +987,9 @@ public class Messages extends ListenerAdapter{
                 data.lastLinkChannelId = null;
             }
 
+            //zwj
+            content = content.replaceAll("\u200B", "").replaceAll("\u200D", "");
+
             if(invitePattern.matcher(content).find()){
                 Log.warn("User @ just sent a discord invite in @.", message.getAuthor().getName(), message.getChannel().getName());
                 message.delete().queue();
