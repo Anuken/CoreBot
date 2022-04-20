@@ -61,8 +61,8 @@ public class Messages extends ListenerAdapter{
     );
 
     //yes it's base64 encoded, I don't want any of these words typed here
-    private static final Pattern badWordPattern = Pattern.compile(new String(Base64Coder.decode("Y3VtfG5pZ2cucg==")));
-    private static final Pattern notBadWordPattern = Pattern.compile("cumul|accum|scum|circum|incumb|baseme");
+    private static final Pattern badWordPattern = Pattern.compile(new String(Base64Coder.decode("KD88IVthLXpBLVpdKSg/OmN1bXxzZW1lbnxuaWdnLnIpKD8hW2EtekEtWl0p")));
+    private static final Pattern notBadWordPattern = Pattern.compile("");
     private static final Pattern invitePattern = Pattern.compile("(discord\\.gg/\\w|discordapp\\.com/invite/\\w|discord\\.com/invite/\\w)");
     private static final Pattern linkPattern = Pattern.compile("http(s?)://");
     private static final Pattern notScamPattern = Pattern.compile("discord\\.py|discord\\.js|nitrome\\.com");
@@ -996,7 +996,7 @@ public class Messages extends ListenerAdapter{
                 message.delete().queue();
                 message.getAuthor().openPrivateChannel().complete().sendMessage("Do not send invite links in the Mindustry Discord server! Read the rules.").queue();
                 return true;
-            }else if((badWordPattern.matcher(content).find() || badWordPattern.matcher(replaceCyrillic(content)).find()) && !notBadWordPattern.matcher(content).find()){
+            }else if((badWordPattern.matcher(content).find() || badWordPattern.matcher(replaceCyrillic(content)).find())){
                 alertsChannel.sendMessage(
                     message.getAuthor().getAsMention() +
                     " **has sent a message with inaproppriate language** in " + message.getTextChannel().getAsMention() +
