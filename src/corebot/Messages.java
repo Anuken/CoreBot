@@ -934,7 +934,7 @@ public class Messages extends ListenerAdapter{
                 Seq.with(message.getMentionedMembers()).map(IMentionable::getAsMention).and(Seq.with(message.getMentionedRoles()).map(IMentionable::getAsMention));
 
             var data = data(message.getAuthor());
-            String content = message.getContentRaw().toLowerCase(Locale.ROOT);
+            String content = message.getContentStripped().toLowerCase(Locale.ROOT);
 
             //go through every ping individually
             for(var ping : mentioned){
