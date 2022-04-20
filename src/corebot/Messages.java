@@ -526,15 +526,19 @@ public class Messages extends ListenerAdapter{
                     user = msg.getAuthor();
                 }
 
-                String link = user.getEffectiveAvatarUrl() + "?size=1024";
+                if(user.getIdLong() == 737869099811733527L){
+                    text(msg, "no");
+                }else{
+                    String link = user.getEffectiveAvatarUrl() + "?size=1024";
 
-                EmbedBuilder embed = new EmbedBuilder();
-                embed.setColor(normalColor);
-                embed.setTitle("Avatar: " + user.getName() + "#" + user.getDiscriminator());
-                embed.setImage(link);
-                embed.setDescription("[Link](" + link + ")");
-                embed.setFooter("Requested by " + msg.getAuthor().getName() + "#" + msg.getAuthor().getDiscriminator());
-                msg.getChannel().sendMessageEmbeds(embed.build()).queue();
+                    EmbedBuilder embed = new EmbedBuilder();
+                    embed.setColor(normalColor);
+                    embed.setTitle("Avatar: " + user.getName() + "#" + user.getDiscriminator());
+                    embed.setImage(link);
+                    embed.setDescription("[Link](" + link + ")");
+                    embed.setFooter("Requested by " + msg.getAuthor().getName() + "#" + msg.getAuthor().getDiscriminator());
+                    msg.getChannel().sendMessageEmbeds(embed.build()).queue();
+                }
 
             }catch(Exception e){
                 errDelete(msg, "Incorrect name format or ID.");
