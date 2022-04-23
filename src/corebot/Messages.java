@@ -686,6 +686,10 @@ public class Messages extends ListenerAdapter{
             .addField("Channel", msg.getTextChannel().getAsMention(), false)
             .setColor(normalColor);
 
+            for(var attach : msg.getAttachments()){
+                log.addField("File: " + attach.getFileName(), attach.getUrl(), false);
+            }
+
             if(msg.getReferencedMessage() != null){
                 log.addField("Replying to", msg.getReferencedMessage().getAuthor().getAsMention() + " [Jump](" + msg.getReferencedMessage().getJumpUrl() + ")", false);
             }
