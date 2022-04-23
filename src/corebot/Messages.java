@@ -526,7 +526,7 @@ public class Messages extends ListenerAdapter{
                     user = msg.getAuthor();
                 }
 
-                if(!user.getIdLong() == 737869099811733527L){
+                if(user.getIdLong() != 737869099811733527L){
                     text(msg, "no");
                 }else{
                     
