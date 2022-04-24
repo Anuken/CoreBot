@@ -39,7 +39,7 @@ import static corebot.CoreBot.*;
 
 public class Messages extends ListenerAdapter{
     private static final String prefix = "!";
-    private static final int scamAutobanLimit = 3, pingSpamLimit = 10, minModStars = 10, naughtyTimeoutMins = 10;
+    private static final int scamAutobanLimit = 3, pingSpamLimit = 10, minModStars = 10, naughtyTimeoutMins = 15;
     private static final SimpleDateFormat fmt = new SimpleDateFormat("yyyy-MM-dd");
     private static final String[] warningStrings = {"once", "twice", "thrice", "too many times"};
 
@@ -61,7 +61,7 @@ public class Messages extends ListenerAdapter{
     );
 
     //yes it's base64 encoded, I don't want any of these words typed here
-    private static final Pattern badWordPattern = Pattern.compile(new String(Base64Coder.decode("KD88IVthLXpBLVpdKSg/OmN1bXxzZW1lbnxwb3JufGNvY2t8bmlnZy5yKSg/IVthLXpBLVpdKQ==")));
+    private static final Pattern badWordPattern = Pattern.compile(new String(Base64Coder.decode("KD88IVthLXpBLVpdKSg/OmN1bXxzZW1lbnxwb3JufGNvY2t8cHVzeXl8bmlnZy5yKSg/IVthLXpBLVpdKQ==")));
     private static final Pattern notBadWordPattern = Pattern.compile("");
     private static final Pattern invitePattern = Pattern.compile("(discord\\.gg/\\w|discordapp\\.com/invite/\\w|discord\\.com/invite/\\w)");
     private static final Pattern linkPattern = Pattern.compile("http(s?)://");
