@@ -13,7 +13,7 @@ public enum Info{
     [Google Play Listing](https://play.google.com/store/apps/details?id=mindustry)
     [TestFlight Link](https://testflight.apple.com/join/79Azm1hZ)
     [Mindustry Subreddit](https://www.reddit.com/r/mindustry)
-    [Unofficial Matrix](https://matrix.to/#/!bjBcJCYyWfNVdAAWZt:matrix.org)
+    [Unofficial Matrix Space](https://matrix.to/#/#mindustry-space:matrix.org)
     """),
     beta("iOS Beta",
     """
