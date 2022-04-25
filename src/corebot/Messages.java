@@ -39,7 +39,7 @@ import static corebot.CoreBot.*;
 
 public class Messages extends ListenerAdapter{
     private static final String prefix = "!";
-    private static final int scamAutobanLimit = 3, pingSpamLimit = 10, minModStars = 10, naughtyTimeoutMins = 15;
+    private static final int scamAutobanLimit = 3, pingSpamLimit = 10, minModStars = 10, naughtyTimeoutMins = 20;
     private static final SimpleDateFormat fmt = new SimpleDateFormat("yyyy-MM-dd");
     private static final String[] warningStrings = {"once", "twice", "thrice", "too many times"};
 
