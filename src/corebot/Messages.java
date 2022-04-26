@@ -637,16 +637,16 @@ public class Messages extends ListenerAdapter{
             String author = args[0].substring(2, args[0].length() - 1);
             if(author.startsWith("!")) author = author.substring(1);
             try{
-                int index = Integer.parseInt(args[1]);
+                int index = Integer.parseInt(args[1]) + 1;
                 long l = Long.parseLong(author);
                 User user = jda.retrieveUserById(l).complete();
                 var list = getWarnings(user);
-                if(list.size > index){
-                    list.remove(index);
+                if(list.size > index - 1){
+                    list.remove(index - 1);
                     prefs.putArray("warning-list-" + user.getIdLong(), list);
                     text(msg, "Removed warning for user.");
                 }else{
-                    errDelete(msg, "Invalid index. @ >= @", index, list.size);
+                    errDelete(msg, "Invalid index. @ > @", index, list.size);
                 }
             }catch(Exception e){
                 errDelete(msg, "Incorrect name/index format.");
