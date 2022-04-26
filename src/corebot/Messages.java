@@ -637,7 +637,7 @@ public class Messages extends ListenerAdapter{
             String author = args[0].substring(2, args[0].length() - 1);
             if(author.startsWith("!")) author = author.substring(1);
             try{
-                int index = Integer.parseInt(args[1]) + 1;
+                int index = Integer.parseInt(args[1]);
                 long l = Long.parseLong(author);
                 User user = jda.retrieveUserById(l).complete();
                 var list = getWarnings(user);
