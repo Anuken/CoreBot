@@ -642,6 +642,7 @@ public class Messages extends ListenerAdapter{
                 User user = jda.retrieveUserById(l).complete();
                 var list = getWarnings(user);
                 if(list.size > index){
+                    list.remove(index);
                     prefs.putArray("warning-list-" + user.getIdLong(), list);
                     text(msg, "Removed warning for user.");
                 }else{
