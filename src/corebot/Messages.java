@@ -61,7 +61,7 @@ public class Messages extends ListenerAdapter{
     );
 
     //yes it's base64 encoded, I don't want any of these words typed here
-ok    private static final Pattern badWordPattern = Pattern.compile(new String(Base64Coder.decode("KD88IVthLXpBLVpdKSg/OmN1bXxzZW1lbnxjb2NrfHB1c3N5fGN1bnR8bmlnZy5yKSg/IVthLXpBLVpdKQ==")));
+    private static final Pattern badWordPattern = Pattern.compile(new String(Base64Coder.decode("KD88IVthLXpBLVpdKSg/OmN1bXxzZW1lbnxjb2NrfHB1c3N5fGN1bnR8bmlnZy5yKSg/IVthLXpBLVpdKQ==")));
     private static final Pattern notBadWordPattern = Pattern.compile("");
     private static final Pattern invitePattern = Pattern.compile("(discord\\.gg/\\w|discordapp\\.com/invite/\\w|discord\\.com/invite/\\w)");
     private static final Pattern linkPattern = Pattern.compile("http(s?)://");
