@@ -689,6 +689,18 @@ public class Messages extends ListenerAdapter{
                 errDelete(msg, "Incorrect name format.");
             }
         });
+
+        adminHandler.<Message>register("banid", "<id> [reason...]", "Ban a user by a raw numeric ID.", (args, msg) -> {
+            try{
+                long l = Long.parseLong(args[0]);
+                User user = jda.retrieveUserById(l).complete();
+
+                guild.ban(user, 0, args.length > 1 ? msg.getAuthor().getName() + " used banid: " + args[1] : msg.getAuthor().getName() + ": <no ban reason specified in command>").queue();
+                text(msg, "Banned user: **@**", l);
+            }catch(Exception e){
+                errDelete(msg, "Incorrect name format, or user not found.");
+            }
+        });
     }
 
     @Override
