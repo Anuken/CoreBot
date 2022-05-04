@@ -504,7 +504,7 @@ public class Messages extends ListenerAdapter{
         });
 
         handler.<Message>register("avatar", "[@user]", "Get a user's full avatar.", (args, msg) -> {
-            if(!msg.getChannel().getName().equalsIgnoreCase("bots")){
+            if(!msg.getChannel().getName().equalsIgnoreCase("bots") && !isAdmin(msg.getAuthor())){
                 errDelete(msg, "Use this command in #bots.");
                 return;
             }
