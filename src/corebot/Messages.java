@@ -528,6 +528,8 @@ public class Messages extends ListenerAdapter{
 
                 if(user.getIdLong() == 737869099811733527L){
                     text(msg, "no");
+                }else if(user.getIdLong() == jda.getSelfUser().getIdLong()){
+                    msg.getChannel().sendMessage(guild.getEmotesByName("alphaaaaaaaa", true).get(0).getAsMention()).queue();
                 }else{
                     String link = user.getEffectiveAvatarUrl() + "?size=1024";
 
