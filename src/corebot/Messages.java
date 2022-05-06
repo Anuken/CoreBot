@@ -713,28 +713,28 @@ public class Messages extends ListenerAdapter{
     public void onMessageReactionAdd(@NotNull MessageReactionAddEvent event){
         try{
             if(event.getUser() != null && event.getChannel().equals(mapsChannel) && event.getReactionEmote().isEmoji() && event.getReactionEmote().getEmoji().equals("❌")){
-                Log.info("Attempt to delete");
                 event.getChannel().retrieveMessageById(event.getMessageIdLong()).queue(m -> {
-                    Log.info("Got message. Embeds: " + m.getEmbeds());
-                    Log.info("Embeds length: " + m.getEmbeds().size());
-                    Log.info("Files length: " + m.getAttachments().size());
-                    String baseUrl = event.retrieveUser().complete().getEffectiveAvatarUrl();
-                    Log.info("Avatar URL: " + baseUrl);
+                    try{
+                        Log.info("Got message. Embeds: " + m.getEmbeds());
+                        Log.info("Embeds length: " + m.getEmbeds().size());
+                        Log.info("Files length: " + m.getAttachments().size());
+                        String baseUrl = event.retrieveUser().complete().getEffectiveAvatarUrl();
+                        Log.info("Avatar URL: " + baseUrl);
 
-                    for(var embed : m.getEmbeds()){
-                        Log.info("?????????");
-                        if(embed.getThumbnail() != null && embed.getThumbnail().getUrl() != null && embed.getThumbnail().getUrl().equals(baseUrl)){
-                            Log.info("Deleting user's map.");
-                            m.delete().queue();
-                            return;
-                        }else{
-                            Log.info("@ != @", baseUrl, embed.getThumbnail());
-                            Log.info("@ != @", baseUrl, embed.getThumbnail().getUrl());
+                        for(var embed : m.getEmbeds()){
+                            Log.info("?????????");
+                            if(embed.getAuthor() != null && embed.getAuthor().getIconUrl() != null && embed.getAuthor().getIconUrl().equals(baseUrl)){
+                                Log.info("Deleting user's map.");
+                                m.delete().queue();
+                                return;
+                            }else{
+                                Log.info("@ != @", baseUrl, embed.getAuthor().getIconUrl());
+                            }
                         }
+                    }catch(Exception e){
+                        e.printStackTrace();
                     }
                 });
-            }else{
-                Log.info(event.getReactionEmote().getEmoji());
             }
         }catch(Exception e){
             e.printStackTrace();
