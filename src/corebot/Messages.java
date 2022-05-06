@@ -718,13 +718,17 @@ public class Messages extends ListenerAdapter{
                     Log.info("Got message. Embeds: " + m.getEmbeds());
                     Log.info("Embeds length: " + m.getEmbeds().size());
                     Log.info("Files length: " + m.getAttachments().size());
-                    String baseUrl = event.getUser().getEffectiveAvatarUrl();
+                    String baseUrl = event.retrieveUser().complete().getEffectiveAvatarUrl();
+                    Log.info("Avatar URL: " + baseUrl);
+
                     for(var embed : m.getEmbeds()){
+                        Log.info("?????????");
                         if(embed.getThumbnail() != null && embed.getThumbnail().getUrl() != null && embed.getThumbnail().getUrl().equals(baseUrl)){
                             Log.info("Deleting user's map.");
                             m.delete().queue();
                             return;
                         }else{
+                            Log.info("@ != @", baseUrl, embed.getThumbnail());
                             Log.info("@ != @", baseUrl, embed.getThumbnail().getUrl());
                         }
                     }
