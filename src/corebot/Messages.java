@@ -711,15 +711,17 @@ public class Messages extends ListenerAdapter{
 
     @Override
     public void onMessageReactionAdd(@NotNull MessageReactionAddEvent event){
-        Log.info("Reaction, emoji = @ toString = @", event.getReactionEmote().getEmoji(), event.getReactionEmote().toString());
         if(event.getUser() != null && event.getChannel().equals(mapsChannel) && event.getReactionEmote().getEmoji().equals("❌")){
-            Log.info("Attempt");
             event.getChannel().retrieveMessageById(event.getMessageIdLong()).queue(m -> {
-                if(m.getEmbeds().stream()
-                    .anyMatch(embed -> embed.getThumbnail() != null && embed.getThumbnail().getUrl() != null && embed.getThumbnail().getUrl().equals(event.getUser().getEffectiveAvatarUrl()))){
-
-                    Log.info("Deleting user's map.");
-                    m.delete().queue();
+                String baseUrl = event.getUser().getEffectiveAvatarUrl();
+                for(var embed : m.getEmbeds()){
+                    if(embed.getThumbnail() != null && embed.getThumbnail().getUrl() != null && embed.getThumbnail().getUrl().equals(baseUrl)){
+                        Log.info("Deleting user's map.");
+                        m.delete().queue();
+                        return;
+                    }else{
+                        Log.info("@ != @", baseUrl, embed.getThumbnail().getUrl());
+                    }
                 }
             });
         }
