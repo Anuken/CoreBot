@@ -715,29 +715,21 @@ public class Messages extends ListenerAdapter{
             if(event.getUser() != null && event.getChannel().equals(mapsChannel) && event.getReactionEmote().isEmoji() && event.getReactionEmote().getEmoji().equals("❌")){
                 event.getChannel().retrieveMessageById(event.getMessageIdLong()).queue(m -> {
                     try{
-                        Log.info("Got message. Embeds: " + m.getEmbeds());
-                        Log.info("Embeds length: " + m.getEmbeds().size());
-                        Log.info("Files length: " + m.getAttachments().size());
                         String baseUrl = event.retrieveUser().complete().getEffectiveAvatarUrl();
-                        Log.info("Avatar URL: " + baseUrl);
 
                         for(var embed : m.getEmbeds()){
-                            Log.info("?????????");
                             if(embed.getAuthor() != null && embed.getAuthor().getIconUrl() != null && embed.getAuthor().getIconUrl().equals(baseUrl)){
-                                Log.info("Deleting user's map.");
                                 m.delete().queue();
                                 return;
-                            }else{
-                                Log.info("@ != @", baseUrl, embed.getAuthor().getIconUrl());
                             }
                         }
                     }catch(Exception e){
-                        e.printStackTrace();
+                        Log.err(e);
                     }
                 });
             }
         }catch(Exception e){
-            e.printStackTrace();
+            Log.err(e);
         }
     }
 
