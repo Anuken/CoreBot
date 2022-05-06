@@ -711,25 +711,29 @@ public class Messages extends ListenerAdapter{
 
     @Override
     public void onMessageReactionAdd(@NotNull MessageReactionAddEvent event){
-        if(event.getUser() != null && event.getChannel().equals(mapsChannel) && event.getReactionEmote().getEmoji().equals("❌")){
-            Log.info("Attempt to delete");
-            event.getChannel().retrieveMessageById(event.getMessageIdLong()).queue(m -> {
-                Log.info("Got message. Embeds: " + m.getEmbeds());
-                Log.info("Embeds length: " + m.getEmbeds().size());
-                Log.info("Files length: " + m.getAttachments().size());
-                String baseUrl = event.getUser().getEffectiveAvatarUrl();
-                for(var embed : m.getEmbeds()){
-                    if(embed.getThumbnail() != null && embed.getThumbnail().getUrl() != null && embed.getThumbnail().getUrl().equals(baseUrl)){
-                        Log.info("Deleting user's map.");
-                        m.delete().queue();
-                        return;
-                    }else{
-                        Log.info("@ != @", baseUrl, embed.getThumbnail().getUrl());
+        try{
+            if(event.getUser() != null && event.getChannel().equals(mapsChannel) && event.getReactionEmote().getEmoji().equals("❌")){
+                Log.info("Attempt to delete");
+                event.getChannel().retrieveMessageById(event.getMessageIdLong()).queue(m -> {
+                    Log.info("Got message. Embeds: " + m.getEmbeds());
+                    Log.info("Embeds length: " + m.getEmbeds().size());
+                    Log.info("Files length: " + m.getAttachments().size());
+                    String baseUrl = event.getUser().getEffectiveAvatarUrl();
+                    for(var embed : m.getEmbeds()){
+                        if(embed.getThumbnail() != null && embed.getThumbnail().getUrl() != null && embed.getThumbnail().getUrl().equals(baseUrl)){
+                            Log.info("Deleting user's map.");
+                            m.delete().queue();
+                            return;
+                        }else{
+                            Log.info("@ != @", baseUrl, embed.getThumbnail().getUrl());
+                        }
                     }
-                }
-            });
-        }else{
-            Log.info(event.getReactionEmote().getEmoji());
+                });
+            }else{
+                Log.info(event.getReactionEmote().getEmoji());
+            }
+        }catch(Exception e){
+            e.printStackTrace();
         }
     }
 
