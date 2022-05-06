@@ -712,7 +712,7 @@ public class Messages extends ListenerAdapter{
     @Override
     public void onMessageReactionAdd(@NotNull MessageReactionAddEvent event){
         try{
-            if(event.getUser() != null && event.getChannel().equals(mapsChannel) && event.getReactionEmote().getEmoji().equals("❌")){
+            if(event.getUser() != null && event.getChannel().equals(mapsChannel) && event.getReactionEmote().isEmoji() && event.getReactionEmote().getEmoji().equals("❌")){
                 Log.info("Attempt to delete");
                 event.getChannel().retrieveMessageById(event.getMessageIdLong()).queue(m -> {
                     Log.info("Got message. Embeds: " + m.getEmbeds());
