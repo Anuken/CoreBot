@@ -4,6 +4,7 @@ import arc.files.*;
 import arc.math.*;
 import arc.struct.*;
 import arc.util.*;
+import arc.util.Nullable;
 import arc.util.CommandHandler.*;
 import arc.util.io.Streams;
 import arc.util.serialization.*;
@@ -16,10 +17,12 @@ import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.entities.Message.*;
 import net.dv8tion.jda.api.events.guild.member.*;
 import net.dv8tion.jda.api.events.message.*;
+import net.dv8tion.jda.api.events.message.react.*;
 import net.dv8tion.jda.api.hooks.*;
 import net.dv8tion.jda.api.requests.*;
 import net.dv8tion.jda.api.utils.*;
 import net.dv8tion.jda.api.utils.cache.*;
+import org.jetbrains.annotations.*;
 import org.jsoup.*;
 import org.jsoup.nodes.*;
 import org.jsoup.select.*;
@@ -131,7 +134,7 @@ public class Messages extends ListenerAdapter{
     pluginChannel, crashReportChannel, announcementsChannel, artChannel,
     mapsChannel, moderationChannel, schematicsChannel, baseSchematicsChannel,
     logChannel, joinChannel, videosChannel, streamsChannel, testingChannel,
-    alertsChannel, curatedSchematicsChannel;
+    alertsChannel, curatedSchematicsChannel, botsChannel;
 
     public Role modderRole;
 
@@ -181,6 +184,7 @@ public class Messages extends ListenerAdapter{
         testingChannel = channel(432984286099144706L);
         alertsChannel = channel(864139464401223730L);
         curatedSchematicsChannel = channel(878022862915653723L);
+        botsChannel = channel(414179246693679124L);
 
         schematicChannels.add(schematicsChannel.getIdLong(), baseSchematicsChannel.getIdLong(), curatedSchematicsChannel.getIdLong());
     }
@@ -207,7 +211,7 @@ public class Messages extends ListenerAdapter{
         });
 
         handler.<Message>register("ping", "<ip>", "Pings a server.", (args, msg) -> {
-            if(!msg.getChannel().getName().equalsIgnoreCase("bots")){
+            if(!msg.getChannel().equals(botsChannel)){
                 errDelete(msg, "Use this command in #bots.");
                 return;
             }
@@ -297,7 +301,7 @@ public class Messages extends ListenerAdapter{
         });
 
         handler.<Message>register("verifymodder", "[user/repo]", "Verify yourself as a modder by showing a mod repository that you own. Invoke with no arguments for additional info.", (args, msg) -> {
-            if(!msg.getChannel().getName().equalsIgnoreCase("bots")){
+            if(!msg.getChannel().equals(botsChannel)){
                 errDelete(msg, "Use this command in #bots.");
                 return;
             }
@@ -495,7 +499,7 @@ public class Messages extends ListenerAdapter{
 
 
         handler.<Message>register("mywarnings", "Get information about your own warnings. Only usable in #bots.", (args, msg) -> {
-            if(!msg.getChannel().getName().equalsIgnoreCase("bots")){
+            if(!msg.getChannel().equals(botsChannel)){
                 errDelete(msg, "Use this command in #bots.");
                 return;
             }
@@ -504,7 +508,7 @@ public class Messages extends ListenerAdapter{
         });
 
         handler.<Message>register("avatar", "[@user]", "Get a user's full avatar.", (args, msg) -> {
-            if(!msg.getChannel().getName().equalsIgnoreCase("bots") && !isAdmin(msg.getAuthor())){
+            if(!msg.getChannel().equals(botsChannel) && !isAdmin(msg.getAuthor())){
                 errDelete(msg, "Use this command in #bots.");
                 return;
             }
@@ -703,6 +707,20 @@ public class Messages extends ListenerAdapter{
                 errDelete(msg, "Incorrect name format, or user not found.");
             }
         });
+    }
+
+    @Override
+    public void onMessageReactionAdd(@NotNull MessageReactionAddEvent event){
+        if(event.getUser() != null && event.getChannel().equals(mapsChannel) && event.getReactionEmote().getEmoji().equals("❌")){
+            event.getChannel().retrieveMessageById(event.getMessageIdLong()).queue(m -> {
+                if(m.getEmbeds().stream()
+                    .anyMatch(embed -> embed.getThumbnail() != null && embed.getThumbnail().getUrl() != null && embed.getThumbnail().getUrl().equals(event.getUser().getEffectiveAvatarUrl()))){
+
+                    Log.info("Deleting user's map.");
+                    m.delete().queue();
+                }
+            });
+        }
     }
 
     @Override
