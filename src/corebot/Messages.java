@@ -714,7 +714,9 @@ public class Messages extends ListenerAdapter{
         if(event.getUser() != null && event.getChannel().equals(mapsChannel) && event.getReactionEmote().getEmoji().equals("❌")){
             Log.info("Attempt to delete");
             event.getChannel().retrieveMessageById(event.getMessageIdLong()).queue(m -> {
-                Log.info("Got message");
+                Log.info("Got message. Embeds: " + m.getEmbeds());
+                Log.info("Embeds length: " + m.getEmbeds().size());
+                Log.info("Files length: " + m.getAttachments().size());
                 String baseUrl = event.getUser().getEffectiveAvatarUrl();
                 for(var embed : m.getEmbeds()){
                     if(embed.getThumbnail() != null && embed.getThumbnail().getUrl() != null && embed.getThumbnail().getUrl().equals(baseUrl)){
