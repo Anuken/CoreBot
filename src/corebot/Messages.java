@@ -211,7 +211,7 @@ public class Messages extends ListenerAdapter{
         });
 
         handler.<Message>register("ping", "<ip>", "Pings a server.", (args, msg) -> {
-            if(!msg.getChannel().equals(botsChannel)){
+            if(msg.getChannel().getIdLong() != botsChannel.getIdLong()){
                 errDelete(msg, "Use this command in #bots.");
                 return;
             }
@@ -301,7 +301,7 @@ public class Messages extends ListenerAdapter{
         });
 
         handler.<Message>register("verifymodder", "[user/repo]", "Verify yourself as a modder by showing a mod repository that you own. Invoke with no arguments for additional info.", (args, msg) -> {
-            if(!msg.getChannel().equals(botsChannel)){
+            if(msg.getChannel().getIdLong() != botsChannel.getIdLong()){
                 errDelete(msg, "Use this command in #bots.");
                 return;
             }
@@ -499,7 +499,7 @@ public class Messages extends ListenerAdapter{
 
 
         handler.<Message>register("mywarnings", "Get information about your own warnings. Only usable in #bots.", (args, msg) -> {
-            if(!msg.getChannel().equals(botsChannel)){
+            if(msg.getChannel().getIdLong() != botsChannel.getIdLong()){
                 errDelete(msg, "Use this command in #bots.");
                 return;
             }
@@ -508,7 +508,7 @@ public class Messages extends ListenerAdapter{
         });
 
         handler.<Message>register("avatar", "[@user]", "Get a user's full avatar.", (args, msg) -> {
-            if(!msg.getChannel().equals(botsChannel) && !isAdmin(msg.getAuthor())){
+            if(msg.getChannel().getIdLong() != botsChannel.getIdLong() && !isAdmin(msg.getAuthor())){
                 errDelete(msg, "Use this command in #bots.");
                 return;
             }
