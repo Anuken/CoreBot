@@ -135,6 +135,7 @@ public class Messages extends ListenerAdapter{
     mapsChannel, moderationChannel, schematicsChannel, baseSchematicsChannel,
     logChannel, joinChannel, videosChannel, streamsChannel, testingChannel,
     alertsChannel, curatedSchematicsChannel, botsChannel;
+    public Emote aaaaa;
 
     public Role modderRole;
 
@@ -185,6 +186,7 @@ public class Messages extends ListenerAdapter{
         alertsChannel = channel(864139464401223730L);
         curatedSchematicsChannel = channel(878022862915653723L);
         botsChannel = channel(414179246693679124L);
+        aaaaa = guild.getEmotesByName("alphaaaaaaaa", true).get(0);
 
         schematicChannels.add(schematicsChannel.getIdLong(), baseSchematicsChannel.getIdLong(), curatedSchematicsChannel.getIdLong());
     }
@@ -532,8 +534,8 @@ public class Messages extends ListenerAdapter{
 
                 if(user.getIdLong() == 737869099811733527L){
                     text(msg, "no");
-                //}else if(user.getIdLong() == jda.getSelfUser().getIdLong() && Mathf.chance(0.5)){
-                //    msg.getChannel().sendMessage(guild.getEmotesByName("alphaaaaaaaa", true).get(0).getAsMention()).queue();
+                }else if(user.getIdLong() == jda.getSelfUser().getIdLong() && Mathf.chance(0.5)){
+                    msg.getChannel().sendMessage(aaaaa.getAsMention()).queue();
                 }else{
                     String link = user.getEffectiveAvatarUrl() + "?size=1024";
 
@@ -740,6 +742,10 @@ public class Messages extends ListenerAdapter{
             var msg = event.getMessage();
 
             if(msg.getAuthor().isBot() || msg.getChannel().getType() != ChannelType.TEXT) return;
+
+            if(msg.getMentionedUsers().contains(jda.getSelfUser())){
+                msg.addReaction(aaaaa).queue();
+            }
 
             EmbedBuilder log = new EmbedBuilder()
             .setAuthor(msg.getAuthor().getName(), msg.getAuthor().getEffectiveAvatarUrl(), msg.getAuthor().getEffectiveAvatarUrl())
