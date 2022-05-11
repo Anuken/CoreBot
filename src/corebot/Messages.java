@@ -832,6 +832,7 @@ public class Messages extends ListenerAdapter{
                             e2.printStackTrace();
                         }
                     }
+                    e.printStackTrace();
                     //ignore errors
                 }
             }else if(schematicChannels.contains(msg.getChannel().getIdLong()) && !isAdmin(msg.getAuthor())){
