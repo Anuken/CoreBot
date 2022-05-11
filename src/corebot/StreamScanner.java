@@ -52,7 +52,7 @@ public class StreamScanner{
                         }
                     }
 
-                    seen().writeString(seenIds.asArray().toString("\n"));
+                    seen().writeString(seenIds.toSeq().toString("\n"));
                 }catch(Exception e){
                     e.printStackTrace();
                 }

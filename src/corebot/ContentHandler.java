@@ -238,11 +238,11 @@ public class ContentHandler{
         requests.each(req -> {
             req.animScale = 1f;
             req.worldContext = false;
-            req.block.drawRequestRegion(req, requests);
+            req.block.drawPlanRegion(req, requests);
             Draw.reset();
         });
 
-        requests.each(req -> req.block.drawRequestConfigTop(req, requests));
+        requests.each(req -> req.block.drawPlanConfigTop(req, requests));
 
         return image;
     }

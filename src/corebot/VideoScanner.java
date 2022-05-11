@@ -42,7 +42,7 @@ public class VideoScanner{
                         }
                     });
 
-                    seenfi.writeString(seen.asArray().toString("\n"));
+                    seenfi.writeString(seen.toSeq().toString("\n"));
                 }catch(Exception e){
                     Log.err(e);
                 }
