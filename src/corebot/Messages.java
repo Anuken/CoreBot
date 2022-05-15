@@ -191,24 +191,27 @@ public class Messages extends ListenerAdapter{
         schematicChannels.add(schematicsChannel.getIdLong(), baseSchematicsChannel.getIdLong(), curatedSchematicsChannel.getIdLong());
     }
 
+    void printCommands(CommandHandler handler, StringBuilder builder){
+        for(Command command : handler.getCommandList()){
+            builder.append(prefix);
+            builder.append("**");
+            builder.append(command.text);
+            builder.append("**");
+            if(command.params.length > 0){
+                builder.append(" *");
+                builder.append(command.paramText);
+                builder.append("*");
+            }
+            builder.append(" - ");
+            builder.append(command.description);
+            builder.append("\n");
+        }
+    }
+
     void register(){
         handler.<Message>register("help", "Displays all bot commands.", (args, msg) -> {
             StringBuilder builder = new StringBuilder();
-            for(Command command : handler.getCommandList()){
-                builder.append(prefix);
-                builder.append("**");
-                builder.append(command.text);
-                builder.append("**");
-                if(command.params.length > 0){
-                    builder.append(" *");
-                    builder.append(command.paramText);
-                    builder.append("*");
-                }
-                builder.append(" - ");
-                builder.append(command.description);
-                builder.append("\n");
-            }
-
+            printCommands(handler, builder);
             info(msg.getChannel(), "Commands", builder.toString());
         });
 
@@ -552,6 +555,12 @@ public class Messages extends ListenerAdapter{
             }catch(Exception e){
                 errDelete(msg, "Incorrect name format or ID.");
             }
+        });
+
+        adminHandler.<Message>register("adminhelp", "Displays all bot commands.", (args, msg) -> {
+            StringBuilder builder = new StringBuilder();
+            printCommands(adminHandler, builder);
+            info(msg.getChannel(), "Admin Commands", builder.toString());
         });
 
         adminHandler.<Message>register("userinfo", "<@user>", "Get user info.", (args, msg) -> {
