@@ -532,9 +532,10 @@ public class Messages extends ListenerAdapter{
                     user = msg.getAuthor();
                 }
 
-                if(user.getIdLong() == 737869099811733527L){
-                    text(msg, "no");
-                }else if(user.getIdLong() == jda.getSelfUser().getIdLong() && Mathf.chance(0.5)){
+                //if(user.getIdLong() == 737869099811733527L){
+                //    text(msg, "no");
+                //}else
+                if(user.getIdLong() == jda.getSelfUser().getIdLong() && Mathf.chance(0.5)){
                     msg.getChannel().sendMessage(aaaaa.getAsMention()).queue();
                 }else{
                     String link = user.getEffectiveAvatarUrl() + "?size=1024";
@@ -832,7 +833,6 @@ public class Messages extends ListenerAdapter{
                             e2.printStackTrace();
                         }
                     }
-                    e.printStackTrace();
                     //ignore errors
                 }
             }else if(schematicChannels.contains(msg.getChannel().getIdLong()) && !isAdmin(msg.getAuthor())){
