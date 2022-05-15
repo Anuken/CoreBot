@@ -858,6 +858,7 @@ public class Messages extends ListenerAdapter{
             if(!text.replace(prefix, "").trim().isEmpty()){
                 if(isAdmin(msg.getAuthor())){
                     boolean unknown = handleResponse(msg, adminHandler.handleMessage(text, msg), false);
+
                     handleResponse(msg, handler.handleMessage(text, msg), !unknown);
                 }else{
                     handleResponse(msg, handler.handleMessage(text, msg), true);
@@ -1138,7 +1139,6 @@ public class Messages extends ListenerAdapter{
             }else{
                 errDelete(msg, "Invalid arguments.", "Usage: @@ *@*", prefix, response.command.text, response.command.paramText);
             }
-            return false;
         }
         return true;
     }
