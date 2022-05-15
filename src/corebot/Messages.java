@@ -1025,28 +1025,24 @@ public class Messages extends ListenerAdapter{
 
             //go through every ping individually
             for(var ping : mentioned){
-                if(!ping.equals(data.lastPingId)){
-                    data.lastPingId = ping;
-                    data.uniquePings++;
-                    if(data.uniquePings >= pingSpamLimit){
-                        String banMessage = "Banned for spamming member pings in a row. If you believe this was in error, file an issue on the CoreBot Github (https://github.com/Anuken/CoreBot/issues) or contact a moderator.";
-                        Log.info("Autobanning @ for spamming @ pings in a row.", message.getAuthor().getName() + "#" + message.getAuthor().getId(), data.uniquePings);
-                        alertsChannel.sendMessage(message.getAuthor().getAsMention() + " **has been auto-banned for pinging " + pingSpamLimit + " unique members in a row!**").queue();
+                if(data.idsPinged.add(ping) && data.idsPinged.size >= pingSpamLimit){
+                    String banMessage = "Banned for spamming member pings in a row. If you believe this was in error, file an issue on the CoreBot Github (https://github.com/Anuken/CoreBot/issues) or contact a moderator.";
+                    Log.info("Autobanning @ for spamming @ pings in a row.", message.getAuthor().getName() + "#" + message.getAuthor().getId(), data.idsPinged.size);
+                    alertsChannel.sendMessage(message.getAuthor().getAsMention() + " **has been auto-banned for pinging " + pingSpamLimit + " unique members in a row!**").queue();
 
-                        Runnable banMember = () -> message.getGuild().ban(message.getAuthor(), 1, banMessage).queue();
+                    Runnable banMember = () -> message.getGuild().ban(message.getAuthor(), 1, banMessage).queue();
 
-                        try{
-                            message.getAuthor().openPrivateChannel().complete().sendMessage(banMessage).queue(done -> banMember.run(), failed -> banMember.run());
-                        }catch(Exception e){
-                            //can fail to open PM channel sometimes.
-                            banMember.run();
-                        }
+                    try{
+                        message.getAuthor().openPrivateChannel().complete().sendMessage(banMessage).queue(done -> banMember.run(), failed -> banMember.run());
+                    }catch(Exception e){
+                        //can fail to open PM channel sometimes.
+                        banMember.run();
                     }
                 }
             }
 
             if(mentioned.isEmpty()){
-                data.uniquePings = 0;
+                data.idsPinged.clear();
             }
 
             //check for consecutive links
@@ -1204,9 +1200,7 @@ public class Messages extends ListenerAdapter{
         @Nullable String lastLinkChannelId;
         /** link cross-postings in a row */
         int linkCrossposts;
-        /** ID of last member pinged */
-        String lastPingId;
-        /** number of unique members pinged in a row */
-        int uniquePings;
+        /** all members pinged in consecutive messages */
+        ObjectSet<String> idsPinged = new ObjectSet<>();
     }
 }
