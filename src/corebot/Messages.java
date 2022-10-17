@@ -1096,7 +1096,7 @@ public class Messages extends ListenerAdapter{
                 ).queue();
 
                 message.delete().queue();
-                message.getAuthor().openPrivateChannel().complete().sendMessage("You have been timed out for " + naughtyTimeoutMins +
+                message.getAuthor().openPrivateChannel().complete().sendMessage("uou have been timed out for " + naughtyTimeoutMins +
                     " minutes for using an unacceptable word in `#" + message.getChannel().getName() + "`.\nYour message:\n\n" + message.getContentRaw()).queue();
                 message.getMember().timeoutFor(Duration.ofMinutes(naughtyTimeoutMins)).queue();
 
