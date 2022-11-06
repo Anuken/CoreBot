@@ -247,15 +247,18 @@ public class Messages extends ListenerAdapter{
                 try{
                     Jval repo = Jval.read(result.getResultAsString());
                     String repoUrl = repo.getString("html_url");
-                    Jval owner = repo.get("owner");
+                    Jval author = repo.get("owner");
 
                     EmbedBuilder builder = new EmbedBuilder()
                     .setColor(normalColor)
-                    .setAuthor(owner.getString("login"), owner.getString("html_url"), owner.getString("avatar_url"))
+                    .setAuthor(author.getString("login"), author.getString("html_url"), author.getString("avatar_url"))
                     .setTitle(repo.getString("name"), repoUrl)
                     .addField("Link", repoUrl, false)
-                    .addField("Downloads", repoUrl + "/releases", false)
-                    .addField("About", repo.getString("description"), false);
+                    .addField("Downloads", repoUrl + "/releases", false);
+
+                    if(!repo.getString("description").isBlank()){
+                        builder.addField("About", repo.getString("description"), false);
+                    }
 
                     pluginChannel.sendMessageEmbeds(builder.build()).queue();
                     text(msg, "*Plugin posted.*");
