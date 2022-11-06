@@ -23,9 +23,6 @@ import net.dv8tion.jda.api.requests.*;
 import net.dv8tion.jda.api.utils.*;
 import net.dv8tion.jda.api.utils.cache.*;
 import org.jetbrains.annotations.*;
-import org.jsoup.*;
-import org.jsoup.nodes.*;
-import org.jsoup.select.*;
 
 import javax.imageio.*;
 import java.awt.image.*;
@@ -151,7 +148,7 @@ public class Messages extends ListenerAdapter{
                 .setMemberCachePolicy(MemberCachePolicy.ALL).disableCache(CacheFlag.VOICE_STATE).build();
             jda.awaitReady();
             jda.addEventListener(this);
-            
+
             loadChannels();
 
             Log.info("Discord bot up.");
@@ -159,11 +156,11 @@ public class Messages extends ListenerAdapter{
             throw new RuntimeException(e);
         }
     }
-    
+
     TextChannel channel(long id){
         return guild.getTextChannelById(id);
     }
-    
+
     void loadChannels(){
         //all guilds and channels are loaded here for faster lookup
         guild = jda.getGuildById(391020510269669376L);
@@ -241,34 +238,34 @@ public class Messages extends ListenerAdapter{
         });
 
 
-        handler.<Message>register("postplugin", "<github-url>", "Post a plugin via Github repository URL.", (args, msg) -> {
-            if(!args[0].startsWith("https") || !args[0].contains("github")){
-                errDelete(msg, "That's not a valid Github URL.");
-            }else{
+        handler.<Message>register("postplugin", "<user> <repository>", "Post a plugin via Github repository URL.", (args, msg) -> {
+            // https://docs.github.com/en/rest/repos/repos#get-a-repository
+            Http.get("https://api.github.com/repos/" + args[0] + "/" + args[1])
+            .header("Accept", "application/vnd.github+json")
+            .error(err -> errDelete(msg, "Error querying Github", Strings.getSimpleMessage(err)))
+            .block(result -> {
                 try{
-                    Document doc = Jsoup.connect(args[0]).get();
+                    Jval repo = Jval.read(result.getResultAsString());
+                    String repoUrl = repo.getString("html_url");
+                    Jval author = repo.get("owner");
 
-                    EmbedBuilder builder = new EmbedBuilder().setColor(normalColor).
-                    setColor(normalColor)
-                    .setAuthor(msg.getAuthor().getName(), msg.getAuthor().getEffectiveAvatarUrl(), msg.getAuthor().getEffectiveAvatarUrl())
-                    .setTitle(doc.select("strong[itemprop=name]").text());
+                    EmbedBuilder builder = new EmbedBuilder()
+                    .setColor(normalColor)
+                    .setAuthor(author.getString("login"), author.getString("html_url"), author.getString("avatar_url"))
+                    .setTitle(repo.getString("name"), repoUrl);
 
-                    Elements elem = doc.select("span[itemprop=about]");
-                    if(!elem.isEmpty()){
-                        builder.addField("About", elem.text(), false);
+                    if(!repo.getString("description").isBlank()){
+                        builder.addField("About", repo.getString("description"), false);
                     }
 
-                    builder
-                    .addField("Link", args[0], false)
-                    .addField("Downloads", args[0] + (args[0].endsWith("/") ? "" : "/") + "releases", false);
+                    builder.addField("Downloads", repoUrl + "/releases", false);
 
                     pluginChannel.sendMessageEmbeds(builder.build()).queue();
-
                     text(msg, "*Plugin posted.*");
-                }catch(IOException e){
+                }catch(Exception e){
                     errDelete(msg, "Failed to fetch plugin info from URL.");
                 }
-            }
+            });
         });
 
         handler.<Message>register("postmap", "Post a .msav file to the #maps channel.", (args, msg) -> {
