@@ -238,7 +238,7 @@ public class Messages extends ListenerAdapter{
         });
 
 
-        handler.<Message>register("postplugin", "<user> <repository> [note...]", "Post a plugin via Github repository URL.", (args, msg) -> {
+        handler.<Message>register("postplugin", "<user> <repository>", "Post a plugin via Github repository URL.", (args, msg) -> {
             // https://docs.github.com/en/rest/repos/repos#get-a-repository
             Http.get("https://api.github.com/repos/" + args[0] + "/" + args[1])
             .header("Accept", "application/vnd.github+json")
