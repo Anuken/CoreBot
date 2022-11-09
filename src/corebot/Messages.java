@@ -251,7 +251,6 @@ public class Messages extends ListenerAdapter{
 
                     EmbedBuilder builder = new EmbedBuilder()
                     .setColor(normalColor)
-                    .setAuthor(author.getString("login"), author.getString("html_url"), author.getString("avatar_url"))
                     .setTitle(repo.getString("name"), repoUrl);
 
                     if(!repo.getString("description").isBlank()){
