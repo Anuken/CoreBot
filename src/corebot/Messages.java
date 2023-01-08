@@ -380,7 +380,7 @@ public class Messages extends ListenerAdapter{
         });
 
         handler.<Message>register("google", "<phrase...>", "Let me google that for you.", (args, msg) -> {
-            text(msg, "http://lmgtfy.com/?q=@", Strings.encode(args[0]));
+            text(msg, "https://lmgt.org/?q=@", Strings.encode(args[0]));
         });
 
         handler.<Message>register("cleanmod", "Clean up a modded zip archive. Changes json into hjson and formats code.", (args, msg) -> {
